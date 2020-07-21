@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>top.mrys</groupId>
+    <artifactId>mrys-vertx</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <modules>
+        <module>mrys-vertx-boot</module>
+        <module>mrys-vertx-common</module>
+        <module>mrys-vertx-http</module>
+    </modules>
+
+    <properties>
+        <vertx.version>4.0.0-milestone5</vertx.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <lombok.version>1.18.12</lombok.version>
+        <hutool.version>5.3.9</hutool.version>
+        <vavr.version>0.10.3</vavr.version>
+        <spring-expression.version>5.2.0.RELEASE</spring-expression.version>
+        <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <version>${vertx.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>top.mrys</groupId>
+                <artifactId>mrys-vertx-common</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j-slf4j-impl.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring-expression.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
