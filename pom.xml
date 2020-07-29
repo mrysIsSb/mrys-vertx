@@ -23,8 +23,11 @@
         <lombok.version>1.18.12</lombok.version>
         <hutool.version>5.3.9</hutool.version>
         <vavr.version>0.10.3</vavr.version>
-        <spring-expression.version>5.2.0.RELEASE</spring-expression.version>
+        <spring-expression.version>5.2.6.RELEASE</spring-expression.version>
         <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
+        <jackson-databind.version>2.11.1</jackson-databind.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
     </properties>
 
 
@@ -62,6 +65,12 @@
                 <version>${log4j-slf4j-impl.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -70,5 +79,21 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>

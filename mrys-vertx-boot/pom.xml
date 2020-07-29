@@ -1,21 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>mrys-vertx</artifactId>
-        <groupId>top.mrys</groupId>
-        <version>1.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>mrys-vertx-boot</artifactId>
-
-<dependencies>
-  <dependency>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>mrys-vertx</artifactId>
     <groupId>top.mrys</groupId>
-    <artifactId>mrys-vertx-http</artifactId>
     <version>1.0</version>
-  </dependency>
-</dependencies>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>mrys-vertx-boot</artifactId>
+
+  <properties>
+    <jar-outputFile>${build.directory}/${project.artifactId}-fat.jar</jar-outputFile>
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+
+  </dependencies>
+  <build>
+    <finalName>${project.artifactId}</finalName>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven-shade-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>top.mrys.vertx.boot.Boot</Main-Class>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+              <artifactSet>
+              </artifactSet>
+              <outputFile>${jar-outputFile}
+              </outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

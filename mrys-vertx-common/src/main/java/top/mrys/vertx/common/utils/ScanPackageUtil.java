@@ -11,6 +11,6 @@ import cn.hutool.core.util.ClassUtil;
 public class ScanPackageUtil {
 
   public Class[] getClassFromPackage(String packageName) {
-    ClassUtil.scanPackage()
+    return ClassUtil.scanPackage(packageName, c -> true).toArray(new Class[]{});
   }
 }

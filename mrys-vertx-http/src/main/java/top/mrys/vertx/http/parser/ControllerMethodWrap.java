@@ -1,11 +1,9 @@
 package top.mrys.vertx.http.parser;
 
-import com.sun.istack.internal.NotNull;
+import java.lang.reflect.Method;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.lang.reflect.Method;
 
 /**
  * @author mrys
@@ -16,10 +14,7 @@ import java.lang.reflect.Method;
 @AllArgsConstructor
 public class ControllerMethodWrap {
 
-    @NotNull
-    private Method method;
-    @NotNull
-    private Class clazz;
-    @NotNull
-    private Object object;
+  private Method method;
+  private Class clazz;
+  private Object object;
 }
