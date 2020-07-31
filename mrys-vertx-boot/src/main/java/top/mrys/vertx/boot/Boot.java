@@ -13,9 +13,9 @@ public class Boot {
 
   public static void main(String[] args) {
     Vertx run = MyLauncher.run(Boot.class, args);
-  /*  run.createHttpServer().requestHandler(event -> {
-      event.response().end()
-    }).listen()*/
+    run.createHttpServer().requestHandler(event -> {
+      event.response().end();
+    }).listen(8080);
 //    CompositeFuture.all().
   }
 }
