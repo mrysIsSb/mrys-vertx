@@ -3,6 +3,7 @@ package top.mrys.vertx.boot.controller;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.RoutingContext;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import top.mrys.vertx.http.annotations.RouteHandler;
@@ -21,6 +22,7 @@ public class DemoController {
   @RouteMapping(value = "test1",method = EnumHttpMethod.GET)
   public Handler<RoutingContext> test1() {
     return event -> {
+      event.addBodyEndHandler()
       event.response().end("hello world");
     };
   }
