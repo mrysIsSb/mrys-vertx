@@ -13,6 +13,7 @@ import io.vertx.core.http.impl.Http1xServerConnection;
 import io.vertx.core.http.impl.Http1xServerRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.http.starter.EnableHttp;
 
@@ -21,10 +22,15 @@ import top.mrys.vertx.http.starter.EnableHttp;
  * @date 2020/7/21
  */
 @EnableHttp(port = 8888,scanPackage = "top.mrys.vertx.boot.controller")
+@Slf4j
 public class Boot {
 
   public static void main(String[] args) {
-    Vertx run = MyLauncher.run(Boot.class, args);
+
+
+    for (String name : MyLauncher.run(Boot.class, args).getBeanDefinitionNames()) {
+      System.out.println(name);
+    }
     /*run.createHttpServer().requestHandler(event -> {
       if (event instanceof Http1xServerRequest) {
         Http1xServerRequest request = (Http1xServerRequest) event;

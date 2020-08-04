@@ -13,6 +13,7 @@
         <module>mrys-vertx-boot</module>
         <module>mrys-vertx-common</module>
         <module>mrys-vertx-http</module>
+      <module>mrys-vertx-mysql</module>
     </modules>
 
     <properties>
@@ -23,7 +24,7 @@
         <lombok.version>1.18.12</lombok.version>
         <hutool.version>5.3.9</hutool.version>
         <vavr.version>0.10.3</vavr.version>
-        <spring-expression.version>5.2.6.RELEASE</spring-expression.version>
+        <spring.version>5.2.6.RELEASE</spring.version>
         <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
         <jackson-databind.version>2.11.1</jackson-databind.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -75,8 +76,16 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-expression</artifactId>
-                <version>${spring-expression.version}</version>
+                <version>${spring.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

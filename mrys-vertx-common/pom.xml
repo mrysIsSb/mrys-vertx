@@ -44,9 +44,8 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

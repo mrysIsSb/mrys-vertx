@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import top.mrys.vertx.common.launcher.Enable;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author mrys
@@ -12,7 +12,7 @@ import top.mrys.vertx.common.launcher.Enable;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Enable(HttpStarter.class)
+@Import(HttpStarter.class)
 public @interface EnableHttp {
 
   int value() default 0;

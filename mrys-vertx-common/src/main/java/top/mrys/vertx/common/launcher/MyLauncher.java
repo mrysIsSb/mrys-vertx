@@ -1,7 +1,5 @@
 package top.mrys.vertx.common.launcher;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -11,14 +9,11 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.mrys.vertx.common.utils.AnnotationUtil;
-import top.mrys.vertx.common.utils.TypeUtil;
+import org.springframework.context.ApplicationContext;
 import top.mrys.vertx.common.utils.VertxHolder;
 
 /**
@@ -30,29 +25,55 @@ public class MyLauncher {
 
   private final static String CONF_PREFIX = "-conf";
 
+  public static MyRefreshableApplicationContext context;
 
   @SneakyThrows
-  public static Vertx run(Class clazz, String[] args) {
+  public static ApplicationContext run(Class clazz, String[] args) {
+    MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
+    context.register(clazz);
     ConfigRetriever retriever = getConfigRetriever(args);
+    retriever.listen(event -> {
+      JsonObject json = event.getNewConfiguration();
+      context.registerBean("config", JsonObject.class, () -> json);
+      context.refresh();
+    });
     retriever.getConfig()
-        .onSuccess(json -> System.out.println(json.toString()));
+        .onSuccess(json -> {
+          context.registerBean("config", JsonObject.class, () -> json);
+          context.refresh();
+        });
+    context.registerBean(Vertx.class, MyLauncher::getVertx);
+
+    context.registerShutdownHook();
+    context.refresh();
+    /*vertx.setPeriodic(10000, event -> {
+      Vertx bean = null;
+      try {
+        bean = context.getBean(Vertx.class);
+
+      } catch (BeansException e) {
+      }
+      if (Objects.isNull(bean)) {
+        log.info("add");
+        context.registerBean(Vertx.class, MyLauncher::getVertx);
+      } else {
+        log.info("remove");
+        bean.close();
+        context.removeBean(Vertx.class);
+      }
+      log.info("refresh");
+
+      context.refresh();
+    });*/
+    MyLauncher.context = context;
+    return context;
+  }
+
+  public static VertxImpl getVertx() {
     VertxImpl vertx = (VertxImpl) Vertx.vertx(new VertxOptions());
     VertxHolder.setMainVertx(vertx);
     vertxAddCloseHook(vertx);
     addShutdownHook(vertx);
-    Annotation[] annotations = clazz.getAnnotations();
-    if (ArrayUtil.isNotEmpty(annotations)) {
-      for (Annotation annotation : annotations) {
-        Enable enable = annotation.annotationType().getAnnotation(Enable.class);
-        if (Objects.nonNull(enable)) {
-          Class starter = enable.value();
-          if (Starter.class.isAssignableFrom(starter)) {
-            Starter o = (Starter) starter.newInstance();
-            o.start(annotation);
-          }
-        }
-      }
-    }
     return vertx;
   }
 
@@ -80,7 +101,7 @@ public class MyLauncher {
         ).addStore(
             new ConfigStoreOptions()
                 .setType("json")
-            .setConfig(json)
+                .setConfig(json)
         );
 
     return ConfigRetriever.create(tempVertx, op);
