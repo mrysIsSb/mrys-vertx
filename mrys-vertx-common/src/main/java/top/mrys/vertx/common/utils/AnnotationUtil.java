@@ -1,6 +1,7 @@
 package top.mrys.vertx.common.utils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -21,8 +22,8 @@ public class AnnotationUtil {
      * 是否存在任意的注解
      * @author mrys
      */
-    public static <A  extends Annotation> Boolean isHaveAnyAnnotations(Class clazz, Class<A>... annotationClass) {
-        Annotation[] annotations = clazz.getAnnotations();
+    public static <A  extends Annotation> Boolean isHaveAnyAnnotations(AnnotatedElement annotatedElement, Class<A>... annotationClass) {
+        Annotation[] annotations = annotatedElement.getAnnotations();
         return isHaveAnyAnnotations(annotations, annotationClass);
     }
 
@@ -35,5 +36,13 @@ public class AnnotationUtil {
             }
         }
         return false;
+    }
+
+    public static <A extends Annotation> A getAnnotation(AnnotatedElement annotatedElement,
+        Class<A> aClass) {
+        if (isHaveAnyAnnotations(annotatedElement, aClass)) {
+            return annotatedElement.getAnnotation(aClass);
+        }
+        return null;
     }
 }

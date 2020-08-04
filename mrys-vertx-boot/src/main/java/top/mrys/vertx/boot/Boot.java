@@ -11,24 +11,21 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpConnection;
 import io.vertx.core.http.impl.Http1xServerConnection;
 import io.vertx.core.http.impl.Http1xServerRequest;
-import io.vertx.core.impl.ContextInternal;
-import io.vertx.ext.web.Route;
-import io.vertx.ext.web.Router;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import sun.reflect.misc.FieldUtil;
 import top.mrys.vertx.common.launcher.MyLauncher;
+import top.mrys.vertx.http.starter.EnableHttp;
 
 /**
  * @author mrys
  * @date 2020/7/21
  */
+@EnableHttp(port = 8888,scanPackage = "top.mrys.vertx.boot.controller")
 public class Boot {
 
   public static void main(String[] args) {
     Vertx run = MyLauncher.run(Boot.class, args);
-    run.createHttpServer().requestHandler(event -> {
+    /*run.createHttpServer().requestHandler(event -> {
       if (event instanceof Http1xServerRequest) {
         Http1xServerRequest request = (Http1xServerRequest) event;
         HttpConnection connection = request.connection();
@@ -69,13 +66,13 @@ public class Boot {
               }
             });
           }
-          /*ChannelHandlerContext context = connection1.channelHandlerContext();
-          context.pipeline().remove();*/
+          *//*ChannelHandlerContext context = connection1.channelHandlerContext();
+          context.pipeline().remove();*//*
         }
       }
       System.out.println("-------------------------------"+event.absoluteURI());
       event.response().end("hello");
     }).listen(8080);
-//    CompositeFuture.all().
+//    CompositeFuture.all().*/
   }
 }

@@ -1,31 +1,83 @@
 package top.mrys.vertx.http.parser;
 
+import cn.hutool.core.collection.CollectionUtil;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
-import lombok.SneakyThrows;
-import top.mrys.vertx.common.utils.AnnotationUtil;
-import top.mrys.vertx.http.annotations.RouteHandler;
-import top.mrys.vertx.http.annotations.RouteMapping;
-
+import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
+import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.common.utils.Interceptor;
+import top.mrys.vertx.http.annotations.RouteHandler;
+import top.mrys.vertx.http.annotations.RouteMapping;
 
 /**
  * @author mrys
  * @date 2020/7/4
  */
-public class RouteFactory {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
+public class RouteFactory implements Supplier<Router>{
 
+  private Vertx vertx;
+  private List<Class> classes;
   private final List<Parser<ControllerMethodWrap, Router>> parsers
       = Arrays.asList(new SimpleHandlerParser(),
       new GeneralMethodParser()
   );
+  private final ConcurrentLinkedDeque<Interceptor<RoutingContext,?>> interceptors = new ConcurrentLinkedDeque<>();
+
+  public static RouteFactory create(Vertx vertx, List<Class> classes) {
+    return create(vertx, classes, Collections.emptyList());
+  }
+
+  public static RouteFactory create(Vertx vertx, List<Class> classes,
+      List<Parser<ControllerMethodWrap, Router>> parsers) {
+    RouteFactory routeFactory = new RouteFactory();
+    routeFactory.vertx = vertx;
+    routeFactory.classes = classes;
+    if (CollectionUtil.isNotEmpty(parsers)) {
+      routeFactory.parsers.addAll(parsers);
+    }
+    routeFactory.interceptors.add(new HttpInterceptor());
+    return routeFactory;
+  }
+
+
+
+
+
 
   @SneakyThrows
-  public Router getRouter(Vertx vertx, Class[] classes) {
+  @Override
+  public Router get() {
     Router router = Router.router(vertx);
+    if (CollectionUtil.isNotEmpty(interceptors)) {
+      router.route().handler(event -> {
+        Iterator<Interceptor<RoutingContext, ?>> iterator = interceptors.iterator();
+        for (; iterator.hasNext() ; ) {
+          if (!iterator.next().preHandler(event)) {
+            event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON+";charset=utf-8").end("拒绝访问");
+          }
+        }
+        event.next();
+      });
+    }
     for (Class clazz : classes) {
       if (AnnotationUtil.isHaveAnyAnnotations(clazz, RouteHandler.class)) {
         RouteMapping mapping = (RouteMapping) clazz.getAnnotation(RouteMapping.class);
@@ -60,4 +112,5 @@ public class RouteFactory {
     }
     return router;
   }
+
 }

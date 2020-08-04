@@ -13,5 +13,8 @@ public interface Parser<T, U> extends BiConsumer<T, U> {
      *
      * @author mrys
      */
-    Boolean canExec(T object);
+    default Boolean canExec(T object) {
+        return true;
+    }
+
 }

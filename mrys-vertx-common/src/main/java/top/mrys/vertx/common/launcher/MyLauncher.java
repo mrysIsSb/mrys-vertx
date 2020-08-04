@@ -1,30 +1,25 @@
 package top.mrys.vertx.common.launcher;
 
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONObject;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
-import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.impl.JsonUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.lang.annotation.Annotation;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.common.utils.TypeUtil;
+import top.mrys.vertx.common.utils.VertxHolder;
 
 /**
  * @author mrys
@@ -42,8 +37,22 @@ public class MyLauncher {
     retriever.getConfig()
         .onSuccess(json -> System.out.println(json.toString()));
     VertxImpl vertx = (VertxImpl) Vertx.vertx(new VertxOptions());
+    VertxHolder.setMainVertx(vertx);
     vertxAddCloseHook(vertx);
     addShutdownHook(vertx);
+    Annotation[] annotations = clazz.getAnnotations();
+    if (ArrayUtil.isNotEmpty(annotations)) {
+      for (Annotation annotation : annotations) {
+        Enable enable = annotation.annotationType().getAnnotation(Enable.class);
+        if (Objects.nonNull(enable)) {
+          Class starter = enable.value();
+          if (Starter.class.isAssignableFrom(starter)) {
+            Starter o = (Starter) starter.newInstance();
+            o.start(annotation);
+          }
+        }
+      }
+    }
     return vertx;
   }
 

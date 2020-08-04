@@ -10,7 +10,7 @@ import cn.hutool.core.util.ClassUtil;
  */
 public class ScanPackageUtil {
 
-  public Class[] getClassFromPackage(String packageName) {
+  public static Class[] getClassFromPackage(String packageName) {
     return ClassUtil.scanPackage(packageName, c -> true).toArray(new Class[]{});
   }
 }
