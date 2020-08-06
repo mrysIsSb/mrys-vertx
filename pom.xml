@@ -29,6 +29,7 @@
         <jackson-databind.version>2.11.1</jackson-databind.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
+        <mybatis.version>3.5.5</mybatis.version>
     </properties>
 
 
@@ -85,6 +86,14 @@
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

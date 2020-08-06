@@ -1,10 +1,7 @@
 package top.mrys.vertx.common.launcher;
 
-import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +15,6 @@ import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.util.CollectionUtils;
 

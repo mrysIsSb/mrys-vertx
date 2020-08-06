@@ -46,25 +46,6 @@ public class MyLauncher {
 
     context.registerShutdownHook();
     context.refresh();
-    /*vertx.setPeriodic(10000, event -> {
-      Vertx bean = null;
-      try {
-        bean = context.getBean(Vertx.class);
-
-      } catch (BeansException e) {
-      }
-      if (Objects.isNull(bean)) {
-        log.info("add");
-        context.registerBean(Vertx.class, MyLauncher::getVertx);
-      } else {
-        log.info("remove");
-        bean.close();
-        context.removeBean(Vertx.class);
-      }
-      log.info("refresh");
-
-      context.refresh();
-    });*/
     MyLauncher.context = context;
     return context;
   }

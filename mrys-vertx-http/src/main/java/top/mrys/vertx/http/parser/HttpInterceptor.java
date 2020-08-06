@@ -27,6 +27,6 @@ public class HttpInterceptor implements Interceptor<RoutingContext,Object> {
     }else if (path.matches("/restart\\S*")){
       MyLauncher.context.refresh();
     }
-    return path.matches("/ok\\S*");
+    return true;
   }
 }
