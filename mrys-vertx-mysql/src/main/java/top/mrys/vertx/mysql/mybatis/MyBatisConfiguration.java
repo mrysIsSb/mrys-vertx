@@ -8,13 +8,11 @@ import static org.apache.ibatis.type.JdbcType.OTHER;
 
 import io.vertx.core.impl.ConcurrentHashSet;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import org.apache.ibatis.executor.loader.javassist.JavassistProxyFactory;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.EnumTypeHandler;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author mrys

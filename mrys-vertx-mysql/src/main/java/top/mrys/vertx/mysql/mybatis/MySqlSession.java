@@ -11,6 +11,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Component;
 
 /**
  * @author mrys

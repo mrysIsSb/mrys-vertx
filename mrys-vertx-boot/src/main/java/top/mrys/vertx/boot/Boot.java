@@ -66,6 +66,7 @@ import top.mrys.vertx.mysql.starter.EnableMysql;
 public class Boot {
 
   public static void main(String[] args) {
+    System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
     for (String name : MyLauncher.run(Boot.class, args).getBeanDefinitionNames()) {
       System.out.println(name);
     }

@@ -1,5 +1,6 @@
 package top.mrys.vertx.boot.dao.mysql;
 
+import io.vertx.core.Future;
 import org.apache.ibatis.annotations.Select;
 import top.mrys.vertx.boot.entity.SysUser;
 
@@ -10,6 +11,6 @@ import top.mrys.vertx.boot.entity.SysUser;
 public interface SysUserMapper {
 
   @Select("select * from sys_user limit 1")
-  SysUser getTest();
+  Future<SysUser> getTest();
 
 }
