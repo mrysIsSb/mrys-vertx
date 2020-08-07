@@ -1,17 +1,17 @@
-package top.mrys.vertx.http.annotations;
+package top.mrys.vertx.mybatis.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.springframework.stereotype.Component;
 
 /**
  * @author mrys
- * @date 2020/7/4
+ * @date 2020/8/5
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Component
-public @interface RouteHandler {
+public @interface MapperScan {
+
+  String value();
 }

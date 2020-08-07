@@ -52,7 +52,7 @@ public class SimpleHandlerParser implements Parser<ControllerMethodWrap, Router>
     String value = annotation.value();
     EnumHttpMethod enumHttpMethod = annotation.method();
     Handler<RoutingContext> handler = (Handler<RoutingContext>) method.invoke(wrap.getObject());
-    router.route(enumHttpMethod.getHttpMethod(), value).blockingHandler(handler);
+    router.route(enumHttpMethod.getHttpMethod(), value).handler(handler);
   }
 
 }

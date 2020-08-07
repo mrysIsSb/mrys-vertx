@@ -14,6 +14,7 @@
         <module>mrys-vertx-common</module>
         <module>mrys-vertx-http</module>
       <module>mrys-vertx-mysql</module>
+      <module>mrys-vertx-mybatis</module>
     </modules>
 
     <properties>

@@ -1,20 +1,28 @@
-package top.mrys.vertx.mysql.starter;
+package top.mrys.vertx.mybatis.starter;
 
-import io.vertx.core.impl.VertxImpl;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
+import java.util.Map;
+import java.util.Set;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
+import top.mrys.vertx.common.utils.ScanPackageUtil;
+import top.mrys.vertx.mybatis.annotations.MapperScan;
+import top.mrys.vertx.mybatis.mybatis.MyBatisConfiguration;
+import top.mrys.vertx.mybatis.mybatis.MyExecutor;
+import top.mrys.vertx.mybatis.mybatis.MySqlSessionFactory;
 
 /**
  * @author mrys
  * @date 2020/8/5
  */
+//@ComponentScan(basePackages = "top.mrys.vertx.mysql.mybatis")
 @Configuration
 public class MysqlStarter extends AbstractStarter<EnableMysql> {
 
@@ -22,15 +30,11 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
   @Autowired
   private MyRefreshableApplicationContext context;
 
-  @Autowired
-  private VertxImpl vertx;
 
   @Override
   public void start(EnableMysql enableMysql) {
-    vertx.deployVerticle(mysqlVerticle());
-
 //    ClassPathBeanDefinitionScanner
-    /*MyBatisConfiguration configuration = new MyBatisConfiguration();
+    MyBatisConfiguration configuration = new MyBatisConfiguration();
     MySqlSessionFactory mySqlSessionFactory = new MySqlSessionFactory(configuration);
     try {
       Map<String, Object> beansWithAnnotation = context
@@ -52,32 +56,36 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
       });
     } catch (BeansException e) {
 
-    }*/
+    }
 
   }
 
   @Bean
-//  @Conditional()
   public MySQLPool mySQLPool() {
     MySQLConnectOptions connectOptions = new MySQLConnectOptions()
         .setPort(3306)
-        .setHost("192.168.124.16")
-        .setDatabase("test")
+        .setHost("localhost")
         .setUser("root")
         .setPassword("123456");
+
     PoolOptions poolOptions = new PoolOptions()
         .setMaxSize(5);
-    MySQLPool pool = MySQLPool.pool(vertx,connectOptions, poolOptions);
-    vertx.addCloseHook(completion -> {
-      System.out.println("关闭mysql");
-      pool.close(completion);
-    });
-    return pool;
+    return MySQLPool.pool(connectOptions, poolOptions);
+  }
+
+
+  @Bean
+  public MyBatisConfiguration myBatisConfiguration() {
+    return new MyBatisConfiguration();
   }
 
   @Bean
-  public MysqlVerticle mysqlVerticle() {
-    return new MysqlVerticle();
+  public MySqlSessionFactory mySqlSessionFactory(MyBatisConfiguration configuration) {
+    return new MySqlSessionFactory(configuration);
   }
 
+  @Bean
+  public MyExecutor myExecutor(MyBatisConfiguration configuration, MySQLPool pool) {
+    return new MyExecutor(configuration,null, pool);
+  }
 }

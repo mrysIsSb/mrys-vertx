@@ -1,17 +1,18 @@
-package top.mrys.vertx.http.annotations;
+package top.mrys.vertx.mybatis.starter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author mrys
- * @date 2020/7/4
+ * @date 2020/8/5
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Component
-public @interface RouteHandler {
+@Import(MysqlStarter.class)
+public @interface EnableMysql {
+
 }

@@ -31,18 +31,19 @@ public class MyLauncher {
   public static ApplicationContext run(Class clazz, String[] args) {
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
     context.register(clazz);
+    context.registerBean(Vertx.class, MyLauncher::getVertx);
+
     ConfigRetriever retriever = getConfigRetriever(args);
     retriever.listen(event -> {
       JsonObject json = event.getNewConfiguration();
       context.registerBean("config", JsonObject.class, () -> json);
-      context.refresh();
+      context.refreshIfActive();
     });
     retriever.getConfig()
         .onSuccess(json -> {
           context.registerBean("config", JsonObject.class, () -> json);
-          context.refresh();
+          context.refreshIfActive();
         });
-    context.registerBean(Vertx.class, MyLauncher::getVertx);
 
     context.registerShutdownHook();
     context.refresh();

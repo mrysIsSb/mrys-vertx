@@ -28,16 +28,7 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
   private final List<RegisterBean> registerBeans = Collections.synchronizedList(new ArrayList<>());
 
   private final List<String> packages = new ArrayList<>();
-  /**
-   * Load bean definitions into the given bean factory, typically through delegating to one or more
-   * bean definition readers.
-   *
-   * @param beanFactory the bean factory to load bean definitions into
-   * @throws BeansException if parsing of the bean definitions failed
-   * @throws IOException    if loading of bean definition files failed
-   * @see PropertiesBeanDefinitionReader
-   * @see XmlBeanDefinitionReader
-   */
+
   @Override
   protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
       throws BeansException, IOException {
@@ -65,6 +56,10 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
 
   public <T> void registerBean(Class<T> tClass, Supplier<T> s) {
     registerBean(null, tClass, s);
+  }
+
+  public <T> void registerBeanByInstance(Class<T> tClass, T o) {
+    registerBean(tClass, () -> o);
   }
 
   public <T> void registerBean(String name, Class<T> tClass, Supplier<T> s) {
@@ -100,6 +95,12 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
   @Override
   public void refresh() throws BeansException, IllegalStateException {
     super.refresh();
+  }
+
+  public void refreshIfActive() {
+    if (isActive()) {
+      refresh();
+    }
   }
 
 
