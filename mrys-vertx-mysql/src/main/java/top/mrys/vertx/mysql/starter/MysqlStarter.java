@@ -7,7 +7,6 @@ import io.vertx.sqlclient.PoolOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
 
@@ -28,38 +27,13 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
   @Override
   public void start(EnableMysql enableMysql) {
     vertx.deployVerticle(mysqlVerticle());
-
-//    ClassPathBeanDefinitionScanner
-    /*MyBatisConfiguration configuration = new MyBatisConfiguration();
-    MySqlSessionFactory mySqlSessionFactory = new MySqlSessionFactory(configuration);
-    try {
-      Map<String, Object> beansWithAnnotation = context
-          .getBeansWithAnnotation(MapperScan.class);
-      beansWithAnnotation.values().forEach(o -> {
-        Set<MapperScan> mapperScans = AnnotatedElementUtils
-            .findAllMergedAnnotations(o.getClass(), MapperScan.class);
-        mapperScans.forEach(mapperScan -> {
-          String value = mapperScan.value();
-          Class[] classes = ScanPackageUtil.getClassFromPackage(value);
-          for (Class aClass : classes) {
-            if (aClass.isInterface()) {
-              configuration.addMapper(aClass);
-              context
-                  .registerBean(aClass, () -> mySqlSessionFactory.openSession().getMapper(aClass));
-            }
-          }
-        });
-      });
-    } catch (BeansException e) {
-
-    }*/
-
   }
 
   @Bean
 //  @Conditional()
   public MySQLPool mySQLPool() {
     MySQLConnectOptions connectOptions = new MySQLConnectOptions()
+        .setCachePreparedStatements(true)
         .setPort(3306)
         .setHost("192.168.124.16")
         .setDatabase("test")

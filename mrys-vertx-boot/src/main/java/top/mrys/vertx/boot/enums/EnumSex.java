@@ -1,13 +1,10 @@
 package top.mrys.vertx.boot.enums;
 
-import lombok.Getter;
-import top.mrys.vertx.mysql.mybatis.EnumType;
-
 /**
  * @author mrys
  * @date 2020/8/5
  */
-@Getter
+/*@Getter
 public enum EnumSex implements EnumType<Integer> {
   un_know(0, "未知"),
   man(1,"男"),
@@ -25,4 +22,4 @@ public enum EnumSex implements EnumType<Integer> {
   public Integer getKey() {
     return code;
   }
-}
+}*/

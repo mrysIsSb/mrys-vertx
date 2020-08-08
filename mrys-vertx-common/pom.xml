@@ -35,7 +35,11 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-config</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-redis-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

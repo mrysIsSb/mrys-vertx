@@ -1,5 +1,7 @@
 package top.mrys.vertx.common.launcher;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -9,11 +11,16 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
+import top.mrys.vertx.common.config.ConfigCentreStoreFactory;
+import top.mrys.vertx.common.utils.MyJsonUtil;
 import top.mrys.vertx.common.utils.VertxHolder;
 
 /**
@@ -41,6 +48,27 @@ public class MyLauncher {
     });
     retriever.getConfig()
         .onSuccess(json -> {
+          String active = MyJsonUtil.getByPath(json.toString(), "profiles.active", String.class);
+          JsonObject configCentre = json.getJsonObject("configCentre");
+          if (StringUtils.hasText(active)) {
+            ConfigRetriever retriever1 = getConfigRetriever(args, new ConfigStoreOptions()
+                .setType(ConfigCentreStoreFactory.configCentre)
+                .setConfig(new JsonObject().put("active", active)
+                    .mergeIn(configCentre)
+                ));
+            retriever1.getConfig()
+                .onSuccess(json1 -> {
+                  System.out.println(json1.toString());
+                  context.registerBean("config", JsonObject.class, () -> json1);
+                  context.refreshIfActive();
+                });
+            retriever1.listen(event -> {
+              JsonObject json1 = event.getNewConfiguration();
+              System.out.println(json1.toString());
+              context.registerBean("config", JsonObject.class, () -> json1);
+              context.refreshIfActive();
+            });
+          }
           context.registerBean("config", JsonObject.class, () -> json);
           context.refreshIfActive();
         });
@@ -59,8 +87,18 @@ public class MyLauncher {
     return vertx;
   }
 
-  private static ConfigRetriever getConfigRetriever(String[] args) {
+  private static ConfigRetriever getConfigRetriever(String[] args,ConfigStoreOptions...  other) {
     Vertx tempVertx = Vertx.vertx();
+    ConfigRetrieverOptions op = getConfigRetrieverOptions(args);
+    if (ArrayUtil.isNotEmpty(other)) {
+      for (ConfigStoreOptions options : other) {
+        op.addStore(options);
+      }
+    }
+    return ConfigRetriever.create(tempVertx, op);
+  }
+
+  private static ConfigRetrieverOptions getConfigRetrieverOptions(String[] args) {
     JsonObject json = new JsonObject();
     if (args != null && args.length > 0) {
       for (String arg : args) {
@@ -72,7 +110,7 @@ public class MyLauncher {
         }
       }
     }
-    ConfigRetrieverOptions op = new ConfigRetrieverOptions()
+    return new ConfigRetrieverOptions()
         .addStore(new ConfigStoreOptions()
             .setType("file")
             .setFormat("json")
@@ -85,8 +123,6 @@ public class MyLauncher {
                 .setType("json")
                 .setConfig(json)
         );
-
-    return ConfigRetriever.create(tempVertx, op);
   }
 
 
