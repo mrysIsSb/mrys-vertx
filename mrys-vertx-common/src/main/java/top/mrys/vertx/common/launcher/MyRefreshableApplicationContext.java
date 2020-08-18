@@ -1,5 +1,6 @@
 package top.mrys.vertx.common.launcher;
 
+import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.Vertx;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.ListIterator;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -67,6 +69,15 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
   }
 
   public void removeBean(Class aClass) {
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+    if (beanFactory instanceof DefaultListableBeanFactory) {
+      String[] names = beanFactory.getBeanNamesForType(aClass);
+      if (ArrayUtil.isNotEmpty(names)) {
+        for (String name : names) {
+          ((DefaultListableBeanFactory) beanFactory).removeBeanDefinition(name);
+        }
+      }
+    }
     ListIterator<RegisterBean> i = registerBeans.listIterator();
     for (; i.hasNext(); ) {
       RegisterBean next = i.next();

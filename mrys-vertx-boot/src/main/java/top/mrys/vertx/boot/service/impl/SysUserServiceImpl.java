@@ -1,9 +1,7 @@
 package top.mrys.vertx.boot.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;

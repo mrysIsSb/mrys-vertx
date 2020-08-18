@@ -80,7 +80,8 @@ public class MyLauncher {
   }
 
   public static VertxImpl getVertx() {
-    VertxImpl vertx = (VertxImpl) Vertx.vertx(new VertxOptions());
+    VertxOptions options = new VertxOptions();
+    VertxImpl vertx = (VertxImpl) Vertx.vertx(options);
     VertxHolder.setMainVertx(vertx);
     vertxAddCloseHook(vertx);
     addShutdownHook(vertx);

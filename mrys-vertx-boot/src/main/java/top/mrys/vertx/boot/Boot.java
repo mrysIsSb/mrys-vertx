@@ -1,5 +1,6 @@
 package top.mrys.vertx.boot;
 
+import io.vertx.core.Vertx;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
@@ -52,6 +53,8 @@ public class Boot {
     for (String name : run.getBeanDefinitionNames()) {
       System.out.println(name);
     }
+
+
 
   }
 }
