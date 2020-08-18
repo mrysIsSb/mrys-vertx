@@ -8,6 +8,7 @@ import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.mrys.vertx.boot.entity.SysUser;
@@ -20,7 +21,7 @@ import top.mrys.vertx.boot.service.SysUserService;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
-  @Autowired
+  @Autowired(required = false)
   private MySQLPool mySQLPool;
 
   @Override

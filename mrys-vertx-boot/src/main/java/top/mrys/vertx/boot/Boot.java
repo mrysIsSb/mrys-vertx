@@ -41,10 +41,10 @@ import top.mrys.vertx.mysql.starter.EnableMysql;
  * event.response().end("hello"); }).listen(8080); CompositeFuture.all().
  * @date 2020/7/21
  */
-@EnableHttp(port = 8888, scanPackage = "top.mrys.vertx.boot.controller")
 @EnableMysql
-@Slf4j
+@EnableHttp(port = 8888, scanPackage = "top.mrys.vertx.boot.controller")
 @ComponentScan
+@Slf4j
 public class Boot {
 
   public static void main(String[] args) {

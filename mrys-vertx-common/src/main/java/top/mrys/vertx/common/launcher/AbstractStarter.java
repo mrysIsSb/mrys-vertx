@@ -6,8 +6,10 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.utils.TypeUtil;
 
 /**
@@ -29,12 +31,16 @@ public abstract class AbstractStarter<A extends Annotation> implements Starter<A
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
       BeanDefinitionRegistry registry) {
     Class<A> annotationClass = (Class<A>) TypeUtil.getParameterizedType(this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-        .genericBeanDefinition(this.getClass());
     A annotation = importingClassMetadata.getAnnotations().get(annotationClass)
         .synthesize();
+    BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
+        .genericBeanDefinition(this.getClass());
     beanDefinitionBuilder.addPropertyValue("a", annotation);
-    registry.registerBeanDefinition(annotationClass.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
+    registry.registerBeanDefinition(this.getClass().getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
+    postRegisterBeanDefinitions(annotation,registry);
+  }
+
+  protected void postRegisterBeanDefinitions(A annotation,BeanDefinitionRegistry registry){
   }
 
 }

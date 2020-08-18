@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -87,6 +89,18 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
     }
   }
 
+  public <T> void doBeanAndRemoveBean(Consumer<T> consumer, Class<T> tClass) {
+    try {
+      T bean = getBean(tClass);
+      if (bean != null) {
+        consumer.accept(bean);
+        removeBean(tClass);
+      }
+    } catch (BeansException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Prepare this context for refreshing, setting its startup date and active flag as well as
    * performing any initialization of property sources.
@@ -95,8 +109,8 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
   protected void prepareRefresh() {
     if (isActive()) {
       try {
-        Vertx bean = getBean(Vertx.class);
-        bean.close();
+        /*Vertx bean = getBean(Vertx.class);
+        bean.close();*/
       } catch (BeansException e) {
       }
     }
