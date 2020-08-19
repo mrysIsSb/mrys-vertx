@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import top.mrys.vertx.boot.entity.SysUser;
+import top.mrys.vertx.common.exceptions.VertxEmptyException;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.http.starter.EnableHttp;
 import top.mrys.vertx.mysql.starter.EnableMysql;
@@ -53,7 +54,6 @@ public class Boot {
     for (String name : run.getBeanDefinitionNames()) {
       System.out.println(name);
     }
-
 
 
   }

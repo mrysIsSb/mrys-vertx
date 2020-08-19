@@ -38,6 +38,7 @@ public class MyLauncher {
   @SneakyThrows
   public static ApplicationContext run(Class clazz, String[] args) {
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
+    context.addScanPackage("top.mrys.vertx.common");
     context.register(clazz);
     context.registerBean(Vertx.class, MyLauncher::getVertx);
 
