@@ -1,5 +1,6 @@
 package top.mrys.vertx.mysql.starter;
 
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.impl.VertxImpl;
 import io.vertx.mysqlclient.MySQLConnectOptions;
@@ -53,7 +54,8 @@ public class MysqlVerticle extends MyAbstractVerticle {
 
 
   @Override
-  public void stop() throws Exception {
-    applicationContext.doBeanAndRemoveBean(MySQLPool::close,MySQLPool.class);
+  public void stop(Promise<Void> stopPromise) throws Exception {
+    applicationContext.doBeanAndRemoveBean(o -> o.close(stopPromise),MySQLPool.class);
   }
+
 }

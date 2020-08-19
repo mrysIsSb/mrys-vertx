@@ -16,6 +16,7 @@
       <module>mrys-vertx-mysql</module>
       <module>mrys-vertx-mybatis</module>
       <module>mrys-vertx-rabbitmq</module>
+      <module>mrys-vertx-redis</module>
     </modules>
 
     <properties>
