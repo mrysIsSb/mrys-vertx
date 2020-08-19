@@ -7,6 +7,7 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,18 +35,19 @@ public class DefaultRouteFactory implements RouteFactory{
 
   protected Vertx vertx;
   protected List<Class> classes;
-  protected final List<Parser<ControllerMethodWrap, Router>> parsers
-      = Arrays.asList(new SimpleHandlerParser(),
-      new GeneralMethodParser()
-  );
+  protected final List<AbstractHandlerParser> parsers=new ArrayList<>();
   protected final ConcurrentLinkedDeque<Interceptor<RoutingContext,?>> interceptors = new ConcurrentLinkedDeque<>();
 
+  {
+    parsers.add(new SimpleHandlerParser());
+    parsers.add(new GeneralMethodParser());
+  }
   public static DefaultRouteFactory create(Vertx vertx, List<Class> classes) {
     return create(vertx, classes, Collections.emptyList());
   }
 
   public static DefaultRouteFactory create(Vertx vertx, List<Class> classes,
-      List<Parser<ControllerMethodWrap, Router>> parsers) {
+      List<AbstractHandlerParser> parsers) {
     DefaultRouteFactory routeFactory = new DefaultRouteFactory();
     routeFactory.vertx = vertx;
     routeFactory.classes = classes;

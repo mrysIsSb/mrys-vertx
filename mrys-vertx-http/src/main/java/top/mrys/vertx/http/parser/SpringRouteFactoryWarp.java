@@ -1,6 +1,7 @@
 package top.mrys.vertx.http.parser;
 
 import io.vertx.core.Vertx;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class SpringRouteFactoryWarp extends DefaultRouteFactory {
   @Autowired
   private MyRefreshableApplicationContext context;
 
+  @Autowired
+  private List<AbstractHandlerParser> abstractHandlerParsers;
+
   @Override
   protected Object getControllerInstance(Class clazz) {
     try {
@@ -42,6 +46,7 @@ public class SpringRouteFactoryWarp extends DefaultRouteFactory {
         .distinct().collect(
         Collectors.toList());
     interceptors.add(new HttpInterceptor());
+    parsers.addAll(abstractHandlerParsers);
   }
 
 }

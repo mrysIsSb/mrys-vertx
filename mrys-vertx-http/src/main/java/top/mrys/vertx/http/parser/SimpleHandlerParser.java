@@ -14,12 +14,10 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
- *
- *
  * @author mrys
  * @date 2020/7/9
  */
-public class SimpleHandlerParser implements Parser<ControllerMethodWrap, Router> {
+public class SimpleHandlerParser extends AbstractHandlerParser {
 
   /**
    * 是否执行 (返回类型为 handler)
