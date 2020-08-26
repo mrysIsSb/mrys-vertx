@@ -1,6 +1,5 @@
 package top.mrys.vertx.http.parser;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -9,6 +8,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.manager.JsonTransverter;
@@ -44,6 +44,10 @@ public class FutureMethodParser extends AbstractHandlerParser{
         RouteMapping annotation = getRouteMapping(method);
         String value = annotation.value();
         EnumHttpMethod enumHttpMethod = annotation.method();
+        Parameter[] parameters = method.getParameters();
+        for (Parameter parameter : parameters) {
+            //todo
+        }
         Handler<RoutingContext> handler = event -> {
             try {
                 Object o = method.invoke(wrap.getObject());
