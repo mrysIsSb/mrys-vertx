@@ -2,15 +2,12 @@ package top.mrys.vertx.mysql.starter;
 
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxImpl;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
-import io.vertx.sqlclient.SqlClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
 

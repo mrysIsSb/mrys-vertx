@@ -1,11 +1,9 @@
 package top.mrys.vertx.common.config;
 
-import cn.hutool.core.util.ClassLoaderUtil;
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.config.spi.ConfigStoreFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import java.util.ServiceLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

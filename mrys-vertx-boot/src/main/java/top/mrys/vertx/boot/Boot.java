@@ -50,11 +50,6 @@ public class Boot {
 
   public static void main(String[] args) {
     System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
-    ApplicationContext run = MyLauncher.run(Boot.class, args);
-    for (String name : run.getBeanDefinitionNames()) {
-      System.out.println(name);
-    }
-
-
+    MyLauncher.run(Boot.class, args);
   }
 }

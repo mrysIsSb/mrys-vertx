@@ -49,6 +49,7 @@ public class DemoController {
   @RouteHeader(name = "headerName", value = "value123123")
   @RouteHeader(name = "headerName", value = "value123123")
   @RouteMapping(value = "/test2", method = EnumHttpMethod.GET)
+  //不推荐
   public Map test2() {
     Map map = new HashMap<>();
     return map;
