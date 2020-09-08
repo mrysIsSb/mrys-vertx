@@ -1,10 +1,17 @@
 package top.mrys.vertx.eventbus;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -61,15 +68,34 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
 
           Map<String, Object> attributes = annotationMetadata
               .getAnnotationAttributes(MicroClient.class.getCanonicalName());
-
-          String name = getClientName(attributes);
-          registerClientConfiguration(registry, name,
-              attributes.get("configuration"));
-
-          registerFeignClient(registry, annotationMetadata, attributes);
+          registerMicroClient(registry, annotationMetadata, attributes);
         }
       }
     }
+  }
+
+  private void registerMicroClient(BeanDefinitionRegistry registry,
+      AnnotationMetadata annotationMetadata, Map<String, Object> attributes) {
+    String className = annotationMetadata.getClassName();
+    BeanDefinitionBuilder definition = BeanDefinitionBuilder
+        .genericBeanDefinition(MicroClientFactoryBean.class);
+    definition.addPropertyValue("type", className);
+    definition.addPropertyValue("handler", new InvocationHandler() {
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return null;
+      }
+    });
+    definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+
+    String alias = "FeignClient";
+    AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
+
+
+
+    beanDefinition.setPrimary(true);
+
+    registry.registerBeanDefinition(className,beanDefinition);
   }
 
   protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {

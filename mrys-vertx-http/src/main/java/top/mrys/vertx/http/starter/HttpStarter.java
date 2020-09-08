@@ -45,13 +45,6 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
       log.error("vertx 不能为空null");
       return;
     }
-/*    String[] packages = enableHttp.scanPackage();
-    Assert.notEmpty(packages, "包不能为空");
-    ArrayList<Class> classes = new ArrayList<>();
-    for (String s : packages) {
-      Class[] classFromPackage = ScanPackageUtil.getClassFromPackage(s);
-      classes.addAll(Arrays.asList(classFromPackage));
-    }*/
     RouteFactory factory = context.getBean(RouteFactory.class);
     Router router = factory.get();
     vertx.createHttpServer().requestHandler(router)

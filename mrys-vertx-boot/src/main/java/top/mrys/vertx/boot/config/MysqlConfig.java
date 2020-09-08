@@ -8,7 +8,7 @@ import top.mrys.vertx.mysql.annotations.MapperScan;
  * @date 2020/8/5
  */
 @Configuration
-@MapperScan(value = "top.mrys.vertx.boot.dao.mysql")
+@MapperScan(value = "top.mrys.vertx.top.mrys.vertx.boot.dao.mysql")
 public class MysqlConfig {
 
 }
