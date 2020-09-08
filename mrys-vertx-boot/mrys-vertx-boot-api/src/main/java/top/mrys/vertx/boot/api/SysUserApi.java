@@ -3,6 +3,7 @@ package top.mrys.vertx.boot.api;
 import io.vertx.core.Future;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.eventbus.MicroClient;
+import top.mrys.vertx.http.annotations.RouteHeader;
 
 /**
  * @author mrys
@@ -11,5 +12,5 @@ import top.mrys.vertx.eventbus.MicroClient;
 @MicroClient()
 public interface SysUserApi {
 
-  Future<SysUser> getById(Integer id);
+  Future<SysUser> getById(@RouteHeader Integer id);
 }

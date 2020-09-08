@@ -23,8 +23,31 @@
 
 
   <dependencies>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-event-bus</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
 
-
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-mysql</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-redis</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>

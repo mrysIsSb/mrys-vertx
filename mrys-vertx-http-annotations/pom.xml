@@ -9,21 +9,23 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>mrys-vertx-event-bus</artifactId>
+  <artifactId>mrys-vertx-http-annotations</artifactId>
+
+
   <dependencies>
     <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
+      <artifactId>vertx-web</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-http-annotations</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
       <optional>true</optional>
     </dependency>
   </dependencies>
-
 </project>

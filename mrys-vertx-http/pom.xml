@@ -20,6 +20,11 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>top.mrys</groupId>
+            <artifactId>mrys-vertx-http-annotations</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 
