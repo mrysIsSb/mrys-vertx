@@ -34,6 +34,7 @@ public class DemoController {
   public Handler<RoutingContext> test1() {
     return event -> {
       String id = event.request().getParam("id");
+      System.out.println(sysUserApi.test());
       sysUserApi.getById(Convert.toInt(id))
           .onSuccess(sysUser -> event.response().end(JsonObject.mapFrom(sysUser).toString()))
           .onFailure(event::fail);

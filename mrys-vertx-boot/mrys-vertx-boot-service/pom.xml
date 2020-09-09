@@ -17,5 +17,9 @@
       <artifactId>mrys-vertx-boot-api</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-mysql</artifactId>
+    </dependency>
   </dependencies>
 </project>

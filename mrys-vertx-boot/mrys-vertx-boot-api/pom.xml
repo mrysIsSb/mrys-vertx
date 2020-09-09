@@ -16,5 +16,9 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-event-bus</artifactId>
     </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http-annotations</artifactId>
+    </dependency>
   </dependencies>
 </project>

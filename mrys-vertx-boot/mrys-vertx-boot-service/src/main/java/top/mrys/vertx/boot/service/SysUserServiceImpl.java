@@ -19,7 +19,6 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  * @date 2020/9/8
  */
 @RouteHandler
-@RouteMapping("/sysUser")
 public class SysUserServiceImpl implements SysUserApi {
 
   @Autowired(required = false)

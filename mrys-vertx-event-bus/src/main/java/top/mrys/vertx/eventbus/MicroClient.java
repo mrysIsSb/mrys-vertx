@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MicroClient {
 
-
+  Class<? extends MicroClientFactoryBean> factoryBeanClass() default JdkHttpMicroClientFactoryBean.class;
 }

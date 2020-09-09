@@ -2,53 +2,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
+<!--  <parent>
     <artifactId>mrys-vertx</artifactId>
     <groupId>top.mrys</groupId>
     <version>1.0</version>
-  </parent>
+  </parent>-->
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>top.mrys</groupId>
+  <artifactId>mrys-vertx-boot</artifactId>
+  <version>1.0</version>
   <packaging>pom</packaging>
+
   <modules>
     <module>mrys-vertx-boot-controller</module>
     <module>mrys-vertx-boot-service</module>
     <module>mrys-vertx-boot-api</module>
   </modules>
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>mrys-vertx-boot</artifactId>
 
   <properties>
     <jar-outputFile>${build.directory}/${project.artifactId}-fat.jar</jar-outputFile>
   </properties>
-
-
-  <dependencies>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-event-bus</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-http</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-mysql</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-redis</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -59,10 +33,14 @@
       </dependency>
       <dependency>
         <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http-annotations</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-http</artifactId>
         <version>1.0</version>
       </dependency>
-
       <dependency>
         <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-mysql</artifactId>
@@ -75,7 +53,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <build>
+  <!--<build>
     <finalName>${project.artifactId}</finalName>
 
     <plugins>
@@ -115,5 +93,5 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
+  </build>-->
 </project>

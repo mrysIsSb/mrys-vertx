@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -77,15 +78,10 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
   private void registerMicroClient(BeanDefinitionRegistry registry,
       AnnotationMetadata annotationMetadata, Map<String, Object> attributes) {
     String className = annotationMetadata.getClassName();
+    Class factoryBeanClass = (Class) attributes.get("factoryBeanClass");
     BeanDefinitionBuilder definition = BeanDefinitionBuilder
-        .genericBeanDefinition(MicroClientFactoryBean.class);
+        .genericBeanDefinition(factoryBeanClass);
     definition.addPropertyValue("type", className);
-    definition.addPropertyValue("handler", new InvocationHandler() {
-      @Override
-      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
-      }
-    });
     definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 
     String alias = "FeignClient";
