@@ -1,5 +1,6 @@
 package top.mrys.vertx.eventbus;
 
+import io.vertx.core.Vertx;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;

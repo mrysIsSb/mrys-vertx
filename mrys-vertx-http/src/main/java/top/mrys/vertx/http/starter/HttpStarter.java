@@ -47,6 +47,7 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
     }
     RouteFactory factory = context.getBean(RouteFactory.class);
     Router router = factory.get();
+    log.info("deid{}",vertx.deploymentIDs());
     vertx.createHttpServer().requestHandler(router)
         .listen(port)
         .onSuccess(event -> log.info("http start :{}", event.actualPort()))

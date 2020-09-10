@@ -1,24 +1,17 @@
 package top.mrys.vertx.eventbus;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
@@ -84,14 +77,11 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
     definition.addPropertyValue("type", className);
     definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 
-    String alias = "FeignClient";
     AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
-
-
 
     beanDefinition.setPrimary(true);
 
-    registry.registerBeanDefinition(className,beanDefinition);
+    registry.registerBeanDefinition(className, beanDefinition);
   }
 
   protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {

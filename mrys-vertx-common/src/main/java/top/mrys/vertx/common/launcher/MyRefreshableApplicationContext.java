@@ -126,12 +126,12 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
     if (isActive()) {
       try {
         if (hasBeanFactory()) {
-          Vertx bean = getBean(Vertx.class);
+          /*Vertx bean = getBean(Vertx.class);
           bean.close(event -> {
             if (event.succeeded()) {
               refresh();
             }
-          });
+          });*/
         }
       } catch (BeansException e) {
         log.error(e.getMessage(),e);
