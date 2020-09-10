@@ -30,6 +30,8 @@ public class DemoController {
   @Autowired
   private VertxManager vertxManager;
 
+  private int i;
+
   @RouteMapping(value = "/test1", method = EnumHttpMethod.GET)
   public Handler<RoutingContext> test1() {
     return event -> {
@@ -49,12 +51,11 @@ public class DemoController {
     Map map = new HashMap<>();
     return map;
   }*/
-/*
   @RouteMapping(value = "/test3", method = EnumHttpMethod.GET)
-  public Future<DeploymentData> test3() {
-    Promise<DeploymentData> promise = Promise.promise();
-    promise.complete(new DeploymentData().setDeployId("123234324"));
+  public Future<Integer> test3() {
+    Promise<Integer> promise = Promise.promise();
+    promise.complete(++i);
     return promise.future();
-  }*/
+  }
 
 }

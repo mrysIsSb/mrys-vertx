@@ -1,6 +1,11 @@
 package top.mrys.vertx.http.starter;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +52,24 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
     }
     RouteFactory factory = context.getBean(RouteFactory.class);
     Router router = factory.get();
-    log.info("deid{}",vertx.deploymentIDs());
+    Future<String> future = vertx
+        .deployVerticle(() -> new httpV(port,router), new DeploymentOptions().setInstances(10));
+    future.onSuccess(event -> log.info("deid{}", vertx.deploymentIDs()));
+  }
+}
+@Slf4j
+class httpV extends AbstractVerticle {
+  private int port;
+  private Handler router;
+
+  public httpV(int port, Handler router) {
+    this.port = port;
+    this.router = router;
+  }
+
+  @Override
+  public void start() throws Exception {
+    log.info("deid---{}",vertx.deploymentIDs());
     vertx.createHttpServer().requestHandler(router)
         .listen(port)
         .onSuccess(event -> log.info("http start :{}", event.actualPort()))

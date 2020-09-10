@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import top.mrys.vertx.common.config.ConfigCentreStoreFactory;
 import top.mrys.vertx.common.utils.MyJsonUtil;
@@ -37,11 +38,15 @@ public class MyLauncher extends AbstractVerticle {
 
   private final static String CONF_PREFIX = "-conf";
 
+  @Deprecated
   public static MyRefreshableApplicationContext context;
 
   private MyRefreshableApplicationContext applicationContext;
   private String[] args;
   private Class mainClass;
+
+
+  private Resource resource;
 
 
   @Override
@@ -82,7 +87,7 @@ public class MyLauncher extends AbstractVerticle {
         });
     log.info("------------------------------------started------------------------------------");
   }
-
+//---------------------------------
   public static void run(Class mainClass, String[] args, Handler<AsyncResult<ApplicationContext>> handler) {
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
     context.addScanPackage("top.mrys.vertx.common");
@@ -94,8 +99,6 @@ public class MyLauncher extends AbstractVerticle {
     verticle.setMainClass(mainClass);
     vertx.deployVerticle(verticle, event -> {
       if (event.succeeded()) {
-        String result = event.result();
-        System.out.println(result);
         context.registerShutdownHook();
         context.refresh();
         MyLauncher.context = context;
@@ -171,7 +174,7 @@ public class MyLauncher extends AbstractVerticle {
 
     /*return context;*/
   }
-
+//--------------------------------------------
   public static VertxImpl getVertxInstance() {
     VertxOptions options = new VertxOptions();
     VertxImpl vertx = (VertxImpl) Vertx.vertx(options);
