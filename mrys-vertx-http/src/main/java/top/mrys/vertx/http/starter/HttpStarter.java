@@ -4,9 +4,12 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.Router;
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,6 +24,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import sun.instrument.InstrumentationImpl;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
 import top.mrys.vertx.common.launcher.Starter;
@@ -54,25 +58,26 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
     Router router = factory.get();
     Future<String> future = vertx
         .deployVerticle(() -> new httpV(port,router), new DeploymentOptions().setInstances(10));
-    future.onSuccess(event -> log.info("deid{}", vertx.deploymentIDs()));
+    future.onSuccess(event -> log.info("http server start port:{}",port));
+  }
+  @Slf4j
+  static class httpV extends AbstractVerticle {
+    private int port;
+    private Handler<HttpServerRequest> router;
+
+    public httpV(int port, Handler router) {
+      this.port = port;
+      this.router = router;
+    }
+
+
+    @Override
+    public void start(Promise<Void> startPromise) throws Exception {
+      vertx.createHttpServer().requestHandler(router)
+          .listen(port)
+          .onSuccess(event -> startPromise.complete())
+          .onFailure(startPromise::fail);
+    }
   }
 }
-@Slf4j
-class httpV extends AbstractVerticle {
-  private int port;
-  private Handler router;
 
-  public httpV(int port, Handler router) {
-    this.port = port;
-    this.router = router;
-  }
-
-  @Override
-  public void start() throws Exception {
-    log.info("deid---{}",vertx.deploymentIDs());
-    vertx.createHttpServer().requestHandler(router)
-        .listen(port)
-        .onSuccess(event -> log.info("http start :{}", event.actualPort()))
-        .onFailure(event -> log.error(event.getMessage(), event));
-  }
-}

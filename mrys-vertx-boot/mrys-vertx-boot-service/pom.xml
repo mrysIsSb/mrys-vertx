@@ -21,5 +21,9 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-mysql</artifactId>
     </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http</artifactId>
+    </dependency>
   </dependencies>
 </project>

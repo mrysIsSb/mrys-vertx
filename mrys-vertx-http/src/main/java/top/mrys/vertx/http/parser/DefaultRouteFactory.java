@@ -1,9 +1,11 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.http.HttpStatus;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
@@ -20,6 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.common.utils.Interceptor;
 import top.mrys.vertx.http.annotations.RouteHandler;
@@ -31,17 +35,18 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
-public class DefaultRouteFactory implements RouteFactory{
+public class DefaultRouteFactory implements RouteFactory {
 
   protected Vertx vertx;
   protected List<Class> classes;
-  protected final List<AbstractHandlerParser> parsers=new ArrayList<>();
-  protected final ConcurrentLinkedDeque<Interceptor<RoutingContext,?>> interceptors = new ConcurrentLinkedDeque<>();
+  protected final List<AbstractHandlerParser> parsers = new ArrayList<>();
+  protected final ConcurrentLinkedDeque<Interceptor<RoutingContext, ?>> interceptors = new ConcurrentLinkedDeque<>();
 
   {
     parsers.add(new SimpleHandlerParser());
     parsers.add(new GeneralMethodParser());
   }
+
   public static DefaultRouteFactory create(Vertx vertx, List<Class> classes) {
     return create(vertx, classes, Collections.emptyList());
   }
@@ -58,14 +63,13 @@ public class DefaultRouteFactory implements RouteFactory{
   }
 
 
-
   @SneakyThrows
   @Override
   public Router get() {
     Router router = Router.router(vertx);
     router.route().failureHandler(event -> {
       Throwable failure = event.failure();
-      log.error(failure.getMessage(),failure);
+      log.error(failure.getMessage(), failure);
       event.response()
           .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8")
           .end("错误");
@@ -73,12 +77,13 @@ public class DefaultRouteFactory implements RouteFactory{
     if (CollectionUtil.isNotEmpty(interceptors)) {
       router.route().handler(event -> {
         Iterator<Interceptor<RoutingContext, ?>> iterator = interceptors.iterator();
-        for (; iterator.hasNext() ; ) {
+        for (; iterator.hasNext(); ) {
           if (!iterator.next().preHandler(event)) {
             if (event.response().ended()) {
               return;
             }
-            event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON+";charset=utf-8").end("拒绝访问");
+            event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE,
+                HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8").end("拒绝访问");
             return;
           }
         }
@@ -89,17 +94,21 @@ public class DefaultRouteFactory implements RouteFactory{
       });
     }
     router.route().handler(event -> {
-      log.info("if{}",event.isFresh());
+      log.info("if{}", event.isFresh());
       if (!event.response().isChunked()) {
         event.response().setChunked(true);
       }
       event.response()
-          .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
+          .setStatusCode(HttpStatus.HTTP_INTERNAL_ERROR)
+          .putHeader(HttpHeaders.CONTENT_TYPE,
+              HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
       event.next();
     });
     for (Class clazz : getRouteHandlerClass()) {
       if (AnnotationUtil.isHaveAnyAnnotations(clazz, RouteHandler.class)) {
-        RouteMapping mapping = (RouteMapping) clazz.getAnnotation(RouteMapping.class);
+//        RouteMapping mapping = (RouteMapping) clazz.getAnnotation(RouteMapping.class);
+        RouteMapping mapping = AnnotatedElementUtils
+            .findMergedAnnotation(clazz, RouteMapping.class);
         Router sonRouter;
         if (Objects.nonNull(mapping)) {
           sonRouter = Router.router(vertx);
@@ -125,6 +134,8 @@ public class DefaultRouteFactory implements RouteFactory{
           p.accept(wrap, sonRouter);
         }
         if (Objects.nonNull(mapping)) {
+          List<Route> routes = sonRouter.getRoutes();
+          routes.forEach(route -> log.debug(route.getPath()));
           router.mountSubRouter(mapping.value(), sonRouter);
         }
       }

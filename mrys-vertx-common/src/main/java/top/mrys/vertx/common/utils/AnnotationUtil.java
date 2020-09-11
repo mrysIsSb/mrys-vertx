@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 /**
  * @author mrys
@@ -14,7 +15,8 @@ public class AnnotationUtil {
     public static <A  extends Annotation> Method[] getMethodByAnnotation(Class clazz, Class<A> aClass) {
         Method[] methods = clazz.getMethods();
         return Arrays.stream(methods)
-                .filter(method -> isHaveAnyAnnotations(method.getAnnotations(),aClass))
+                .filter(method -> !Object.class.equals(method.getDeclaringClass()))
+                .filter(method -> isHaveAnyAnnotations(method,aClass))
                 .toArray(Method[]::new);
     }
 
@@ -23,8 +25,14 @@ public class AnnotationUtil {
      * @author mrys
      */
     public static <A  extends Annotation> Boolean isHaveAnyAnnotations(AnnotatedElement annotatedElement, Class<A>... annotationClass) {
-        Annotation[] annotations = annotatedElement.getAnnotations();
-        return isHaveAnyAnnotations(annotations, annotationClass);
+        for (Class<A> aClass : annotationClass) {
+            if (AnnotatedElementUtils.hasAnnotation(annotatedElement, aClass)) {
+                return true;
+            }
+        }
+        return false;
+        /*Annotation[] annotations = annotatedElement.getAnnotations();
+        return isHaveAnyAnnotations(annotations, annotationClass);*/
     }
 
     public static <A  extends Annotation> Boolean isHaveAnyAnnotations(Annotation[] as, Class<A>... annotationClass) {

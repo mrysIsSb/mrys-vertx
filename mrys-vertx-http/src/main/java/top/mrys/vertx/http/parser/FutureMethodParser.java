@@ -1,5 +1,7 @@
 package top.mrys.vertx.http.parser;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -9,6 +11,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.manager.JsonTransverter;
@@ -50,13 +53,24 @@ public class FutureMethodParser extends AbstractHandlerParser{
         }
         Handler<RoutingContext> handler = event -> {
             try {
-                Object o = method.invoke(wrap.getObject());
+                //todo 优化
+                Parameter[] methodParameters = method.getParameters();
+                Object[] p = new Object[methodParameters.length];
+                if (ArrayUtil.isNotEmpty(methodParameters)) {
+                    for (int i = 0; i < methodParameters.length; i++) {
+                        String name = methodParameters[i].getName();
+                        String param = event.request().getParam(name);
+                        p[i]= Convert.convert(methodParameters[i].getType(),param);
+                    }
+                }
+                Object o = method.invoke(wrap.getObject(),p);
                 Future future = o instanceof Future ? ((Future) o) : null;
                 HttpServerResponse response = event.response();
                 response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
                 future.onComplete(re -> response.end(jsonTransverter.serialize(((AsyncResult)re).result())));
             } catch (Exception e) {
                 e.printStackTrace();
+                event.fail(e);
             }
         };
         router.route(enumHttpMethod.getHttpMethod(),value).blockingHandler(handler);
