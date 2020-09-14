@@ -1,5 +1,6 @@
 package top.mrys.vertx.common.launcher;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.config.ConfigRetriever;
@@ -16,6 +17,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.Data;
@@ -49,42 +51,40 @@ public class MyLauncher extends AbstractVerticle {
 
   private Resource resource;
 
+  private ConfigRepo configRepo;
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     log.info("------------------------------------starting------------------------------------");
     applicationContext.register(mainClass);
-    ConfigRepo configRepo = new ConfigRepo();
+    configRepo = new ConfigRepo();
     applicationContext.registerBean("configRepo",ConfigRepo.class,() -> configRepo);
     ConfigRetriever retriever = getConfigRetriever(args);
-    retriever.getConfig()
-        .onSuccess(json -> {
-          configRepo.mergeToData(json);
-          String active = configRepo.getProfilesActive();
-          JsonObject configCentre = json.getJsonObject("configCentre");
-          if (StringUtils.hasText(active)) {
-            ConfigRetriever retriever1 = getConfigRetriever(args, new ConfigStoreOptions()
-                .setType(ConfigCentreStoreFactory.configCentre)
-                .setConfig(new JsonObject().put("active", active)
-                    .mergeIn(configCentre)
-                ));
-            retriever1.getConfig()
-                .onSuccess(json1 -> {
-                  System.out.println(json1.toString());
-                  applicationContext.registerBean("config", JsonObject.class, () -> json1);
-//                  applicationContext.refreshIfActive();
-                });
-            retriever1.listen(event -> {
-              JsonObject json1 = event.getNewConfiguration();
-              System.out.println(json1.toString());
-              applicationContext.registerBean("config", JsonObject.class, () -> json1);
-//              applicationContext.refreshIfActive();
-            });
-          }
-          applicationContext.registerBean("config", JsonObject.class, () -> json);
-        });
+    retriever.getConfig().onSuccess(this::updateConfig);
     log.info("------------------------------------started------------------------------------");
   }
+
+  private void updateConfig(JsonObject json) {
+    configRepo.mergeToData(json);
+    String active = configRepo.getProfilesActive();
+    List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
+    if (CollectionUtil.isNotEmpty(centres)) {
+      ConfigStoreOptions[] options = centres.stream()
+          .map(jsonObject -> new ConfigStoreOptions()
+              .setType(ConfigCentreStoreFactory.configCentre)
+              .setConfig(new JsonObject().put("active", active)
+                  .mergeIn(jsonObject))
+          ).toArray(ConfigStoreOptions[]::new);
+      ConfigRetriever retriever1 = getConfigRetriever(args, options);
+      retriever1.getConfig()
+          .onSuccess(configRepo::mergeToData);
+      retriever1.listen(event -> {
+        JsonObject json1 = event.getNewConfiguration();
+        configRepo.mergeToData(json1);
+      });
+    }
+  }
+
   private static ConfigRetriever getConfigRetriever(String[] args, ConfigStoreOptions... other) {
     Vertx tempVertx = Vertx.vertx();
     ConfigRetrieverOptions op = getConfigRetrieverOptions(args);

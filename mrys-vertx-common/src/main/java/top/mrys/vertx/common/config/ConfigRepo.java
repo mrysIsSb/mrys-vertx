@@ -31,20 +31,38 @@ public class ConfigRepo {
 
   public <T> T getForClass(Class<T> clazz) {
     String simpleName = clazz.getSimpleName();
+    return getForKey(simpleName, clazz);
+  }
+
+  public <T> T getForKey(String key, Class<T> clazz) {
     if (data.isEmpty()) {
       return null;
     }
-    JsonObject jsonObject = data.getJsonObject(simpleName);
-    return jsonObject.mapTo(clazz);
+    JsonObject jsonObject = data.getJsonObject(key);
+    if (clazz.isAssignableFrom(JsonObject.class)) {
+      return (T) jsonObject;
+    } else {
+      return jsonObject.mapTo(clazz);
+    }
   }
 
   public <T> List<T> getArrForClass(Class<T> clazz) {
     String simpleName = clazz.getSimpleName();
+    return getArrForKey(simpleName, clazz);
+  }
+
+  public <T> List<T> getArrForKey(String key, Class<T> clazz) {
     if (data.isEmpty()) {
       return null;
     }
-    JsonArray jsonArray = data.getJsonArray(simpleName);
-    return jsonArray.stream().map(o -> (JsonObject) o).map(o -> o.mapTo(clazz))
+    JsonArray jsonArray = data.getJsonArray(key);
+    return jsonArray.stream().map(o -> (JsonObject) o).map(o -> {
+      if (clazz.isAssignableFrom(JsonObject.class)) {
+        return (T) o;
+      } else {
+        return o.mapTo(clazz);
+      }
+    })
         .collect(Collectors.toList());
   }
 }
