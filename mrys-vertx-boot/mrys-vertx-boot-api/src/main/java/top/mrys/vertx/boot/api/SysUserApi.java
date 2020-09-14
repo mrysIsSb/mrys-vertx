@@ -10,7 +10,7 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @author mrys
  * @date 2020/9/8
  */
-@MicroClient
+@MicroClient()
 @RouteMapping("/sysUser")
 public interface SysUserApi {
 

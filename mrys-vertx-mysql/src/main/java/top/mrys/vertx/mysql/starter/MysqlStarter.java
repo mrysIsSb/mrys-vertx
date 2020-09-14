@@ -24,12 +24,9 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
   @Autowired
   private VertxImpl vertx;
 
-  @Autowired
-  private MysqlVerticle mysqlVerticle;
-
   @Override
   public void start(EnableMysql enableMysql) {
-    vertx.deployVerticle(mysqlVerticle,mysqlVerticle.getDeploymentOptions());
+    vertx.deployVerticle(new MysqlVerticle());
   }
 
   @Override

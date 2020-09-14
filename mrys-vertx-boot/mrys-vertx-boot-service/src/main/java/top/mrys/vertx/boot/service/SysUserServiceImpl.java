@@ -21,7 +21,7 @@ import top.mrys.vertx.http.annotations.RouteMapping;
 @RouteHandler
 public class SysUserServiceImpl implements SysUserApi {
 
-  @Autowired(required = false)
+  @Autowired
   private MySQLPool mySQLPool;
 
   @Override

@@ -8,11 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.eventbus.EnableMicroClient;
 import top.mrys.vertx.http.starter.EnableHttp;
+import top.mrys.vertx.mysql.starter.EnableMysql;
 
 /**
  * @author mrys
  * @date 2020/9/8
  */
+@EnableMysql
 @EnableHttp(port = 8801, scanPackage = "top.mrys.vertx.boot.service")
 @EnableMicroClient("top.mrys.vertx.boot.api")
 @ComponentScan
