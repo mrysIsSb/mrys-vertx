@@ -5,6 +5,7 @@ import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.eventbus.EnableMicroClient;
 import top.mrys.vertx.http.starter.EnableHttp;
@@ -25,6 +26,8 @@ public class WebBoot {
     run.onSuccess(event -> {
       String[] names = event.getBeanDefinitionNames();
       Arrays.stream(names).forEach(log::info);
+      ConfigRepo bean = event.getBean(ConfigRepo.class);
+      log.info("{}",bean);
     });
   }
 }

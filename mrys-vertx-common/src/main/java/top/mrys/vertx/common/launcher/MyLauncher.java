@@ -15,6 +15,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.util.List;
@@ -60,11 +61,11 @@ public class MyLauncher extends AbstractVerticle {
     configRepo = new ConfigRepo();
     applicationContext.registerBean("configRepo",ConfigRepo.class,() -> configRepo);
     ConfigRetriever retriever = getConfigRetriever(args);
-    retriever.getConfig().onSuccess(this::updateConfig);
+    retriever.getConfig().onSuccess(json -> updateConfig(json,startPromise));
     log.info("------------------------------------started------------------------------------");
   }
 
-  private void updateConfig(JsonObject json) {
+  private void updateConfig(JsonObject json,Promise<Void> promise) {
     configRepo.mergeToData(json);
     String active = configRepo.getProfilesActive();
     List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
@@ -77,7 +78,11 @@ public class MyLauncher extends AbstractVerticle {
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(args, options);
       retriever1.getConfig()
-          .onSuccess(configRepo::mergeToData);
+          .onSuccess(configRepo::mergeToData)
+          .map(o -> (Void)null)
+          .onComplete(promise);
+
+
       retriever1.listen(event -> {
         JsonObject json1 = event.getNewConfiguration();
         configRepo.mergeToData(json1);
@@ -154,7 +159,7 @@ public class MyLauncher extends AbstractVerticle {
   }
   //---------------------------------
 
-  public static void run(Class mainClass, String[] args, Handler<AsyncResult<ApplicationContext>> handler) {
+  public static void run(Class mainClass, String[] args, Promise<ApplicationContext> handler) {
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
     context.addScanPackage("top.mrys.vertx.common");
     VertxImpl vertx = getVertxInstance();
