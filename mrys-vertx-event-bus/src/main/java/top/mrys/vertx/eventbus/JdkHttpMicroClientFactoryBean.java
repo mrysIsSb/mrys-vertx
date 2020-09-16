@@ -1,6 +1,8 @@
 package top.mrys.vertx.eventbus;
 
 import cn.hutool.http.HttpStatus;
+import com.sun.org.apache.bcel.internal.generic.IfInstruction;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -8,6 +10,7 @@ import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
@@ -15,9 +18,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.common.utils.MyJsonUtil;
 import top.mrys.vertx.http.annotations.RouteMapping;
 
 /**
@@ -26,6 +33,9 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  */
 @Slf4j
 public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> {
+
+  @Autowired
+  private Vertx vertx;
 
   @Override
   public T getObject() throws Exception {
@@ -48,7 +58,7 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
         Promise promise = Promise.promise();
         String requestURI = parent + routeMapping.value();
         Parameter[] parameters = method.getParameters();
-        HttpRequest<Buffer> request = WebClient.create(Vertx.vertx())
+        HttpRequest<Buffer> request = WebClient.create(vertx)
             .request(routeMapping.method().getHttpMethod(),
                 SocketAddress.inetSocketAddress(8801, "localhost"),
                 requestURI);
@@ -63,8 +73,15 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
               if (event.succeeded()) {
                 HttpResponse<Buffer> result = event.result();
                 if (result.statusCode()== HttpStatus.HTTP_OK) {
-                  Class<?> returnType = method.getReturnType();
-                  promise.complete(result.bodyAsJson(returnType));
+                  Type returnType = method.getReturnType();
+                  if (returnType.equals(Future.class)) {
+                    Type[] actualTypeArguments = ((ParameterizedType) method.getGenericReturnType())
+                        .getActualTypeArguments();
+                    if (actualTypeArguments.length == 1) {
+                      returnType = actualTypeArguments[0];
+                    }
+                  }
+                  promise.complete(MyJsonUtil.mapTo(result.bodyAsString(),returnType));
                 }else {
                   promise.fail(result.bodyAsString());
                 }

@@ -21,21 +21,14 @@ public class MysqlVerticle extends MyAbstractVerticle {
   private MyRefreshableApplicationContext applicationContext;
 
 
-
-  @Override
-  public void start(Promise<Void> startPromise) throws Exception {
-    super.start(startPromise);
-  }
-
   @Override
   public void start() throws Exception {
     log.info("mysql 服务启动中。。。");
-    MySQLPool pool = mySQLPool(vertx);
-    applicationContext.registerBean(MySQLPool.class,() -> pool);
-    applicationContext.refreshIfActive();
+   /* MySQLPool pool = mySQLPool(vertx);
+    applicationContext.registerBean(MySQLPool.class,() -> pool);*/
   }
 
-  private MySQLPool mySQLPool(Vertx vertx) {
+/*  private MySQLPool mySQLPool(Vertx vertx) {
     MySQLConnectOptions connectOptions = new MySQLConnectOptions()
         .setCachePreparedStatements(true)
         .setPort(3306)
@@ -46,7 +39,7 @@ public class MysqlVerticle extends MyAbstractVerticle {
     PoolOptions poolOptions = new PoolOptions()
         .setMaxSize(5);
     return MySQLPool.pool(vertx,connectOptions, poolOptions);
-  }
+  }*/
 
 
   @Override

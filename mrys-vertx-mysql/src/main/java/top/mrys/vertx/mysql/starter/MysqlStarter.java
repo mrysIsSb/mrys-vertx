@@ -4,6 +4,7 @@ import io.vertx.core.impl.VertxImpl;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -26,17 +27,21 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
 
   @Override
   public void start(EnableMysql enableMysql) {
-    vertx.deployVerticle(new MysqlVerticle());
+    //todo 改为回调方式
+//    vertx.deployVerticle(new MysqlVerticle());
   }
 
+
+  /**  BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
+        .genericBeanDefinition(MysqlVerticle.class);
+    registry.registerBeanDefinition(MysqlVerticle.class.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());*/
   @Override
   protected void postRegisterBeanDefinitions(EnableMysql annotation,
       BeanDefinitionRegistry registry) {
     ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);
     scanner.scan(getClass().getPackage().getName());
-  /*  BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-        .genericBeanDefinition(MysqlVerticle.class);
-    registry.registerBeanDefinition(MysqlVerticle.class.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());*/
-    super.postRegisterBeanDefinitions(annotation, registry);
+    BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
+        .genericBeanDefinition(MysqlSession.class);
+    registry.registerBeanDefinition(MysqlSession.class.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
   }
 }

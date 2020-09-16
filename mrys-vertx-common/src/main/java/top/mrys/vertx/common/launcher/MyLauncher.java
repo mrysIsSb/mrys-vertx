@@ -171,12 +171,14 @@ public class MyLauncher extends AbstractVerticle {
     vertx.deployVerticle(verticle, event -> {
       if (event.succeeded()) {
         context.registerShutdownHook();
+        log.info("refresh");
         context.refresh();
+        log.info("refreshed");
         MyLauncher.context = context;
-        handler.handle(Future.succeededFuture(context));
+        handler.complete(context);
       } else {
         log.error("启动失败", event.cause());
-        handler.handle(Future.failedFuture(event.cause()));
+        handler.fail(event.cause());
       }
     });
   }

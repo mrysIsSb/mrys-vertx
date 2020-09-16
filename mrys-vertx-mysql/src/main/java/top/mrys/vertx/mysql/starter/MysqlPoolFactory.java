@@ -11,13 +11,11 @@ import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlConnection;
 import lombok.Setter;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.stereotype.Component;
 
 /**
  * @author mrys
  * @date 2020/9/12
  */
-@Component
 public class MysqlPoolFactory implements FactoryBean<MySQLPool> {
 
   @Setter

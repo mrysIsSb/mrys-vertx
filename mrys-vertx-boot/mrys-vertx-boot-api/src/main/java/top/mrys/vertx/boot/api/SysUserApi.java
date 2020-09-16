@@ -1,6 +1,7 @@
 package top.mrys.vertx.boot.api;
 
 import io.vertx.core.Future;
+import java.util.List;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.eventbus.MicroClient;
 import top.mrys.vertx.http.annotations.RouteMapping;
@@ -14,7 +15,7 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
 @RouteMapping("/sysUser")
 public interface SysUserApi {
 
-  @RouteMapping(value = "/getById",method = EnumHttpMethod.GET)
+  @RouteMapping(value = "/getById", method = EnumHttpMethod.GET)
   Future<SysUser> getById(Integer id);
 
 /*  @RouteMapping(method = EnumHttpMethod.GET,value = "/robots.txt")
@@ -26,4 +27,10 @@ public interface SysUserApi {
   default String test() {
     return "yijie";
   }
+
+  @RouteMapping(value = "/getAll", method = EnumHttpMethod.GET)
+  Future<List<SysUser>> getAll();
+
+  @RouteMapping(value = "/test5", method = EnumHttpMethod.GET)
+  Future<Integer> test5();
 }

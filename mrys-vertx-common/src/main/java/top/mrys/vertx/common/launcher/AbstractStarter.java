@@ -24,6 +24,7 @@ public abstract class AbstractStarter<A extends Annotation> implements Starter<A
 
   @Override
   public void onApplicationEvent(VertxStartedEvent event) {
+    //todo 改为回调方式
     start(a);
   }
 

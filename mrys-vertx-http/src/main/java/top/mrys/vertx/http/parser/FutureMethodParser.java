@@ -2,6 +2,7 @@ package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.http.HttpStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -66,6 +67,7 @@ public class FutureMethodParser extends AbstractHandlerParser{
                 Object o = method.invoke(wrap.getObject(),p);
                 Future future = o instanceof Future ? ((Future) o) : null;
                 HttpServerResponse response = event.response();
+                response.setStatusCode(HttpStatus.HTTP_OK);
                 response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
                 future.onComplete(re -> response.end(jsonTransverter.serialize(((AsyncResult)re).result())));
             } catch (Exception e) {
