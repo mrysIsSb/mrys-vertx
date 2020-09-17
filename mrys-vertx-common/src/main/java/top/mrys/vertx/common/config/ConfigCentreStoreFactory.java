@@ -1,9 +1,15 @@
 package top.mrys.vertx.common.config;
 
+import cn.hutool.core.util.StrUtil;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValueFactory;
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.config.spi.ConfigStoreFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
+import java.util.ServiceLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +22,17 @@ public class ConfigCentreStoreFactory implements ConfigStoreFactory {
 
 
   public static final String configCentre = "configCentre";
+
+
+
+  private final HashMap<String, MyConfigStoreTk> map = new HashMap<>();
+
+  private final ConfigStore emptyConfigStore=new EmptyConfigStore();
+
+  public ConfigCentreStoreFactory() {
+    ServiceLoader<MyConfigStoreTk> load =ServiceLoader.load(MyConfigStoreTk.class);
+    load.forEach(myConfigStoreTk -> map.put(myConfigStoreTk.getStoreName(),myConfigStoreTk));
+  }
 
   /**
    * @return the name of the factory.
@@ -34,21 +51,14 @@ public class ConfigCentreStoreFactory implements ConfigStoreFactory {
    */
   @Override
   public ConfigStore create(Vertx vertx, JsonObject configuration) {
-    String active = configuration.getString("active");
     String type = configuration.getString("storeType");
-    JsonObject config = configuration.getJsonObject("config");
-    if (StringUtils.hasText(active)) {
-      config.put("key", config.getString("key", "configuration") + ":" + active);
+    if (StrUtil.isBlank(type)) {
+      return emptyConfigStore;
     }
-    if ("redis".equals(type)) {
-      try {
-        getClass().getClassLoader().loadClass("io.vertx.redis.client.Redis");
-      } catch (ClassNotFoundException e) {
-        log.error("redis 不存在");
-        return new EmptyConfigStore();
-      }
-      return new MyRedisConfigStore(vertx, config);
+    MyConfigStoreTk storeTk = map.get(type);
+    if (storeTk.check(configuration)) {
+      return storeTk.create(vertx, configuration);
     }
-    return new EmptyConfigStore();
+    return emptyConfigStore;
   }
 }

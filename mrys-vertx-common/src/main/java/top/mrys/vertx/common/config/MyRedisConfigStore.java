@@ -1,12 +1,17 @@
 package top.mrys.vertx.common.config;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.impl.JsonUtil;
 import io.vertx.redis.client.Command;
 import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisConnection;
@@ -69,18 +74,17 @@ public class MyRedisConfigStore implements ConfigStore {
   }
 
   private void get(RedisConnection connection, Handler<AsyncResult<Buffer>> completionHandler) {
-    connection.send(Request.cmd(Command.HGETALL).arg(this.field), rep -> {
-      completionHandler.handle(rep.map(response -> {
-        JsonObject result = new JsonObject();
-        Iterator it = response.iterator();
-        while (it.hasNext()) {
-          String key = it.next().toString();
-          String value = it.next().toString();
-          result.put(key, value);
-        }
-        return result.toBuffer();
-      }));
-    });
+    connection.send(Request.cmd(Command.HGETALL).arg(this.field),
+        rep -> completionHandler.handle(rep.map(response -> {
+          JSONObject json = JSONUtil.parseObj("{}");
+          Iterator it = response.iterator();
+          while (it.hasNext()) {
+            String key = it.next().toString();
+            String value = it.next().toString();
+            JSONUtil.putByPath(json, key, value);
+          }
+          return new JsonObject(json.toString()).toBuffer();
+        })));
   }
 
 }

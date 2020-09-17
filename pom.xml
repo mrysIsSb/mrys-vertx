@@ -19,6 +19,7 @@
     <module>mrys-vertx-redis</module>
     <module>mrys-vertx-event-bus</module>
     <module>mrys-vertx-http-annotations</module>
+    <module>depchain</module>
   </modules>
 
   <properties>

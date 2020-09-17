@@ -7,15 +7,11 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxImpl;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.util.List;
@@ -26,10 +22,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 import top.mrys.vertx.common.config.ConfigCentreStoreFactory;
 import top.mrys.vertx.common.config.ConfigRepo;
-import top.mrys.vertx.common.utils.MyJsonUtil;
 import top.mrys.vertx.common.utils.VertxHolder;
 
 /**
@@ -59,49 +53,73 @@ public class MyLauncher extends AbstractVerticle {
     log.info("------------------------------------starting------------------------------------");
     applicationContext.register(mainClass);
     configRepo = new ConfigRepo();
-    applicationContext.registerBean("configRepo",ConfigRepo.class,() -> configRepo);
-    ConfigRetriever retriever = getConfigRetriever(args);
-    retriever.getConfig().onSuccess(json -> updateConfig(json,startPromise));
+    applicationContext.registerBean("configRepo", ConfigRepo.class, () -> configRepo);
+    getBootConfig(args).getConfig().onSuccess(json -> updateConfig(json, startPromise));;
+
+    /*ConfigRetriever retriever = getConfigRetriever(args);
+    retriever.getConfig().onSuccess(json -> updateConfig(json, startPromise));*/
     log.info("------------------------------------started------------------------------------");
   }
 
-  private void updateConfig(JsonObject json,Promise<Void> promise) {
-    configRepo.mergeToData(json);
+  private void updateConfig(JsonObject json, Promise<Void> promise) {
+    configRepo.mergeInData(json);
     String active = configRepo.getProfilesActive();
     List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
     if (CollectionUtil.isNotEmpty(centres)) {
       ConfigStoreOptions[] options = centres.stream()
           .map(jsonObject -> new ConfigStoreOptions()
               .setType(ConfigCentreStoreFactory.configCentre)
+              .setOptional(true)
               .setConfig(new JsonObject().put("active", active)
                   .mergeIn(jsonObject))
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(args, options);
       retriever1.getConfig()
-          .onSuccess(configRepo::mergeToData)
-          .map(o -> (Void)null)
+          .onSuccess(configRepo::mergeInData)
+          .map(o -> (Void) null)
           .onComplete(promise);
-
 
       retriever1.listen(event -> {
         JsonObject json1 = event.getNewConfiguration();
-        configRepo.mergeToData(json1);
+        configRepo.mergeInData(json1);
       });
     }
   }
 
+  private static ConfigRetriever getBootConfig(String[] args) {
+    Vertx tempVertx = Vertx.vertx();
+    return ConfigRetriever.create(tempVertx, new ConfigRetrieverOptions()
+        .addStore(getBootOptions())
+        .addStore(getArgsConfigStoreOptions(args)));//合并，相同保留后
+  }
+
+  private static ConfigStoreOptions getBootOptions() {
+    return new ConfigStoreOptions()
+        .setType("file")
+        .setFormat("hocon")
+        .setOptional(true)
+        .setConfig(new JsonObject()
+            .put("path", "conf" + File.separator +"boot.conf")
+        );
+  }
+
   private static ConfigRetriever getConfigRetriever(String[] args, ConfigStoreOptions... other) {
     Vertx tempVertx = Vertx.vertx();
-    ConfigRetrieverOptions op = getConfigRetrieverOptions(args);
+    ConfigRetrieverOptions op = new ConfigRetrieverOptions();
     if (ArrayUtil.isNotEmpty(other)) {
       for (ConfigStoreOptions options : other) {
         op.addStore(options);
       }
     }
+    op.addStore(getBootOptions()).addStore(getArgsConfigStoreOptions(args));
     return ConfigRetriever.create(tempVertx, op);
   }
 
-  private static ConfigRetrieverOptions getConfigRetrieverOptions(String[] args) {
+  /**
+   * 获取传递过来的参数
+   * @author mrys
+   */
+  private static ConfigStoreOptions getArgsConfigStoreOptions(String[] args) {
     JsonObject json = new JsonObject();
     if (args != null && args.length > 0) {
       for (String arg : args) {
@@ -113,19 +131,10 @@ public class MyLauncher extends AbstractVerticle {
         }
       }
     }
-    return new ConfigRetrieverOptions()
-        .addStore(new ConfigStoreOptions()
-            .setType("file")
-            .setFormat("json")
-            .setOptional(true)
-            .setConfig(
-                new JsonObject()
-                    .put("path", "conf" + File.separator + "config.json"))
-        ).addStore(
-            new ConfigStoreOptions()
-                .setType("json")
-                .setConfig(json)
-        );
+    return new ConfigStoreOptions()
+        .setType("json")
+        .setOptional(true)
+        .setConfig(json);
   }
 
 
@@ -188,9 +197,10 @@ public class MyLauncher extends AbstractVerticle {
     run(mainClass, args, promise);
     return promise.future();
   }
+
   @SneakyThrows
   public static void onlyRun(Class clazz, String[] args) {
-    run(clazz,args, Promise.promise());
+    run(clazz, args, Promise.promise());
    /* MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
     context.addScanPackage("top.mrys.vertx.common");
     VertxImpl vertx = getVertxInstance();

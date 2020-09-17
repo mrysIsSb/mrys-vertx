@@ -24,8 +24,12 @@ public class ConfigRepo {
     return MyJsonUtil.getByPath(data.toString(), "profiles.active", String.class);
   }
 
-
-  public void mergeToData(JsonObject json) {
+  /**
+   * 将新的数据合并进来 相同保留后
+   *
+   * @author mrys
+   */
+  public void mergeInData(JsonObject json) {
     data = data.mergeIn(json, true);
   }
 

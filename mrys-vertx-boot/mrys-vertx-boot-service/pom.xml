@@ -25,5 +25,10 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-http</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-redis-client</artifactId>
+    </dependency>
   </dependencies>
 </project>

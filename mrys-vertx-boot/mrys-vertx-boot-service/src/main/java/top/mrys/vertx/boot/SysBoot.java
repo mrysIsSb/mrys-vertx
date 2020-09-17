@@ -1,6 +1,11 @@
 package top.mrys.vertx.boot;
 
+import cn.hutool.core.io.FileUtil;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import io.vertx.core.Future;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +28,11 @@ import top.mrys.vertx.mysql.starter.EnableMysql;
 public class SysBoot {
 
   public static void main(String[] args) {
+
+    Config boot = ConfigFactory.parseFile(FileUtil.file("conf/boot.conf"));
+    Config config = ConfigFactory.parseFile(FileUtil.file("conf/config.json"));
+    boot.withFallback(config);//合并，相同保留前
+
 //    System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
     Future<ApplicationContext> run = MyLauncher.run(SysBoot.class, args);
     run.onSuccess(event -> {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>mrys-vertx</artifactId>
+    <groupId>top.mrys</groupId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>depchain</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <vertx.version>4.0.0-milestone5</vertx.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <lombok.version>1.18.12</lombok.version>
+    <hutool.version>5.3.9</hutool.version>
+    <vavr.version>0.10.3</vavr.version>
+    <spring.version>5.2.6.RELEASE</spring.version>
+    <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
+    <jackson-databind.version>2.11.1</jackson-databind.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+    <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
+    <mybatis.version>3.5.5</mybatis.version>
+    <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-stack-depchain</artifactId>
+        <version>${vertx.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>
