@@ -2,6 +2,7 @@ package top.mrys.vertx.boot.service;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import top.mrys.vertx.boot.api.SysUserApi;
 import top.mrys.vertx.boot.entity.SysUser;
+import top.mrys.vertx.common.spring.ConditionalOnBean;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.mysql.starter.MysqlSession;

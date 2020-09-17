@@ -15,17 +15,28 @@ import io.vertx.sqlclient.SqlConnection;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.DependsOn;
+import top.mrys.vertx.common.spring.ConditionalOnBean;
 
 /**
  * @author mrys
  * @date 2020/9/15
  */
+@ConditionalOnBean(Vertx.class)
 public class MysqlSession implements MySQLPool {
 
   @Setter
   private MySQLPool mySQLPool;
+
   @Autowired
   private Vertx vertx;
+
+  @Autowired(required = false)
+  private MySQLConnectOptions connectOptions;
+
+  @Autowired(required = false)
+  private PoolOptions poolOptions;
 
   @PostConstruct
   public void init() {
