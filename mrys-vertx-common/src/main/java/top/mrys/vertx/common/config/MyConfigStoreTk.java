@@ -18,7 +18,7 @@ public interface MyConfigStoreTk {
   String getStoreName();
 
   /**
-   * 严重是否可用;
+   * 检查是否可用;
    *
    * @author mrys
    */

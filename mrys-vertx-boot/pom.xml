@@ -18,6 +18,7 @@
     <module>mrys-vertx-boot-controller</module>
     <module>mrys-vertx-boot-service</module>
     <module>mrys-vertx-boot-api</module>
+    <module>mrys-vertx-boot-config</module>
   </modules>
 
   <properties>

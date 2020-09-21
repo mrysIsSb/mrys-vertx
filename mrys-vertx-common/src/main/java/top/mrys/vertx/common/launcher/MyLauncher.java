@@ -3,6 +3,10 @@ package top.mrys.vertx.common.launcher;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.impl.Parseable;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -15,6 +19,7 @@ import io.vertx.core.impl.VertxImpl;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import lombok.Data;
@@ -75,13 +80,13 @@ public class MyLauncher extends AbstractVerticle {
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(args, options);
       retriever1.getConfig()
-          .onSuccess(configRepo::mergeInData)
+          .onSuccess(event -> configRepo.mergeInData(event).resolve())
           .map(o -> (Void) null)
           .onComplete(promise);
 
       retriever1.listen(event -> {
         JsonObject json1 = event.getNewConfiguration();
-        configRepo.mergeInData(json1);
+        configRepo.mergeInData(json1).resolve();
       });
     }
   }

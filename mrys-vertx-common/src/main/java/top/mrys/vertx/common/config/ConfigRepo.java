@@ -1,17 +1,23 @@
 package top.mrys.vertx.common.config;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.impl.Parseable;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.utils.MyJsonUtil;
 
 /**
  * @author mrys
  * @date 2020/9/12
  */
+@Slf4j
 public class ConfigRepo {
 
   private String version;
@@ -24,13 +30,22 @@ public class ConfigRepo {
     return MyJsonUtil.getByPath(data.toString(), "profiles.active", String.class);
   }
 
+  public ConfigRepo resolve() {
+    String j = data.toString().replaceAll("\"(\\w*\\$\\{\\w*\\}\\w*)\"", "$1");
+    Config resolve = Parseable.newString(j, ConfigParseOptions.defaults())
+        .parse().toConfig().resolve();
+    Map<String, Object> map = resolve.root().unwrapped();
+    return mergeInData(new JsonObject(map));
+  }
+
   /**
    * 将新的数据合并进来 相同保留后
    *
    * @author mrys
    */
-  public void mergeInData(JsonObject json) {
+  public ConfigRepo mergeInData(JsonObject json) {
     data = data.mergeIn(json, true);
+    return this;
   }
 
   public <T> T getForClass(Class<T> clazz) {
