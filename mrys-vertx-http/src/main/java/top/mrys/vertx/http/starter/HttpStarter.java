@@ -5,11 +5,10 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import java.util.Objects;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ComponentScan;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
 import top.mrys.vertx.http.parser.RouteFactory;
@@ -30,7 +29,8 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
 
   @Override
   public void start() {
-    int port = a.port();
+    int port = ConfigRepo.getInstance()
+        .getForPath(a.configPrefix() + ".port", Integer.class, a.port());
     if (Objects.isNull(vertx)) {
       log.error("vertx 不能为空null");
       return;
@@ -38,8 +38,9 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
     RouteFactory factory = context.getBean(RouteFactory.class);
     Router router = factory.get();
     Future<String> future = vertx
-        .deployVerticle(() -> new HttpVerticle(port,router), new DeploymentOptions().setInstances(10));
-    future.onSuccess(event -> log.info("http server started port:{}",port));
+        .deployVerticle(() -> new HttpVerticle(port, router),
+            new DeploymentOptions().setInstances(10));
+    future.onSuccess(event -> log.info("http server started port:{}", port));
   }
 }
 

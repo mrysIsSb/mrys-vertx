@@ -14,6 +14,7 @@ import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlConnection;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.DependsOn;
@@ -23,6 +24,7 @@ import top.mrys.vertx.common.spring.ConditionalOnBean;
  * @author mrys
  * @date 2020/9/15
  */
+@Slf4j
 @ConditionalOnBean(Vertx.class)
 public class MysqlSession implements MySQLPool {
 
@@ -32,18 +34,22 @@ public class MysqlSession implements MySQLPool {
   @Autowired
   private Vertx vertx;
 
-  @Autowired(required = false)
   private MySQLConnectOptions connectOptions;
 
-  @Autowired(required = false)
   private PoolOptions poolOptions;
 
-  @PostConstruct
-  public void init() {
+  public void init(MySQLConnectOptions connectOptions, PoolOptions poolOptions) {
+    if (mySQLPool != null) {
+      mySQLPool.close();
+    }
+    this.connectOptions = connectOptions;
+    this.poolOptions = poolOptions;
+    log.info("{},{}",connectOptions,poolOptions);
     mySQLPool = mySQLPool(vertx);
   }
+
   private MySQLPool mySQLPool(Vertx vertx) {
-    return MySQLPool.pool(vertx,connectOptions, poolOptions);
+    return MySQLPool.pool(vertx, connectOptions, poolOptions);
   }
 
   private MySQLPool getMySQLPool() {

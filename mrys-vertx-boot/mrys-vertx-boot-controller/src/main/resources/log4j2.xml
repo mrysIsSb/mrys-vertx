@@ -6,11 +6,11 @@
                 disableAnsi="false" noConsoleNoAnsi="false"
             />
         </Console>
-        <RollingFile name="RollingFile" fileName="logs/app.log"
+        <!--<RollingFile name="RollingFile" fileName="logs/app.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
             <SizeBasedTriggeringPolicy size="5 MB"/>
-        </RollingFile>
+        </RollingFile>-->
     </appenders>
     <loggers>
         <!--        <root level="debug">-->

@@ -51,21 +51,18 @@ public class MyLauncher extends AbstractVerticle {
 
   private Resource resource;
 
-  private ConfigRepo configRepo;
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     log.info("------------------------------------starting------------------------------------");
     applicationContext.register(mainClass);
-    configRepo = new ConfigRepo();
-    applicationContext.registerBean("configRepo", ConfigRepo.class, () -> configRepo);
     getBootConfig(args).getConfig()
         .onSuccess(json -> updateConfig(json, startPromise))
         .onFailure(startPromise::fail);
-    log.info("------------------------------------started------------------------------------");
   }
 
   private void updateConfig(JsonObject json, Promise<Void> promise) {
+    ConfigRepo configRepo = ConfigRepo.getInstance();
     configRepo.mergeInData(json);
     List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
     if (CollectionUtil.isNotEmpty(centres)) {
@@ -182,7 +179,7 @@ public class MyLauncher extends AbstractVerticle {
     vertx.deployVerticle(verticle, event -> {
       if (event.succeeded()) {
         context.registerShutdownHook();
-        log.info("refresh");
+        log.info("refresh...");
         context.refresh();
         log.info("refreshed");
         MyLauncher.context = context;

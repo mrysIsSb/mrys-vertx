@@ -1,5 +1,6 @@
 package top.mrys.vertx.common.config;
 
+import cn.hutool.json.JSONUtil;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.impl.Parseable;
@@ -7,6 +8,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,11 +22,20 @@ import top.mrys.vertx.common.utils.MyJsonUtil;
 @Slf4j
 public class ConfigRepo {
 
-  private String version;
+  private static final ConfigRepo configRepo = new ConfigRepo();
+
 
   @Getter
   @Setter
   private JsonObject data = new JsonObject();
+
+  private ConfigRepo() {
+  }
+
+  public static ConfigRepo getInstance() {
+    return configRepo;
+  }
+
 
   public String getProfilesActive() {
     return MyJsonUtil.getByPath(data.toString(), "profiles.active", String.class);
@@ -48,21 +59,31 @@ public class ConfigRepo {
     return this;
   }
 
+
   public <T> T getForClass(Class<T> clazz) {
     String simpleName = clazz.getSimpleName();
-    return getForKey(simpleName, clazz);
+    return getForPath(simpleName, clazz);
   }
 
-  public <T> T getForKey(String key, Class<T> clazz) {
+  public <T> T getForPath(String key, Class<T> clazz) {
+    return getForPath(key, clazz, null);
+  }
+
+  public <T> T getForPath(String key, Class<T> clazz, T def) {
     if (data.isEmpty()) {
       return null;
     }
-    JsonObject jsonObject = data.getJsonObject(key);
+    T o = null;
     if (clazz.isAssignableFrom(JsonObject.class)) {
-      return (T) jsonObject;
+      Map map = JSONUtil.parseObj(data.toString()).getByPath(key, Map.class);
+      o= (T) new JsonObject(map);
     } else {
-      return jsonObject.mapTo(clazz);
+      o = JSONUtil.parseObj(data.toString()).getByPath(key, clazz);
     }
+    if (Objects.isNull(o)) {
+      return def;
+    }
+    return o;
   }
 
   public <T> List<T> getArrForClass(Class<T> clazz) {

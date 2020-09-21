@@ -26,8 +26,7 @@ public class WebBoot {
     run.onSuccess(event -> {
       String[] names = event.getBeanDefinitionNames();
       Arrays.stream(names).forEach(log::info);
-      ConfigRepo bean = event.getBean(ConfigRepo.class);
-      log.info("{}",bean);
+      log.info("{}",ConfigRepo.getInstance().getData());
     });
   }
 }

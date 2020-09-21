@@ -32,7 +32,7 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
 
 
   @Override
-  public void start(EnableMysql enableMysql) {
+  public void start() {
 //    ClassPathBeanDefinitionScanner
     MyBatisConfiguration configuration = new MyBatisConfiguration();
     MySqlSessionFactory mySqlSessionFactory = new MySqlSessionFactory(configuration);

@@ -18,8 +18,21 @@ import org.springframework.core.annotation.AliasFor;
 @ComponentScan
 public @interface EnableHttp {
 
-  int value() default 0;
+  //  configCentre>args>boot>this
   int port() default 8080;
-  @AliasFor(annotation = ComponentScan.class ,attribute = "basePackages")
+
+  /**
+   * http 配置前缀
+   *
+   * @author mrys
+   */
+  String configPrefix() default "http";
+
+  /**
+   * 扫描routehandler类
+   *
+   * @author mrys
+   */
+  @AliasFor(annotation = ComponentScan.class, attribute = "basePackages")
   String[] scanPackage();
 }

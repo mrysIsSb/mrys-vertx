@@ -38,8 +38,7 @@ public class SysBoot {
     run.onSuccess(event -> {
       String[] names = event.getBeanDefinitionNames();
       Arrays.stream(names).forEach(log::info);
-      ConfigRepo bean = event.getBean(ConfigRepo.class);
-      log.info("{}",bean.getData());
+      log.info("{}",ConfigRepo.getInstance().getData());
     });
   }
 }
