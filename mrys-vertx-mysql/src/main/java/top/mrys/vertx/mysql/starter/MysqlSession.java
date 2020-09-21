@@ -44,7 +44,7 @@ public class MysqlSession implements MySQLPool {
     }
     this.connectOptions = connectOptions;
     this.poolOptions = poolOptions;
-    log.info("{},{}",connectOptions,poolOptions);
+    log.info("{},{}",connectOptions.toJson(),poolOptions.toJson());
     mySQLPool = mySQLPool(vertx);
   }
 

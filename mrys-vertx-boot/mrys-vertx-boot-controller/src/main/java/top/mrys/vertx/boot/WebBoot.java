@@ -23,10 +23,10 @@ public class WebBoot {
   public static void main(String[] args) {
 //    System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
     Future<ApplicationContext> run = MyLauncher.run(WebBoot.class, args);
-    run.onSuccess(event -> {
+/*    run.onSuccess(event -> {
       String[] names = event.getBeanDefinitionNames();
       Arrays.stream(names).forEach(log::info);
       log.info("{}",ConfigRepo.getInstance().getData());
-    });
+    });*/
   }
 }

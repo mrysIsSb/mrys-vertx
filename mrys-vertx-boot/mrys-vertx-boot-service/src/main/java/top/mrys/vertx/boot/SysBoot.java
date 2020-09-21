@@ -35,10 +35,10 @@ public class SysBoot {
 
 //    System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
     Future<ApplicationContext> run = MyLauncher.run(SysBoot.class, args);
-    run.onSuccess(event -> {
+/*    run.onSuccess(event -> {
       String[] names = event.getBeanDefinitionNames();
       Arrays.stream(names).forEach(log::info);
       log.info("{}",ConfigRepo.getInstance().getData());
-    });
+    });*/
   }
 }
