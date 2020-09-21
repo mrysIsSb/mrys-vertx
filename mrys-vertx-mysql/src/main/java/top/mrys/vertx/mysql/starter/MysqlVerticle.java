@@ -7,6 +7,7 @@ import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
 
@@ -15,6 +16,7 @@ import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
  * @date 2020/8/8
  */
 @Slf4j
+@Deprecated
 public class MysqlVerticle extends MyAbstractVerticle {
 
   @Autowired
@@ -27,19 +29,6 @@ public class MysqlVerticle extends MyAbstractVerticle {
    /* MySQLPool pool = mySQLPool(vertx);
     applicationContext.registerBean(MySQLPool.class,() -> pool);*/
   }
-
-/*  private MySQLPool mySQLPool(Vertx vertx) {
-    MySQLConnectOptions connectOptions = new MySQLConnectOptions()
-        .setCachePreparedStatements(true)
-        .setPort(3306)
-        .setHost("192.168.124.16")
-        .setDatabase("test")
-        .setUser("root")
-        .setPassword("123456");
-    PoolOptions poolOptions = new PoolOptions()
-        .setMaxSize(5);
-    return MySQLPool.pool(vertx,connectOptions, poolOptions);
-  }*/
 
 
   @Override

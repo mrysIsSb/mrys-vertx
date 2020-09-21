@@ -1,40 +1,47 @@
 package top.mrys.vertx.mysql.starter;
 
-import io.vertx.core.impl.VertxImpl;
 import io.vertx.mysqlclient.MySQLConnectOptions;
-import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 
 /**
  * @author mrys
  * @date 2020/8/5
  */
+@Configuration
 public class MysqlStarter extends AbstractStarter<EnableMysql> {
 
-  @Autowired
-  private VertxImpl vertx;
+  @Bean
+  public MySQLConnectOptions connectOptions(ConfigRepo repo) {
+    return new MySQLConnectOptions()
+        .setCachePreparedStatements(true)
+        .setPort(3306)
+        .setHost("192.168.124.16")
+        .setDatabase("test")
+        .setUser("root")
+        .setPassword("123456");
+  }
+
+  @Bean
+  public PoolOptions poolOptions(ConfigRepo repo) {
+    return new PoolOptions()
+        .setMaxSize(5);
+  }
 
   @Override
-  public void start(EnableMysql enableMysql) {
+  public void start() {
+    System.out.println("11111111111111");
     //todo 改为回调方式
 //    vertx.deployVerticle(new MysqlVerticle());
   }
 
-
-  /**  BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-        .genericBeanDefinition(MysqlVerticle.class);
-    registry.registerBeanDefinition(MysqlVerticle.class.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());*/
   @Override
   protected void postRegisterBeanDefinitions(EnableMysql annotation,
       BeanDefinitionRegistry registry) {
@@ -42,6 +49,7 @@ public class MysqlStarter extends AbstractStarter<EnableMysql> {
     scanner.scan(getClass().getPackage().getName());
     BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
         .genericBeanDefinition(MysqlSession.class);
-    registry.registerBeanDefinition(MysqlSession.class.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
+    registry.registerBeanDefinition(MysqlSession.class.getSimpleName(),
+        beanDefinitionBuilder.getBeanDefinition());
   }
 }

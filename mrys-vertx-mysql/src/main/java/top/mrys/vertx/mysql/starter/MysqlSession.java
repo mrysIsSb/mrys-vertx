@@ -43,19 +43,10 @@ public class MysqlSession implements MySQLPool {
     mySQLPool = mySQLPool(vertx);
   }
   private MySQLPool mySQLPool(Vertx vertx) {
-    MySQLConnectOptions connectOptions = new MySQLConnectOptions()
-        .setCachePreparedStatements(true)
-        .setPort(3306)
-        .setHost("192.168.124.16")
-        .setDatabase("test")
-        .setUser("root")
-        .setPassword("123456");
-    PoolOptions poolOptions = new PoolOptions()
-        .setMaxSize(5);
     return MySQLPool.pool(vertx,connectOptions, poolOptions);
   }
 
-  public MySQLPool getMySQLPool() {
+  private MySQLPool getMySQLPool() {
     if (mySQLPool == null) {
       throw new NullPointerException("mysql 未连接");
     }

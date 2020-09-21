@@ -1,6 +1,7 @@
 package top.mrys.vertx.common.launcher;
 
 import cn.hutool.core.util.ArrayUtil;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -120,6 +121,11 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
   @Override
   public void refresh() throws BeansException, IllegalStateException {
     super.refresh();
+  }
+
+  public void refresh(Promise<Void> promise) throws BeansException, IllegalStateException {
+    refresh();
+    promise.complete();
   }
 
   public void refreshIfActive() {

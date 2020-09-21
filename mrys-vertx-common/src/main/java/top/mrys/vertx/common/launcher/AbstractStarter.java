@@ -17,16 +17,10 @@ import top.mrys.vertx.common.utils.TypeUtil;
  * @date 2020/8/5
  */
 @Setter
-public abstract class AbstractStarter<A extends Annotation> implements Starter<A>,
-    ImportBeanDefinitionRegistrar, ApplicationListener<VertxStartedEvent> {
+public abstract class AbstractStarter<A extends Annotation> implements Starter,
+    ImportBeanDefinitionRegistrar {
 
-  private A a;
-
-  @Override
-  public void onApplicationEvent(VertxStartedEvent event) {
-    //todo 改为回调方式
-    start(a);
-  }
+  protected A a;
 
   @Override
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
@@ -37,6 +31,7 @@ public abstract class AbstractStarter<A extends Annotation> implements Starter<A
     BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
         .genericBeanDefinition(this.getClass());
     beanDefinitionBuilder.addPropertyValue("a", annotation);
+    beanDefinitionBuilder.setInitMethodName("start");
     registry.registerBeanDefinition(this.getClass().getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
     postRegisterBeanDefinitions(annotation,registry);
   }

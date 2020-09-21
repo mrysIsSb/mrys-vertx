@@ -59,24 +59,21 @@ public class MyLauncher extends AbstractVerticle {
     applicationContext.register(mainClass);
     configRepo = new ConfigRepo();
     applicationContext.registerBean("configRepo", ConfigRepo.class, () -> configRepo);
-    getBootConfig(args).getConfig().onSuccess(json -> updateConfig(json, startPromise));;
-
-    /*ConfigRetriever retriever = getConfigRetriever(args);
-    retriever.getConfig().onSuccess(json -> updateConfig(json, startPromise));*/
+    getBootConfig(args).getConfig()
+        .onSuccess(json -> updateConfig(json, startPromise))
+        .onFailure(startPromise::fail);
     log.info("------------------------------------started------------------------------------");
   }
 
   private void updateConfig(JsonObject json, Promise<Void> promise) {
     configRepo.mergeInData(json);
-    String active = configRepo.getProfilesActive();
     List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
     if (CollectionUtil.isNotEmpty(centres)) {
       ConfigStoreOptions[] options = centres.stream()
           .map(jsonObject -> new ConfigStoreOptions()
               .setType(ConfigCentreStoreFactory.configCentre)
               .setOptional(true)
-              .setConfig(new JsonObject().put("active", active)
-                  .mergeIn(jsonObject))
+              .setConfig(jsonObject)
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(args, options);
       retriever1.getConfig()
