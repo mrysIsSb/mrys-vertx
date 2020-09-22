@@ -23,7 +23,7 @@ public class HttpInterceptor implements Interceptor<RoutingContext, Object> {
   @Override
   public boolean preHandler(RoutingContext routingContext) {
     String path = routingContext.request().path();
-    log.info("-->{}", path);
+    log.debug("-->{}", path);
     if (path.matches("/err\\S*")) {
       routingContext.response()
           .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8")

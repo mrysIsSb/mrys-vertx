@@ -21,6 +21,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.utils.AnnotationUtil;
@@ -36,6 +37,13 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
 
   @Autowired
   private Vertx vertx;
+
+  private WebClient webClient;
+
+  @PostConstruct
+  public void init() {
+    webClient = WebClient.create(vertx, new WebClientOptions().setKeepAlive(true));
+  }
 
   @Override
   public T getObject() throws Exception {
@@ -58,7 +66,8 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
         Promise promise = Promise.promise();
         String requestURI = parent + routeMapping.value();
         Parameter[] parameters = method.getParameters();
-        HttpRequest<Buffer> request = WebClient.create(vertx)
+
+        HttpRequest<Buffer> request = webClient
             .request(routeMapping.method().getHttpMethod(),
                 SocketAddress.inetSocketAddress(8801, "localhost"),
                 requestURI);
@@ -98,27 +107,6 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
         throw new RuntimeException("异常");
       }
     };
-  }
-
-  private boolean isDefaultMethod(Method method) {
-    return (method.getModifiers()
-        & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC
-        && method.getDeclaringClass().isInterface();
-  }
-
-  private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
-      throws Throwable {
-    final Constructor<Lookup> constructor = MethodHandles.Lookup.class
-        .getDeclaredConstructor(Class.class, int.class);
-    if (!constructor.isAccessible()) {
-      constructor.setAccessible(true);
-    }
-    final Class<?> declaringClass = method.getDeclaringClass();
-    return constructor
-        .newInstance(declaringClass,
-            MethodHandles.Lookup.PRIVATE | MethodHandles.Lookup.PROTECTED
-                | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC)
-        .unreflectSpecial(method, declaringClass).bindTo(proxy).invokeWithArguments(args);
   }
 
 }

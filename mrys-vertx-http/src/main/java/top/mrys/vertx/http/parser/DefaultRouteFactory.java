@@ -94,7 +94,7 @@ public class DefaultRouteFactory implements RouteFactory {
       });
     }
     router.route().handler(event -> {
-      log.info("if{}", event.isFresh());
+      log.debug("if{}", event.isFresh());
       if (!event.response().isChunked()) {
         event.response().setChunked(true);
       }

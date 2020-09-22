@@ -27,7 +27,7 @@ public class MyJsonUtil {
 
   public static <T> T mapTo(String jsonStr, Type type) {
     if (!JSONUtil.isJson(jsonStr)) {
-      Convert.convert((Class<T>) type, jsonStr);
+     return Convert.convert((Class<T>) type, jsonStr);
     }
     if (JSONUtil.isJsonObj(jsonStr)) {
       return JSONUtil.toBean(jsonStr, (Class<T>) type);

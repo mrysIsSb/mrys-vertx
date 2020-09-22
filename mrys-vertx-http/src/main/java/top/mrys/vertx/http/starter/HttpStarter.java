@@ -3,6 +3,8 @@ package top.mrys.vertx.http.starter;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.impl.VertxImpl;
 import io.vertx.ext.web.Router;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +41,7 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
     Router router = factory.get();
     Future<String> future = vertx
         .deployVerticle(() -> new HttpVerticle(port, router),
-            new DeploymentOptions().setInstances(10));
+            new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE));
     future.onSuccess(event -> log.info("http server started port:{}", port));
   }
 }
