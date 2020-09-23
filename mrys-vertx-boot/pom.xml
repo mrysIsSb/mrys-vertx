@@ -23,6 +23,7 @@
 
   <properties>
     <jar-outputFile>${build.directory}/${project.artifactId}-fat.jar</jar-outputFile>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -34,33 +35,24 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-event-bus</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-http-annotations</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-http</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-mysql</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-redis</artifactId>
-        <version>1.0</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <parameters>true</parameters>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
   <!--<build>
     <finalName>${project.artifactId}</finalName>
 

@@ -1,6 +1,5 @@
 package top.mrys.vertx.http.parser;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpStatus;
 import io.vertx.core.AsyncResult;
@@ -12,7 +11,6 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.manager.JsonTransverter;
@@ -49,19 +47,17 @@ public class FutureMethodParser extends AbstractHandlerParser{
         String value = annotation.value();
         EnumHttpMethod enumHttpMethod = annotation.method();
         Parameter[] parameters = method.getParameters();
-        for (Parameter parameter : parameters) {
-            //todo 注入参数
+        HttpParamType[] httpParamTypes = new HttpParamType[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            httpParamTypes[i]=HttpParamType.getInstance(wrap.getClazz(), method, parameters[i], i);
         }
         Handler<RoutingContext> handler = event -> {
             try {
                 //todo 优化
-                Parameter[] methodParameters = method.getParameters();
-                Object[] p = new Object[methodParameters.length];
-                if (ArrayUtil.isNotEmpty(methodParameters)) {
-                    for (int i = 0; i < methodParameters.length; i++) {
-                        String name = methodParameters[i].getName();
-                        String param = event.request().getParam(name);
-                        p[i]= Convert.convert(methodParameters[i].getType(),param);
+                Object[] p = new Object[httpParamTypes.length];
+                if (ArrayUtil.isNotEmpty(httpParamTypes)) {
+                    for (int i = 0; i < httpParamTypes.length; i++) {
+                        p[i]= httpParamTypes[i].getValue(event);
                     }
                 }
                 Object o = method.invoke(wrap.getObject(),p);

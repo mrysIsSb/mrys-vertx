@@ -11,5 +11,22 @@
 
   <artifactId>mrys-vertx-boot-config</artifactId>
 
-
+  <dependencies>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

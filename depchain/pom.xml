@@ -25,7 +25,17 @@
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
     <mybatis.version>3.5.5</mybatis.version>
+    <asm.version>9.0</asm.version>
+
+
     <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
+    <mrys-vertx-event-bus.version>1.0</mrys-vertx-event-bus.version>
+    <mrys-vertx-common.version>1.0</mrys-vertx-common.version>
+    <mrys-vertx-http.version>1.0</mrys-vertx-http.version>
+    <mrys-vertx-mysql.version>1.0</mrys-vertx-mysql.version>
+    <mrys-vertx-redis.version>1.0</mrys-vertx-redis.version>
+
+
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -36,6 +46,89 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asm.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cn.hutool</groupId>
+        <artifactId>hutool-all</artifactId>
+        <version>${hutool.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j-slf4j-impl.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-databind.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>${mybatis.version}</version>
+      </dependency>
+
+      <!--      mrys-vertx -->
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http-annotations</artifactId>
+        <version>${mrys-vertx-http-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-common</artifactId>
+        <version>${mrys-vertx-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-event-bus</artifactId>
+        <version>${mrys-vertx-event-bus.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http</artifactId>
+        <version>${mrys-vertx-http.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-mysql</artifactId>
+        <version>${mrys-vertx-mysql.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-redis</artifactId>
+        <version>${mrys-vertx-redis.version}</version>
+      </dependency>
+      <!--      mrys-vertx -->
     </dependencies>
   </dependencyManagement>
 

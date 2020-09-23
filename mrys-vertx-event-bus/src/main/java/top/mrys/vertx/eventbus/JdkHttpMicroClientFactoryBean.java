@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.common.utils.MyJsonUtil;
 import top.mrys.vertx.http.annotations.RouteMapping;
@@ -71,9 +73,10 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
             .request(routeMapping.method().getHttpMethod(),
                 SocketAddress.inetSocketAddress(8801, "localhost"),
                 requestURI);
-        //todo 完善
+        //todo 完善 pathvar 等
+        String[] names = new DefaultParameterNameDiscoverer().getParameterNames(method);
         for (int i = 0; i < parameters.length; i++) {
-          request.addQueryParam(parameters[i].getName(), args[i].toString());
+          request.addQueryParam(names[i], args[i].toString());
         }
         request
 //            .addQueryParam()//添加可重复

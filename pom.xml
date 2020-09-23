@@ -27,6 +27,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.>-parameters</maven.compiler.>
     <lombok.version>1.18.12</lombok.version>
     <hutool.version>5.3.9</hutool.version>
     <vavr.version>0.10.3</vavr.version>
@@ -37,6 +38,7 @@
     <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
     <mybatis.version>3.5.5</mybatis.version>
     <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
+    <asm.version>9.0</asm.version>
   </properties>
 
 
@@ -107,6 +109,12 @@
       </dependency>
 
 
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asm.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -119,6 +127,7 @@
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
+            <parameters>true</parameters>
             <encoding>UTF-8</encoding>
           </configuration>
         </plugin>

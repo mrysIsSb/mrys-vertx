@@ -18,6 +18,7 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @date 2020/7/9
  */
 @Slf4j
+@Deprecated
 public class GeneralMethodParser extends AbstractHandlerParser {
 
   /**
