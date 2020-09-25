@@ -1,5 +1,7 @@
 package top.mrys.vertx.http.parser;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.http.HttpStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -45,18 +47,28 @@ public class FutureMethodParser extends AbstractHandlerParser{
         String value = annotation.value();
         EnumHttpMethod enumHttpMethod = annotation.method();
         Parameter[] parameters = method.getParameters();
-        for (Parameter parameter : parameters) {
-            //todo 注入参数
+        HttpParamType[] httpParamTypes = new HttpParamType[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            httpParamTypes[i]=HttpParamType.getInstance(wrap.getClazz(), method, parameters[i], i);
         }
         Handler<RoutingContext> handler = event -> {
             try {
-                Object o = method.invoke(wrap.getObject());
+                //todo 优化
+                Object[] p = new Object[httpParamTypes.length];
+                if (ArrayUtil.isNotEmpty(httpParamTypes)) {
+                    for (int i = 0; i < httpParamTypes.length; i++) {
+                        p[i]= httpParamTypes[i].getValue(event);
+                    }
+                }
+                Object o = method.invoke(wrap.getObject(),p);
                 Future future = o instanceof Future ? ((Future) o) : null;
                 HttpServerResponse response = event.response();
+                response.setStatusCode(HttpStatus.HTTP_OK);
                 response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
                 future.onComplete(re -> response.end(jsonTransverter.serialize(((AsyncResult)re).result())));
             } catch (Exception e) {
                 e.printStackTrace();
+                event.fail(e);
             }
         };
         router.route(enumHttpMethod.getHttpMethod(),value).blockingHandler(handler);

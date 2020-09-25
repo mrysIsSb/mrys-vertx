@@ -1,13 +1,11 @@
 package top.mrys.vertx.boot;
 
-import com.sun.org.apache.regexp.internal.RE;
-import java.lang.reflect.Proxy;
-import java.security.AccessController;
+import io.vertx.core.Future;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import sun.security.action.GetBooleanAction;
-import top.mrys.vertx.boot.api.SysUserApi;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.eventbus.EnableMicroClient;
 import top.mrys.vertx.http.starter.EnableHttp;
@@ -24,9 +22,11 @@ public class WebBoot {
 
   public static void main(String[] args) {
 //    System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
-    ApplicationContext run = MyLauncher.run(WebBoot.class, args);
-    for (String name : run.getBeanDefinitionNames()) {
-      System.out.println(name);
-    }
+    Future<ApplicationContext> run = MyLauncher.run(WebBoot.class, args);
+/*    run.onSuccess(event -> {
+      String[] names = event.getBeanDefinitionNames();
+      Arrays.stream(names).forEach(log::info);
+      log.info("{}",ConfigRepo.getInstance().getData());
+    });*/
   }
 }

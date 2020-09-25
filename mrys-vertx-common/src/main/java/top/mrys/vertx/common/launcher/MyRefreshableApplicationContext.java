@@ -1,6 +1,7 @@
 package top.mrys.vertx.common.launcher;
 
 import cn.hutool.core.util.ArrayUtil;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -122,16 +123,21 @@ public class MyRefreshableApplicationContext extends AbstractRefreshableApplicat
     super.refresh();
   }
 
+  public void refresh(Promise<Void> promise) throws BeansException, IllegalStateException {
+    refresh();
+    promise.complete();
+  }
+
   public void refreshIfActive() {
     if (isActive()) {
       try {
         if (hasBeanFactory()) {
-          Vertx bean = getBean(Vertx.class);
+          /*Vertx bean = getBean(Vertx.class);
           bean.close(event -> {
             if (event.succeeded()) {
               refresh();
             }
-          });
+          });*/
         }
       } catch (BeansException e) {
         log.error(e.getMessage(),e);

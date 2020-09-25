@@ -1,28 +1,19 @@
 package top.mrys.vertx.http.starter;
 
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.impl.VertxImpl;
 import io.vertx.ext.web.Router;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.launcher.AbstractStarter;
 import top.mrys.vertx.common.launcher.MyRefreshableApplicationContext;
-import top.mrys.vertx.common.launcher.Starter;
-import top.mrys.vertx.common.launcher.VertxStartedEvent;
-import top.mrys.vertx.common.utils.ScanPackageUtil;
 import top.mrys.vertx.http.parser.RouteFactory;
-import top.mrys.vertx.http.parser.SpringRouteFactoryWarp;
 
 /**
  * @author mrys
@@ -39,17 +30,19 @@ public class HttpStarter extends AbstractStarter<EnableHttp> {
   private MyRefreshableApplicationContext context;
 
   @Override
-  public void start(EnableHttp enableHttp) {
-    int port = enableHttp.port();
+  public void start() {
+    int port = ConfigRepo.getInstance()
+        .getForPath(a.configPrefix() + ".port", Integer.class, a.port());
     if (Objects.isNull(vertx)) {
       log.error("vertx 不能为空null");
       return;
     }
     RouteFactory factory = context.getBean(RouteFactory.class);
     Router router = factory.get();
-    vertx.createHttpServer().requestHandler(router)
-        .listen(port)
-        .onSuccess(event -> log.info("http start :{}", event.actualPort()))
-        .onFailure(event -> log.error(event.getMessage(), event));
+    Future<String> future = vertx
+        .deployVerticle(() -> new HttpVerticle(port, router),
+            new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE));
+    future.onSuccess(event -> log.info("http server started port:{}", port));
   }
 }
+

@@ -17,6 +17,7 @@ import java.util.Objects;
  * @author mrys
  * @date 2020/7/9
  */
+@Deprecated
 public class SimpleHandlerParser extends AbstractHandlerParser {
 
   /**

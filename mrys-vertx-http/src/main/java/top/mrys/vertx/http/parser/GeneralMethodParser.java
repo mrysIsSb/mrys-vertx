@@ -7,6 +7,7 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
+import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -16,6 +17,8 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @author mrys
  * @date 2020/7/9
  */
+@Slf4j
+@Deprecated
 public class GeneralMethodParser extends AbstractHandlerParser {
 
   /**
@@ -55,7 +58,8 @@ public class GeneralMethodParser extends AbstractHandlerParser {
         event.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8")
             .end(mapper.writeValueAsString(o));
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error(e.getMessage(),e);
+        event.fail(e);
       }
     };
     router.route(enumHttpMethod.getHttpMethod(), value).blockingHandler(handler);

@@ -1,0 +1,2 @@
+top.mrys.vertx.http.parser.DefaultParamResolver
+top.mrys.vertx.http.parser.PathVarParamResolver

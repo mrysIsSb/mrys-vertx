@@ -16,4 +16,10 @@ import org.springframework.context.annotation.Import;
 @Import(MysqlStarter.class)
 public @interface EnableMysql {
 
+  /**
+   * mysql 配置前缀
+   *
+   * @author mrys
+   */
+  String configPrefix() default "mysqlConfig";
 }

@@ -12,21 +12,23 @@
   "profiles": {
     "active": "test"
   },
-  "configCentre": {
-    "storeType": "redis",
-    "config": {
-      "auth": "123456yj",
-      "key": "config",
-      "type": "SENTINEL",
-      "masterName": "mymaster",
-      "role": "MASTER",
-      "maxPoolSize": 32,
-      "maxPoolWaiting": 128,
-      "endpoints": [
-        "redis://192.168.124.16:26381",
-        "redis://192.168.124.16:26382",
-        "redis://192.168.124.16:26383"
-      ]
+  "configCentre": [
+    {
+      "storeType": "redis",
+      "config": {
+        "auth": "123456yj",
+        "key": "config",
+        "type": "SENTINEL",
+        "masterName": "mymaster",
+        "role": "MASTER",
+        "maxPoolSize": 32,
+        "maxPoolWaiting": 128,
+        "endpoints": [
+          "redis://192.168.124.16:26381",
+          "redis://192.168.124.16:26382",
+          "redis://192.168.124.16:26383"
+        ]
+      }
     }
-  }
+  ]
 }
