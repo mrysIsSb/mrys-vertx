@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.http.annotations.HeaderVar;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.exceptions.PathVarRequiredException;
 
@@ -11,21 +12,21 @@ import top.mrys.vertx.http.exceptions.PathVarRequiredException;
  * @author mrys
  * @date 2020/9/22
  */
-public class PathVarParamResolver implements ParamResolver {
+public class HeaderVarParamResolver implements ParamResolver {
 
   @Override
   public boolean match0(HttpParamType type) {
     return EnumParamFrom.PATH.equals(type.getFrom())
-        && AnnotationUtil.isHaveAnyAnnotations(type.getAnnotation(), PathVar.class);
+        && AnnotationUtil.isHaveAnyAnnotations(type.getAnnotation(), HeaderVar.class);
   }
 
   @Override
   public <T> T resolve(HttpParamType<T> type, RoutingContext context) {
-    PathVar pathVar = AnnotationUtil.getAnnotation(type.getAnnotation(), PathVar.class);
+    HeaderVar headerVar = AnnotationUtil.getAnnotation(type.getAnnotation(), HeaderVar.class);
     T result = Convert.convert(type.getClazz(),
-        context.pathParam(StrUtil.isNotBlank(pathVar.value()) ? pathVar.value() :
+        context.request().getHeader(StrUtil.isNotBlank(headerVar.value()) ? headerVar.value() :
             type.getName()));
-    if (pathVar.required() && result == null) {
+    if (headerVar.required() && result == null) {
       throw new PathVarRequiredException();
     }
     return result;

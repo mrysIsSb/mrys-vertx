@@ -5,5 +5,5 @@ package top.mrys.vertx.http.parser;
  * @date 2020/9/22
  */
 public enum EnumParamFrom {
-  PARAM, PATH, BODY, HEADER, COOKIE;
+  PARAM, PATH, BODY, HEADER, COOKIE,ANY;
 }

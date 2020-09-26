@@ -10,7 +10,7 @@ import io.vertx.ext.web.RoutingContext;
 public class DefaultParamResolver implements ParamResolver {
 
   @Override
-  public boolean match(HttpParamType type) {
+  public boolean match0(HttpParamType type) {
     return EnumParamFrom.PARAM.equals(type.getFrom());
   }
 

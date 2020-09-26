@@ -6,6 +6,7 @@ import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;
+import top.mrys.vertx.http.constants.EnumHttpMethod;
 
 /**
  * @author mrys
@@ -16,10 +17,15 @@ import top.mrys.vertx.http.annotations.RouteMapping;
 public class ConfigController {
 
 
-  @RouteMapping(value = "/:serverName/:profile")
-  public Future<JsonObject> getConfig(@PathVar String serverName, String profile) {
+  @RouteMapping(method = EnumHttpMethod.GET,value = "/getConfig/:serverName/:profile")
+  public Future<JsonObject> getConfig(@PathVar String serverName,@PathVar String profile) {
     return Future.succeededFuture(ConfigRepo.getInstance()
         .getForPath(serverName + "." + profile, JsonObject.class, new JsonObject()));
+  }
+
+  @RouteMapping(method = EnumHttpMethod.GET,value = "/getAll")
+  public Future<JsonObject> getAll() {
+    return Future.succeededFuture(ConfigRepo.getInstance().getData());
   }
 
 }

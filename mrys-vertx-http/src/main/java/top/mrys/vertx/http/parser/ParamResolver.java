@@ -8,12 +8,20 @@ import io.vertx.ext.web.RoutingContext;
  */
 public interface ParamResolver extends Comparable<ParamResolver> {
 
-  boolean match(HttpParamType type);
+  default boolean match(HttpParamType type) {
+    if (EnumParamFrom.ANY.equals(type.getFrom())) {
+      return true;
+    }
+    return match0(type);
+  }
+
+  boolean match0(HttpParamType type);
 
   <T> T resolve(HttpParamType<T> type, RoutingContext context);
 
   /**
    * 越大越优先
+   *
    * @author mrys
    */
   default int order() {
@@ -21,7 +29,7 @@ public interface ParamResolver extends Comparable<ParamResolver> {
   }
 
   default int compareTo(ParamResolver o) {
-    return Integer.compare(o.order(),order());
+    return Integer.compare(o.order(), order());
   }
 
 }

@@ -119,8 +119,7 @@ public class DefaultRouteFactory implements RouteFactory {
             .getMethodByAnnotation(clazz, RouteMapping.class);
         Object o = getControllerInstance(clazz);
         for (Method method : methods) {
-          ControllerMethodWrap wrap = new ControllerMethodWrap(method, clazz,
-              o);
+          ControllerMethodWrap wrap = new ControllerMethodWrap(method, clazz, o);
           Parser<ControllerMethodWrap, Router> p = null;
           for (Parser<ControllerMethodWrap, Router> parser : parsers) {
             if (parser.canExec(wrap)) {
@@ -135,7 +134,7 @@ public class DefaultRouteFactory implements RouteFactory {
         }
         if (Objects.nonNull(mapping)) {
           List<Route> routes = sonRouter.getRoutes();
-          routes.forEach(route -> log.debug(route.getPath()));
+          routes.forEach(route -> log.debug(mapping.value() + route.getPath()));
           router.mountSubRouter(mapping.value(), sonRouter);
         }
       }

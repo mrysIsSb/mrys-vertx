@@ -7,12 +7,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.http.annotations.HeaderVar;
 import top.mrys.vertx.http.annotations.PathVar;
 
 /**
@@ -24,11 +27,25 @@ import top.mrys.vertx.http.annotations.PathVar;
 public class HttpParamType<T> {
 
   private EnumParamFrom from;
-
+  /**
+   * 参数类型
+   *
+   * @author mrys
+   */
   private Class<T> clazz;
 
+  /**
+   * 参数注解
+   *
+   * @author mrys
+   */
   private Annotation[] annotation;
 
+  /**
+   * 参数名称
+   *
+   * @author mrys
+   */
   private String name;
 
   private HttpParamType() {
@@ -49,14 +66,27 @@ public class HttpParamType<T> {
     if (AnnotationUtil.isHaveAnyAnnotations(param, PathVar.class)) {
       return EnumParamFrom.PATH;
     }
-    return EnumParamFrom.PARAM;
+    if (AnnotationUtil.isHaveAnyAnnotations(param, HeaderVar.class)) {
+      return EnumParamFrom.HEADER;
+    }
+    return EnumParamFrom.ANY;
   }
 
   public T getValue(RoutingContext context) {
-    Iterator<ParamResolver> iterator = ServiceLoader.load(ParamResolver.class).iterator();
+    Iterator<ParamResolver> paramResolvers = ServiceLoader.load(ParamResolver.class).iterator();
     ArrayList<ParamResolver> resolvers = new ArrayList<>();
-    iterator.forEachRemaining(paramResolver -> resolvers.add(paramResolver));
-    return resolvers.stream().filter(paramResolver -> paramResolver.match(this))
-        .sorted().findFirst().get().resolve(this,context);
+    paramResolvers.forEachRemaining(paramResolver -> resolvers.add(paramResolver));
+    List<ParamResolver> resolverList = resolvers.stream()
+        .filter(paramResolver -> paramResolver.match(this))
+        .sorted().collect(Collectors.toList());
+    T result = null;
+    for (ParamResolver resolver : resolverList) {
+      T t = resolver.resolve(this, context);
+      //解析的数据不为空和预返回数据为空
+      if (t != null && result == null) {
+        result = t;
+      }
+    }
+    return result;
   }
 }
