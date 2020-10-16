@@ -1,6 +1,7 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.convert.Convert;
+import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -15,8 +16,9 @@ public class DefaultParamResolver implements ParamResolver {
   }
 
   @Override
-  public <T> T resolve(HttpParamType<T> type, RoutingContext context) {
-    return Convert.convert(type.getClazz(), context.request().getParam(type.getName()));
+  public <T> Future<T> resolve(HttpParamType<T> type, RoutingContext context) {
+    return Future.succeededFuture(
+        Convert.convert(type.getClazz(), context.request().getParam(type.getName())));
   }
 
 }

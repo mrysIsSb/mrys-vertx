@@ -1,16 +1,20 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.manager.JsonTransverter;
@@ -45,7 +49,8 @@ public class FutureMethodParser extends AbstractHandlerParser {
   public void accept(ControllerMethodWrap wrap, Router router) {
     Method method = wrap.getMethod();
     RouteMapping annotation = getRouteMapping(method);
-    String path = annotation.value();
+    String path =
+        StrUtil.isNotBlank(annotation.value()) ? annotation.value() : "/" + method.getName();
     EnumHttpMethod enumHttpMethod = annotation.method();
     Parameter[] parameters = method.getParameters();
     HttpParamType[] httpParamTypes = new HttpParamType[parameters.length];
@@ -54,13 +59,15 @@ public class FutureMethodParser extends AbstractHandlerParser {
     }
     Handler<RoutingContext> handler = event -> {
       try {
-        //todo 优化
         Object[] p = new Object[httpParamTypes.length];
         if (ArrayUtil.isNotEmpty(httpParamTypes)) {
           for (int i = 0; i < httpParamTypes.length; i++) {
-            p[i] = httpParamTypes[i].getValue(event);
+            int finalI = i;
+            httpParamTypes[i].getValue(event).onSuccess(o->p[finalI]=o);
           }
         }
+        Vertx.currentContext().runOnContext(ignore -> );
+        CompositeFuture.all(future, future).on
         Object o = method.invoke(wrap.getObject(), p);
         Future future = o instanceof Future ? ((Future) o) : null;
         HttpServerResponse response = event.response();

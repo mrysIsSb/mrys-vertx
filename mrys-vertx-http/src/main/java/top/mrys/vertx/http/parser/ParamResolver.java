@@ -1,5 +1,6 @@
 package top.mrys.vertx.http.parser;
 
+import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -17,7 +18,7 @@ public interface ParamResolver extends Comparable<ParamResolver> {
 
   boolean match0(HttpParamType type);
 
-  <T> T resolve(HttpParamType<T> type, RoutingContext context);
+  <T> Future<T> resolve(HttpParamType<T> type, RoutingContext context);
 
   /**
    * 越大越优先

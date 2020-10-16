@@ -1,6 +1,7 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.convert.Convert;
+import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -13,10 +14,12 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.http.annotations.HeaderVar;
 import top.mrys.vertx.http.annotations.PathVar;
+import top.mrys.vertx.http.annotations.ReqBody;
 
 /**
  * @author mrys
@@ -69,24 +72,18 @@ public class HttpParamType<T> {
     if (AnnotationUtil.isHaveAnyAnnotations(param, HeaderVar.class)) {
       return EnumParamFrom.HEADER;
     }
+    if (AnnotationUtil.isHaveAnyAnnotations(param, ReqBody.class)) {
+      return EnumParamFrom.BODY;
+    }
     return EnumParamFrom.ANY;
   }
 
-  public T getValue(RoutingContext context) {
+  public Future<T> getValue(RoutingContext context) {
     Iterator<ParamResolver> paramResolvers = ServiceLoader.load(ParamResolver.class).iterator();
     ArrayList<ParamResolver> resolvers = new ArrayList<>();
     paramResolvers.forEachRemaining(paramResolver -> resolvers.add(paramResolver));
-    List<ParamResolver> resolverList = resolvers.stream()
+    return resolvers.stream()
         .filter(paramResolver -> paramResolver.match(this))
-        .sorted().collect(Collectors.toList());
-    T result = null;
-    for (ParamResolver resolver : resolverList) {
-      T t = resolver.resolve(this, context);
-      //解析的数据不为空和预返回数据为空
-      if (t != null && result == null) {
-        result = t;
-      }
-    }
-    return result;
+        .sorted().findFirst().orElseGet(DefaultParamResolver::new).resolve(this, context);
   }
 }

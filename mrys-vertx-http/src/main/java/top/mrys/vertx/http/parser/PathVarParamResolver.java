@@ -2,6 +2,7 @@ package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.http.annotations.PathVar;
@@ -20,15 +21,15 @@ public class PathVarParamResolver implements ParamResolver {
   }
 
   @Override
-  public <T> T resolve(HttpParamType<T> type, RoutingContext context) {
+  public <T> Future<T> resolve(HttpParamType<T> type, RoutingContext context) {
     PathVar pathVar = AnnotationUtil.getAnnotation(type.getAnnotation(), PathVar.class);
     T result = Convert.convert(type.getClazz(),
         context.pathParam(StrUtil.isNotBlank(pathVar.value()) ? pathVar.value() :
             type.getName()));
     if (pathVar.required() && result == null) {
-      throw new PathVarRequiredException();
+      return Future.failedFuture(new PathVarRequiredException());
     }
-    return result;
+    return Future.succeededFuture(result);
   }
 
 }

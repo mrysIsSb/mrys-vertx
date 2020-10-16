@@ -169,6 +169,7 @@ public class MyLauncher extends AbstractVerticle {
 
   public static void run(Class mainClass, String[] args, Promise<ApplicationContext> handler) {
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
+    MyLauncher.context = context;
     context.addScanPackage("top.mrys.vertx.common");
     VertxImpl vertx = getVertxInstance();
     context.registerBean(Vertx.class, () -> vertx);
@@ -182,7 +183,6 @@ public class MyLauncher extends AbstractVerticle {
         log.info("refresh...");
         context.refresh();
         log.info("refreshed");
-        MyLauncher.context = context;
         handler.complete(context);
       } else {
         log.error("启动失败", event.cause());
