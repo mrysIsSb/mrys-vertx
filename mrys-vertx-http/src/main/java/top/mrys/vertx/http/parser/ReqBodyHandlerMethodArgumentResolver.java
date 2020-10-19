@@ -1,17 +1,12 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.common.manager.JsonTransverter;
-import top.mrys.vertx.common.utils.AnnotationUtil;
-import top.mrys.vertx.http.annotations.HeaderVar;
+import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.ReqBody;
-import top.mrys.vertx.http.exceptions.HeaderVarRequiredException;
 
 /**
  * @author mrys

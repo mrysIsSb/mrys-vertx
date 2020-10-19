@@ -4,11 +4,9 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
-import java.sql.Struct;
+import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.HeaderVar;
-import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.exceptions.HeaderVarRequiredException;
-import top.mrys.vertx.http.exceptions.PathVarRequiredException;
 
 /**
  * @author mrys

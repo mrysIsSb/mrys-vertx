@@ -1,16 +1,14 @@
-package top.mrys.vertx.http.parser;
+package top.mrys.vertx.common.other;
 
 import cn.hutool.core.util.ArrayUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.lang.Nullable;
 import top.mrys.vertx.common.utils.ASMUtil;
-import top.mrys.vertx.http.annotations.HeaderVar;
 
 /**
  * @author mrys

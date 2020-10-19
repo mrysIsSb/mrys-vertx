@@ -1,9 +1,9 @@
 package top.mrys.vertx.http.parser;
 
 import java.lang.reflect.Method;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.mrys.vertx.common.other.MethodParameter;
 
 /**
  * @author mrys

@@ -5,24 +5,13 @@ import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.RoutingContext;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
-import top.mrys.vertx.common.utils.ASMUtil;
-import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.common.utils.FutureUtil;
-import top.mrys.vertx.http.annotations.HeaderVar;
-import top.mrys.vertx.http.annotations.PathVar;
-import top.mrys.vertx.http.annotations.ReqBody;
 
 /**
  * @author mrys
