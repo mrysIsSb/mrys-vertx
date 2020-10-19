@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReqBody {
 
-  boolean required() default true;
+  boolean required() default false;
 }

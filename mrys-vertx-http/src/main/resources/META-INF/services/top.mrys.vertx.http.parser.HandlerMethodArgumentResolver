@@ -1,0 +1,4 @@
+top.mrys.vertx.http.parser.DefaultHandlerMethodArgumentResolver
+top.mrys.vertx.http.parser.PathVarHandlerMethodArgumentResolver
+top.mrys.vertx.http.parser.HeaderVarHandlerMethodArgumentResolver
+top.mrys.vertx.http.parser.ReqBodyHandlerMethodArgumentResolver

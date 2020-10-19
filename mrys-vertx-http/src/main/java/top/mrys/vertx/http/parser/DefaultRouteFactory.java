@@ -106,7 +106,6 @@ public class DefaultRouteFactory implements RouteFactory {
     });
     for (Class clazz : getRouteHandlerClass()) {
       if (AnnotationUtil.isHaveAnyAnnotations(clazz, RouteHandler.class)) {
-//        RouteMapping mapping = (RouteMapping) clazz.getAnnotation(RouteMapping.class);
         RouteMapping mapping = AnnotatedElementUtils
             .findMergedAnnotation(clazz, RouteMapping.class);
         Router sonRouter;
@@ -119,7 +118,7 @@ public class DefaultRouteFactory implements RouteFactory {
             .getMethodByAnnotation(clazz, RouteMapping.class);
         Object o = getControllerInstance(clazz);
         for (Method method : methods) {
-          ControllerMethodWrap wrap = new ControllerMethodWrap(method, clazz, o);
+          ControllerMethodWrap wrap = ControllerMethodWrap.create(method, clazz, o);
           Parser<ControllerMethodWrap, Router> p = null;
           for (Parser<ControllerMethodWrap, Router> parser : parsers) {
             if (parser.canExec(wrap)) {
@@ -146,6 +145,11 @@ public class DefaultRouteFactory implements RouteFactory {
     return classes;
   }
 
+  /**
+   * 获取控制器实例
+   *
+   * @author mrys
+   */
   @SneakyThrows
   protected Object getControllerInstance(Class clazz) {
     return clazz.newInstance();

@@ -7,11 +7,13 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.concurrent.CompletableFuture;
@@ -48,33 +50,30 @@ public class FutureMethodParser extends AbstractHandlerParser {
   @Override
   public void accept(ControllerMethodWrap wrap, Router router) {
     Method method = wrap.getMethod();
+    String path = getPath(wrap);
     RouteMapping annotation = getRouteMapping(method);
-    String path =
-        StrUtil.isNotBlank(annotation.value()) ? annotation.value() : "/" + method.getName();
     EnumHttpMethod enumHttpMethod = annotation.method();
-    Parameter[] parameters = method.getParameters();
-    HttpParamType[] httpParamTypes = new HttpParamType[parameters.length];
-    for (int i = 0; i < parameters.length; i++) {
-      httpParamTypes[i] = HttpParamType.getInstance(wrap.getClazz(), method, parameters[i], i);
-    }
+    HttpParameterFactory factory = HttpParameterFactory.getInstance(wrap);
     Handler<RoutingContext> handler = event -> {
       try {
-        Object[] p = new Object[httpParamTypes.length];
-        if (ArrayUtil.isNotEmpty(httpParamTypes)) {
-          for (int i = 0; i < httpParamTypes.length; i++) {
-            int finalI = i;
-            httpParamTypes[i].getValue(event).onSuccess(o->p[finalI]=o);
+        Promise<Object[]> p = Promise.promise();
+        factory.getHttpParameter(event, p);
+        Promise<Object> rep = Promise.promise();
+        p.future().onSuccess(oarr -> {
+          try {
+            Object o = method.invoke(wrap.getObject(), oarr);
+            Future future = o instanceof Future ? ((Future) o) : null;
+            future.onComplete(rep);
+          } catch (Exception e) {
+            e.printStackTrace();
+            event.fail(e);
           }
-        }
-        Vertx.currentContext().runOnContext(ignore -> );
-        CompositeFuture.all(future, future).on
-        Object o = method.invoke(wrap.getObject(), p);
-        Future future = o instanceof Future ? ((Future) o) : null;
+        });
         HttpServerResponse response = event.response();
         response.setStatusCode(HttpStatus.HTTP_OK);
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
-        future
-            .onComplete(re -> response.end(jsonTransverter.serialize(((AsyncResult) re).result())));
+        rep.future()
+            .onComplete(re -> response.end(jsonTransverter.serialize(re.result())));
       } catch (Exception e) {
         e.printStackTrace();
         event.fail(e);

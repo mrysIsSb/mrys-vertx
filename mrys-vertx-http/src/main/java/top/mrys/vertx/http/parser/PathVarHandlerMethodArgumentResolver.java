@@ -4,7 +4,9 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
+import java.sql.Struct;
 import top.mrys.vertx.common.utils.AnnotationUtil;
+import top.mrys.vertx.http.annotations.HeaderVar;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.exceptions.PathVarRequiredException;
 
@@ -12,9 +14,38 @@ import top.mrys.vertx.http.exceptions.PathVarRequiredException;
  * @author mrys
  * @date 2020/9/22
  */
-public class PathVarParamResolver implements ParamResolver {
+public class PathVarHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
+  /**
+   * 判断参数是否满足这个解析器
+   *
+   * @param parameter
+   * @author mrys
+   */
   @Override
+  public boolean match(MethodParameter parameter) {
+    //todo 需要改进 满足多种类型
+    return parameter.getParameterAnnotation(PathVar.class) != null;
+  }
+
+  /**
+   * 解析获取参数
+   *
+   * @param parameter
+   * @param context
+   * @author mrys
+   */
+  @Override
+  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
+    PathVar pathVar = parameter.getParameterAnnotation(PathVar.class);
+    String value = getFromUrlPath(
+        StrUtil.isNotBlank(pathVar.value()) ? pathVar.value() : parameter.getName(), context);
+    if (pathVar.required() && StrUtil.isBlank(value)) {
+      return Future.failedFuture(new PathVarRequiredException());
+    }
+    return Future.succeededFuture(Convert.convert(parameter.getParameterClass(), value));
+  }
+/* @Override
   public boolean match0(HttpParamType type) {
     return EnumParamFrom.PATH.equals(type.getFrom())
         && AnnotationUtil.isHaveAnyAnnotations(type.getAnnotation(), PathVar.class);
@@ -30,6 +61,6 @@ public class PathVarParamResolver implements ParamResolver {
       return Future.failedFuture(new PathVarRequiredException());
     }
     return Future.succeededFuture(result);
-  }
+  }*/
 
 }
