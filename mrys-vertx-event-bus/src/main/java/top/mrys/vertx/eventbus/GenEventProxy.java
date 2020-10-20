@@ -1,16 +1,22 @@
 package top.mrys.vertx.eventbus;
 
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
@@ -21,9 +27,12 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 生成请求代理的对象
+ *
  * @author mrys
  * @date 2020/9/7
  */
+@Configuration
 public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoaderAware,
     EnvironmentAware {
 
@@ -39,11 +48,12 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
   @Override
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
       BeanDefinitionRegistry registry) {
-    registerFeignClients(importingClassMetadata, registry);
+    registerMicroClients(importingClassMetadata, registry);
   }
 
-  public void registerFeignClients(AnnotationMetadata metadata,
+  public void registerMicroClients(AnnotationMetadata metadata,
       BeanDefinitionRegistry registry) {
+    //获取bean扫描器
     ClassPathScanningCandidateComponentProvider scanner = getScanner();
     scanner.setResourceLoader(this.resourceLoader);
 
@@ -62,6 +72,7 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
 
           Map<String, Object> attributes = annotationMetadata
               .getAnnotationAttributes(MicroClient.class.getCanonicalName());
+          //注册到容器
           registerMicroClient(registry, annotationMetadata, attributes);
         }
       }
@@ -80,7 +91,6 @@ public class GenEventProxy implements ImportBeanDefinitionRegistrar, ResourceLoa
     AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
 
     beanDefinition.setPrimary(true);
-
     registry.registerBeanDefinition(className, beanDefinition);
   }
 

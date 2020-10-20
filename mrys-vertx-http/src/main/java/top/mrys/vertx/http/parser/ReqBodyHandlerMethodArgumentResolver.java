@@ -1,6 +1,8 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.launcher.MyLauncher;
@@ -38,9 +40,13 @@ public class ReqBodyHandlerMethodArgumentResolver implements HandlerMethodArgume
     ReqBody body = parameter.getParameterAnnotation(ReqBody.class);
     JsonTransverter bean = MyLauncher.context.getBean(JsonTransverter.class);
     return getFromBody(context).compose(buffer -> {
-      T o = bean.deSerialize(buffer.toString(), parameter.getParameterClass());
-      if (body.required() && BeanUtil.isEmpty(o)) {
+      String st = buffer.toString();
+      if (body.required() && StrUtil.isBlank(st)) {
         return Future.failedFuture(new NullPointerException());
+      }
+      T o = null;
+      if (JSONUtil.isJson(st)) {
+        o = bean.deSerialize(st, parameter.getParameterClass());
       }
       return Future.succeededFuture(o);
     });

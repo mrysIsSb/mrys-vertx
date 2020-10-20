@@ -65,4 +65,14 @@ public class AnnotationUtil {
     }
     return null;
   }
+
+  /**
+   * 获取当前和父的并且合并属性
+   *
+   * @author mrys
+   */
+  public static <A extends Annotation> A findMergedAnnotation(AnnotatedElement annotatedElement,
+      Class<A> aClass) {
+    return AnnotatedElementUtils.getMergedAnnotation(annotatedElement, aClass);
+  }
 }

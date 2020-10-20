@@ -1,5 +1,6 @@
 package top.mrys.vertx.http.parser;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -40,6 +41,7 @@ public class HttpParameterFactory {
     MethodParameter[] methodParameters = wrap.getMethodParameters();
     if (ArrayUtil.isEmpty(methodParameters)) {
       promise.complete();
+      return;
     }
     Object[] objects = new Object[methodParameters.length];
     List<Future> futures = new ArrayList<>();

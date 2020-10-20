@@ -65,9 +65,9 @@ public class DefaultHandlerMethodArgumentResolver implements HandlerMethodArgume
           );
     } else if (Map.class.isAssignableFrom(parameterClass)) {
       //map
-
+      fu.nullOrFailedRecover(Future.succeededFuture());
     } else {
-
+      fu.nullOrFailedRecover(Future.succeededFuture());
     }
     return fu.getFuture();
   }

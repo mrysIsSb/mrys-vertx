@@ -14,10 +14,13 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import top.mrys.vertx.boot.api.SysUserApi;
+import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.common.manager.VertxManager;
 import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.Test;
+import top.mrys.vertx.http.annotations.PostRoute;
+import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteHeader;
 import top.mrys.vertx.http.annotations.RouteMapping;
@@ -50,14 +53,14 @@ public class DemoController {
     };
   }
 
-/*  @RouteHeader(name = "headerName", value = "value123123")
-  @RouteHeader(name = "headerName", value = "value123123")
-  @RouteMapping(value = "/test2", method = EnumHttpMethod.GET)
-  //不推荐
-  public Map test2() {
-    Map map = new HashMap<>();
-    return map;
-  }*/
+  /*  @RouteHeader(name = "headerName", value = "value123123")
+    @RouteHeader(name = "headerName", value = "value123123")
+    @RouteMapping(value = "/test2", method = EnumHttpMethod.GET)
+    //不推荐
+    public Map test2() {
+      Map map = new HashMap<>();
+      return map;
+    }*/
   @RouteMapping(value = "/test3", method = EnumHttpMethod.GET)
   public Future<Integer> test3() {
     Promise<Integer> promise = Promise.promise();
@@ -66,7 +69,7 @@ public class DemoController {
   }
 
   @RouteMapping(value = "/test4", method = EnumHttpMethod.GET)
-  public Future<List<SysUser>> test4() {
+  public Future<Result<List<SysUser>>> test4() {
     return sysUserApi.getAll();
   }
 
@@ -85,6 +88,12 @@ public class DemoController {
     String[] parameterNames = discoverer.getParameterNames(method);
     System.out.println(parameterNames);
     return sysUserApi.getById(id);
+  }
+
+  @PostRoute
+  public Future<Result<List<SysUser>>> test7(@ReqBody SysUser sysUser) {
+    System.out.println(sysUser);
+    return sysUserApi.getAll(sysUser);
   }
 
 }

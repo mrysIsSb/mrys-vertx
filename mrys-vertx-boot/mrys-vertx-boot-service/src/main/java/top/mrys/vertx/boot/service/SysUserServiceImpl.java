@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import top.mrys.vertx.boot.api.SysUserApi;
+import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.common.spring.ConditionalOnBean;
 import top.mrys.vertx.http.annotations.RouteHandler;
@@ -57,8 +58,8 @@ public class SysUserServiceImpl implements SysUserApi {
   }
 
   @Override
-  public Future<List<SysUser>> getAll() {
-    Promise<List<SysUser>> promise = Promise.promise();
+  public Future<Result<List<SysUser>>> getAll() {
+    Promise<Result<List<SysUser>>> promise = Promise.promise();
     mysqlSession.query("select * from sys_user")
         .execute(event -> {
           if (event.succeeded()) {
@@ -70,7 +71,7 @@ public class SysUserServiceImpl implements SysUserApi {
               sysUser.setUsername(row.getString("username"));
               sysUsers.add(sysUser);
             });
-            promise.complete(sysUsers);
+            promise.complete(Result.okData(sysUsers));
           } else {
             promise.fail(event.cause());
           }
@@ -81,5 +82,28 @@ public class SysUserServiceImpl implements SysUserApi {
   @Override
   public Future<Integer> test5() {
     return Future.succeededFuture(1);
+  }
+
+  @Override
+  public Future<Result<List<SysUser>>> getAll(SysUser user) {
+    System.out.println(user);
+    Promise<Result<List<SysUser>>> promise = Promise.promise();
+    mysqlSession.query("select * from sys_user")
+        .execute(event -> {
+          if (event.succeeded()) {
+            RowSet<Row> result = event.result();
+            ArrayList<SysUser> sysUsers = new ArrayList<>();
+            result.forEach(row -> {
+              SysUser sysUser = new SysUser();
+              sysUser.setId(row.getInteger("id"));
+              sysUser.setUsername(row.getString("username"));
+              sysUsers.add(sysUser);
+            });
+            promise.complete(Result.okData(sysUsers));
+          } else {
+            promise.fail(event.cause());
+          }
+        });
+    return promise.future();
   }
 }

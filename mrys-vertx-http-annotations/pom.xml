@@ -27,5 +27,11 @@
       <artifactId>spring-context</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-common</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 </project>
