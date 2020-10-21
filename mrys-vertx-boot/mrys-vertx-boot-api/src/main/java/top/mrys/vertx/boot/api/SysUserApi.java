@@ -40,4 +40,5 @@ public interface SysUserApi {
 
   @PostRoute("/getAll1")
   Future<Result<List<SysUser>>> getAll(@ReqBody SysUser sysUser);
+
 }

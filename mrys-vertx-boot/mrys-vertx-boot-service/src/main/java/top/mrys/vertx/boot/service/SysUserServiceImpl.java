@@ -24,7 +24,7 @@ import top.mrys.vertx.mysql.starter.MysqlSession;
  * @date 2020/9/8
  */
 @RouteHandler
-public class SysUserServiceImpl implements SysUserApi {
+public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysUserApi {
 
   @Autowired
   private MysqlSession mysqlSession;

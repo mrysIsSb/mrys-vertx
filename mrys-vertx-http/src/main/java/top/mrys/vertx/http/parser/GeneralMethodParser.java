@@ -8,6 +8,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -48,7 +49,8 @@ public class GeneralMethodParser extends AbstractHandlerParser {
   @Override
   public void accept(ControllerMethodWrap wrap, Router router) {
     Method method = wrap.getMethod();
-    RouteMapping annotation = method.getAnnotation(RouteMapping.class);
+    RouteMapping annotation = AnnotatedElementUtils
+        .findMergedAnnotation(method, RouteMapping.class);
     String value = annotation.value();
     EnumHttpMethod enumHttpMethod = annotation.method();
     Handler<RoutingContext> handler = event -> {

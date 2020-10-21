@@ -1,18 +1,23 @@
 package top.mrys.vertx.common.other;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReflectUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotationSelectors;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import top.mrys.vertx.common.utils.ASMUtil;
+import top.mrys.vertx.common.utils.AnnotationUtil;
 
 /**
  * @author mrys
@@ -72,9 +77,9 @@ public class MethodParameter {
         return (A) ann;
       }
     }
-    MergedAnnotations.from(parameterAnnotations).get()
-    return  AnnotatedElementUtils.findMergedAnnotation(parameter, annotationType);
-//    return AnnotatedElementUtils.findMergedAnnotation(parameter, annotationType);
+    return  MergedAnnotations.from(parameterAnnotations)
+        .get(annotationType, null, MergedAnnotationSelectors.firstDirectlyDeclared())
+        .synthesize(MergedAnnotation::isPresent).orElse(null);
   }
 
   @SneakyThrows
@@ -88,9 +93,7 @@ public class MethodParameter {
         MethodParameter methodParameter = new MethodParameter();
         methodParameter.name = paramNames[i];
         methodParameter.parameterClass = parameter.getType();
-        methodParameter.parameterAnnotations = getMethodParametersAnnotations(i, parameter,
-            methodParameter);
-        methodParameter.parameterAnnotations = parameter.getAnnotations();
+        methodParameter.parameterAnnotations = getMethodParametersAnnotations(i, parameter);
         methodParameter.parameterIndex = i;
         methodParameter.parameter = parameter;
         methodParameter.method = method;
@@ -100,24 +103,8 @@ public class MethodParameter {
     return result;
   }
 
-  //todo 去父类查询
-  protected static Annotation[] getMethodParametersAnnotations(int i, Parameter parameter,
-      MethodParameter methodParameter) {
+  protected static Annotation[] getMethodParametersAnnotations(int i, Parameter parameter) {
     Annotation[] paramAnns = parameter.getAnnotations();
-    if (ArrayUtil.isEmpty(paramAnns)) {
-      Annotation[][] annotationArray = parameter.getDeclaringExecutable().getParameterAnnotations();
-      int index = i;
-      if (parameter.getDeclaringExecutable() instanceof Constructor &&
-          ClassUtils.isInnerClass(parameter.getDeclaringExecutable().getDeclaringClass()) &&
-          annotationArray.length == parameter.getDeclaringExecutable().getParameterCount() - 1) {
-        // Bug in javac in JDK <9: annotation array excludes enclosing instance parameter
-        // for inner classes, so access it with the actual parameter index lowered by 1
-        index = i - 1;
-      }
-      paramAnns = (index >= 0 && index < annotationArray.length ? annotationArray[index]
-          : new Annotation[0]);
-      methodParameter.parameterAnnotations = paramAnns;
-    }
-    return paramAnns;
+    return ArrayUtil.append(paramAnns, AnnotationUtil.getInterfaceMethodParameterAnnotation(parameter, i));
   }
 }
