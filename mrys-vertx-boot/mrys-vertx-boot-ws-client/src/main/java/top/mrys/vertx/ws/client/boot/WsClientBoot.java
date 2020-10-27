@@ -21,7 +21,6 @@ public class WsClientBoot {
 
   public static void main(String[] args) {
     ConfigurableApplicationContext run = SpringApplication.run(WsClientBoot.class, args);
-    System.out.println(run);
     /*Vertx vertx = Vertx.vertx();
 
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
@@ -40,7 +39,11 @@ public class WsClientBoot {
             if (event.succeeded()) {
               WebSocket result = event.result();
               result.write(Buffer.buffer("你好"), event1 -> System.out.println(event1.succeeded()));
-              result.handler(event1 -> System.out.println("client:" + event1.toString()));
+              result.closeHandler(event1 -> log.info("client: 关闭"));
+              result.handler(event1 -> {
+                System.out.println("client:" + event1.toString());
+                vertx.setTimer(1000, event2 -> result.write(Buffer.buffer(event1.toString())));
+              });
             } else {
               event.cause().printStackTrace();
             }

@@ -28,7 +28,7 @@ public class WsStarter implements ApplicationListener<ApplicationStartedEvent> {
         new DeploymentOptions()
             .setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
           if (re.succeeded()) {
-            log.info("wsVerticle 启动成功");
+            log.info("ws 启动成功");
           } else {
             log.error(re.cause().getMessage(), re.cause());
           }

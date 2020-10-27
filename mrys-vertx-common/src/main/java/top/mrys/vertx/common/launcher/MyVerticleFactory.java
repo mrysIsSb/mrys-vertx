@@ -1,5 +1,6 @@
 package top.mrys.vertx.common.launcher;
 
+import io.vertx.core.http.HttpServerOptions;
 import lombok.Getter;
 import lombok.Setter;
 import top.mrys.vertx.common.factorys.DefaultObjectInstanceFactory;
@@ -20,12 +21,21 @@ public class MyVerticleFactory {
   @Getter
   private ObjectInstanceFactory instanceFactory = new DefaultObjectInstanceFactory();
 
+  @Setter
+  @Getter
+  private ApplicationContext context = new ApplicationContext();
+
+  @Getter
+  @Setter
+  private HttpServerOptions httpServerOptions = new HttpServerOptions();
+
 
   public <T extends MyAbstractVerticle> T getMyAbstractVerticle(Class<T> verticleClass) {
     T verticle = instanceFactory.getInstance(verticleClass);
-    if (verticle.getInstanceFactory() == null) {
-      verticle.setInstanceFactory(instanceFactory);
+    if (verticle.getContext() == null) {
+      verticle.setContext(context);
     }
     return verticle;
   }
+
 }

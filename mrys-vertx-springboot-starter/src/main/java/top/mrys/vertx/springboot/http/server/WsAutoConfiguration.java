@@ -18,9 +18,8 @@ public class WsAutoConfiguration {
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  public WsVerticle wsVerticle(ObjectInstanceFactory instanceFactory) {
+  public WsVerticle wsVerticle() {
     WsVerticle wsVerticle = new WsVerticle();
-    wsVerticle.setInstanceFactory(instanceFactory);
     return wsVerticle;
   }
 }

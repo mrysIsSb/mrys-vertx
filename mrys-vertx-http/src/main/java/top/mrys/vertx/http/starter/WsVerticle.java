@@ -6,6 +6,7 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.ServerWebSocket;
 import lombok.Getter;
 import lombok.Setter;
+import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
 import top.mrys.vertx.http.parser.WebSocketHandlerFactory;
 
@@ -47,6 +48,7 @@ public class WsVerticle extends MyAbstractVerticle {
    * @author mrys
    */
   private WebSocketHandlerFactory getWebSocketHandlerFactory() {
+    ObjectInstanceFactory instanceFactory = context.getInstanceFactory();
     WebSocketHandlerFactory instance = instanceFactory.getInstance(WebSocketHandlerFactory.class);
     if (instance == null) {
       instance = WebSocketHandlerFactory.getDefaultWebSocketHandlerFactory();

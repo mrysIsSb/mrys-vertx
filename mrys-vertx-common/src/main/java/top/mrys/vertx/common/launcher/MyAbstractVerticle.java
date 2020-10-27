@@ -13,6 +13,6 @@ public class MyAbstractVerticle extends AbstractVerticle {
 
   @Setter
   @Getter
-  protected ObjectInstanceFactory instanceFactory;
+  protected ApplicationContext context;
 
 }

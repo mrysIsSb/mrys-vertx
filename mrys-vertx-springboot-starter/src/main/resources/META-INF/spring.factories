@@ -1,2 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   top.mrys.vertx.springboot.AutoConfiguration
+
+org.springframework.context.ApplicationListener=\
+  top.mrys.vertx.springboot.EventListener

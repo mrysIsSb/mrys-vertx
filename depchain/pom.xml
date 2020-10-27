@@ -34,8 +34,7 @@
     <mrys-vertx-http.version>1.0</mrys-vertx-http.version>
     <mrys-vertx-mysql.version>1.0</mrys-vertx-mysql.version>
     <mrys-vertx-redis.version>1.0</mrys-vertx-redis.version>
-
-
+    <mrys-vertx-springboot-starter.version>1.0</mrys-vertx-springboot-starter.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -128,6 +127,11 @@
         <artifactId>mrys-vertx-redis</artifactId>
         <version>${mrys-vertx-redis.version}</version>
       </dependency>
+<!--      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-springboot-starter</artifactId>
+        <version>${mrys-vertx-springboot-starter.version}</version>
+      </dependency>-->
       <!--      mrys-vertx -->
     </dependencies>
   </dependencyManagement>

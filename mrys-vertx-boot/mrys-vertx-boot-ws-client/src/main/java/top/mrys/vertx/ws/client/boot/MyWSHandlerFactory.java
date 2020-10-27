@@ -20,4 +20,22 @@ public class MyWSHandlerFactory implements WebSocketHandlerFactory {
   public Logger getLogger() {
     return log;
   }
+
+  @Override
+  public Handler<Buffer> handler(ServerWebSocket socket) {
+    return new Handler<Buffer>() {
+      int i = 0;
+      @Override
+      public void handle(Buffer event) {
+        if (i < 10) {
+          i++;
+          String s = event.toString();
+          log.info("接收："+ s);
+          socket.write(Buffer.buffer(s + i));
+        }else {
+          socket.close();
+        }
+      }
+    };
+  }
 }

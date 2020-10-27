@@ -108,7 +108,11 @@
         <artifactId>mrys-vertx-http-annotations</artifactId>
         <version>${mrys-vertx-http-annotations.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-springboot-starter</artifactId>
+        <version>${mrys-vertx-springboot-starter.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.ow2.asm</groupId>
