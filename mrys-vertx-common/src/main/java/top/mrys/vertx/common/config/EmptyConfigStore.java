@@ -9,6 +9,8 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 
 /**
+ * 空配置仓库
+ *
  * @author mrys
  * @date 2020/8/8
  */

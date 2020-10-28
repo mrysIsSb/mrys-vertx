@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 /**
+ * 配置仓库工厂
+ *
  * @author mrys
  * @date 2020/8/8
  */
@@ -24,14 +26,13 @@ public class ConfigCentreStoreFactory implements ConfigStoreFactory {
   public static final String configCentre = "configCentre";
 
 
-
   private final HashMap<String, MyConfigStoreTk> map = new HashMap<>();
 
-  private final ConfigStore emptyConfigStore=new EmptyConfigStore();
+  private final ConfigStore emptyConfigStore = new EmptyConfigStore();
 
   public ConfigCentreStoreFactory() {
-    ServiceLoader<MyConfigStoreTk> load =ServiceLoader.load(MyConfigStoreTk.class);
-    load.forEach(myConfigStoreTk -> map.put(myConfigStoreTk.getStoreName(),myConfigStoreTk));
+    ServiceLoader<MyConfigStoreTk> load = ServiceLoader.load(MyConfigStoreTk.class);
+    load.forEach(myConfigStoreTk -> map.put(myConfigStoreTk.getStoreName(), myConfigStoreTk));
   }
 
   /**

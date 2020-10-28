@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * @author mrys
@@ -22,8 +23,6 @@ public class EventListener implements GenericApplicationListener {
       ConfigurableEnvironment environment = preparedEvent.getEnvironment();
       SpringApplication springApplication = preparedEvent.getSpringApplication();
       springApplication.setWebApplicationType(WebApplicationType.NONE);
-      System.out.println(environment.getProperty("tt"));
-      System.out.println(environment.getProperty("t"));
       environment.getPropertySources().forEach(propertySource -> {
         System.out.println(propertySource.getName());
         System.out.println(propertySource.getSource());
