@@ -3,9 +3,7 @@ package top.mrys.vertx.springboot;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.impl.JsonUtil;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.slf4j.Slf4j;
@@ -38,27 +36,40 @@ public class EventListener implements GenericApplicationListener {
       //传入指定的配置属性
       config.put("profiles", Arrays.asList(profiles));
       AtomicBoolean isContinue = new AtomicBoolean(false);
-      vertx.eventBus().consumer("config.data", event1 -> {
+
+      vertx.eventBus().consumer("config.data.update", event1 -> {
         JsonObject body = (JsonObject) event1.body();
-        environment.getPropertySources()
-            .addFirst(new JsonPropertySource("vertx Config", body));
-        isContinue.set(true);
+        JsonPropertySource vertxConfig = (JsonPropertySource) environment.getPropertySources()
+            .get("vertxConfig");
+        vertxConfig.setSource(body);
       });
       vertx.deployVerticle(VertxRelevantObjectInstanceFactory::createConfigVerticle,
           new DeploymentOptions().setConfig(config),
           result -> {
             if (result.failed()) {
-             log.error(result.result(),result.cause());
+              log.error(result.result(), result.cause());
+            }else {
+              vertx.eventBus().request("config.data", null, event1 -> {
+                if (event1.succeeded()) {
+                  Object data = event1.result().body();
+                  JsonObject body = (JsonObject) data;
+                  environment.getPropertySources()
+                      .addFirst(new JsonPropertySource("vertxConfig", body));
+                  isContinue.set(true);
+                }else {
+                  log.error(event1.cause().getMessage(),event1.cause());
+                }
+              });
             }
           }
       );
+
       while (!isContinue.get()) {
         try {
           TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        System.out.println(isContinue.get());
       }
     }
   }
