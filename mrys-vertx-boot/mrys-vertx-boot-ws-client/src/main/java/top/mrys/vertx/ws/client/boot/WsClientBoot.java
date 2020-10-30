@@ -49,5 +49,9 @@ public class WsClientBoot {
             }
           });
     });
+    run.getEnvironment().getPropertySources().forEach(propertySource -> {
+      System.out.println(propertySource.getName());
+      System.out.println(propertySource.getSource());
+    });
   }
 }

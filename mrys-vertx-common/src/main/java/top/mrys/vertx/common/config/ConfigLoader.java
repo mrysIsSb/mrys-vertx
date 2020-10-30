@@ -21,7 +21,6 @@ public class ConfigLoader {
 
   public ConfigRepo load() {
     EventBus eventBus = vertx.eventBus();
-    eventBus.
     return ConfigRepo.getInstance();
   }
 

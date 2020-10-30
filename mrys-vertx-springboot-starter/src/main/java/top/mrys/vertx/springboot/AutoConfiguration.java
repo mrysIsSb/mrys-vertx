@@ -26,23 +26,10 @@ public class AutoConfiguration {
 
   @Bean
   public Vertx vertx() {
-    Vertx vertx = Vertx.vertx();
-    addShutdownHook(vertx);
-    return vertx;
+    return VertxRelevantObjectInstanceFactory.createVertx();
   }
 
-  private void addShutdownHook(Vertx vertx) {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      CountDownLatch latch = new CountDownLatch(1);
-      vertx.close().onComplete(event -> latch.countDown());
-      try {
-        System.out.println("vertx ---- stop");
-        latch.await(10, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }));
-  }
+
   /**
    * 对象实例化工厂
    *
