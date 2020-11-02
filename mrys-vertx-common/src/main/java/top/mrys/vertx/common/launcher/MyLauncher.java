@@ -82,6 +82,8 @@ public class MyLauncher extends AbstractVerticle {
         JsonObject json1 = event.getNewConfiguration();
         configRepo.mergeInData(json1).resolve();
       });
+    }else {
+      promise.complete();
     }
   }
 

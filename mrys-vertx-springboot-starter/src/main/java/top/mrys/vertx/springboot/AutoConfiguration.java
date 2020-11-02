@@ -1,6 +1,7 @@
 package top.mrys.vertx.springboot;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import top.mrys.vertx.common.config.ConfigLoader;
+import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.factorys.SpringObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
@@ -37,14 +40,12 @@ public class AutoConfiguration {
    */
   @Bean
   public ObjectInstanceFactory objectInstanceFactory() {
-    return new SpringObjectInstanceFactory();
+    return VertxRelevantObjectInstanceFactory.objectInstanceFactory();
   }
 
   @Bean
   public ApplicationContext context() {
-    ApplicationContext applicationContext = new ApplicationContext();
-    applicationContext.setInstanceFactory(objectInstanceFactory());
-    return applicationContext;
+    return VertxRelevantObjectInstanceFactory.context();
   }
 
   /**
@@ -58,6 +59,11 @@ public class AutoConfiguration {
     verticleFactory.setInstanceFactory(objectInstanceFactory());
     verticleFactory.setContext(context());
     return verticleFactory;
+  }
+
+  @Bean
+  public ConfigRepo vertxConfig() {
+    return VertxRelevantObjectInstanceFactory.getConfigLoader().load();
   }
 
 }

@@ -2,6 +2,7 @@ package top.mrys.vertx.common.launcher;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.factorys.DefaultObjectInstanceFactory;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 
@@ -17,4 +18,5 @@ public class ApplicationContext {
 
   private ObjectInstanceFactory instanceFactory = new DefaultObjectInstanceFactory();
 
+  private ConfigLoader configLoader = new ConfigLoader();
 }

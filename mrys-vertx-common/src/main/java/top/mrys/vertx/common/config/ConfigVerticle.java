@@ -11,46 +11,72 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import top.mrys.vertx.common.launcher.ApplicationContext;
+import top.mrys.vertx.common.launcher.MyAbstractVerticle;
 
 /**
  * @author mrys
  * @date 2020/10/29
  */
 @Slf4j
-public class ConfigVerticle extends AbstractVerticle {
+public class ConfigVerticle extends MyAbstractVerticle {
 
   private final static String CONF_PREFIX = "-conf";
 
-  private String[] args;
+  /**
+   * 配置数据
+   *
+   * @author mrys
+   */
+  private String dataKey = "config.data";
 
-  private JsonObject data = new JsonObject();
+
+  private String[] args;
 
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    vertx.eventBus().consumer("config.data", event -> {
+    ConfigLoader configLoader = context.getConfigLoader();
+    vertx.eventBus().consumer(dataKey, event -> {
+      JsonObject data = configLoader.getConfig();
       log.info("请求配置数据：{}", data);
       event.reply(data);
     });
-    ConfigRetriever retriever = ConfigRetriever.create(vertx);
-    retriever.getConfig(config -> {
-      log.info(config.result().toString());
-      data = config.result();
-    });
-    retriever.listen(event -> {
-      data = event.getNewConfiguration();
-      log.info("更新配置数据:{}", data);
-      vertx.eventBus().publish("config.data.update", data);
-    });
-    startPromise.complete();
+    initConfig(startPromise, configLoader);
   }
 
-  private void updateConfig(JsonObject json, Promise<Void> promise) {
-    ConfigRepo configRepo = ConfigRepo.getInstance();
-    configRepo.mergeInData(json);
-    List<JsonObject> centres = configRepo.getArrForKey("configCentre", JsonObject.class);
+  /**
+   * 获取本地配置
+   *
+   * @author mrys
+   */
+  protected void initConfig(Promise<Void> startPromise, ConfigLoader configLoader) {
+    ConfigRetrieverOptions options = new ConfigRetrieverOptions();
+    options.setStores(getDefault());
+
+    ConfigRetriever retriever = ConfigRetriever.create(vertx, options);
+    retriever.listen(event -> {
+      JsonObject data = event.getNewConfiguration();
+      configLoader.updateConfig(data);
+    });
+    retriever.getConfig(config -> {
+      if (config.succeeded()) {
+        configLoader.updateConfig(config.result());
+        updateConfig(config.result(), retriever, startPromise);
+      } else {
+        startPromise.fail(config.cause());
+      }
+    });
+  }
+
+  private void updateConfig(JsonObject json, ConfigRetriever old, Promise<Void> promise) {
+    ConfigLoader configLoader = context.getConfigLoader();
+    configLoader.updateConfig(json);
+    List<JsonObject> centres = configLoader
+        .getArrForKey(ConfigCentreStoreFactory.configCentre, JsonObject.class);
     if (CollectionUtil.isNotEmpty(centres)) {
       ConfigStoreOptions[] options = centres.stream()
           .map(jsonObject -> new ConfigStoreOptions()
@@ -60,28 +86,61 @@ public class ConfigVerticle extends AbstractVerticle {
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(args, options);
       retriever1.getConfig()
-          .onSuccess(event -> configRepo.mergeInData(event).resolve())
+          .onSuccess(event -> {
+            configLoader.updateConfig(event);
+            configLoader.show();
+          })
           .map(o -> (Void) null)
           .onComplete(promise);
 
       retriever1.listen(event -> {
-        JsonObject json1 = event.getNewConfiguration();
-        configRepo.mergeInData(json1).resolve();
+        JsonObject newConfig = event.getNewConfiguration();
+        configLoader.updateConfig(newConfig);
+        configLoader.show();
       });
+      old.close();
+    } else {
+      promise.complete();
     }
   }
 
-  private static ConfigRetriever getConfigRetriever(String[] args, ConfigStoreOptions... other) {
+  private ConfigRetriever getConfigRetriever(String[] args, ConfigStoreOptions... other) {
     Vertx tempVertx = Vertx.vertx();
     ConfigRetrieverOptions op = new ConfigRetrieverOptions();
+    op.addStore(getBootOptions());
     if (ArrayUtil.isNotEmpty(other)) {
       for (ConfigStoreOptions options : other) {
         op.addStore(options);
       }
     }
-    op.addStore(getBootOptions()).addStore(getArgsConfigStoreOptions(args));
+    op.addStore(getJsonConfig());
     return ConfigRetriever.create(tempVertx, op);
   }
+
+  /**
+   * 配置仓库 后会代替前面
+   * <ol>
+   *   <li>conf/boot.conf</li>
+   *   <li>config()</li>
+   * </ol>
+   *
+   * @author mrys
+   */
+  private List<ConfigStoreOptions> getDefault() {
+    List<ConfigStoreOptions> stores = new ArrayList<>();
+    stores.add(getBootOptions());
+    stores.add(
+        getJsonConfig());
+//    stores.add(new ConfigStoreOptions().setType("sys"));
+//    stores.add(new ConfigStoreOptions().setType("env"));
+    return stores;
+  }
+
+  private ConfigStoreOptions getJsonConfig() {
+    return new ConfigStoreOptions().setType("json")
+        .setConfig(config());
+  }
+
 
   private static ConfigStoreOptions getBootOptions() {
     return new ConfigStoreOptions()
@@ -91,28 +150,5 @@ public class ConfigVerticle extends AbstractVerticle {
         .setConfig(new JsonObject()
             .put("path", "conf" + File.separator + "boot.conf")
         );
-  }
-
-  /**
-   * 获取传递过来的参数
-   *
-   * @author mrys
-   */
-  private static ConfigStoreOptions getArgsConfigStoreOptions(String[] args) {
-    JsonObject json = new JsonObject();
-    if (args != null && args.length > 0) {
-      for (String arg : args) {
-        if (arg.startsWith(CONF_PREFIX)) {
-          String conf = arg.substring(CONF_PREFIX.length() + 1);
-          if (JSONUtil.isJson(conf)) {
-            json = new JsonObject(conf);
-          }
-        }
-      }
-    }
-    return new ConfigStoreOptions()
-        .setType("json")
-        .setOptional(true)
-        .setConfig(json);
   }
 }

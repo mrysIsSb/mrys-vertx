@@ -1,10 +1,9 @@
 package top.mrys.vertx.common.config;
 
-import com.typesafe.config.Config;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.EventBus;
-import lombok.Getter;
-import lombok.Setter;
+import io.vertx.core.json.JsonObject;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 配置加载器
@@ -12,17 +11,47 @@ import lombok.Setter;
  * @author mrys
  * @date 2020/10/28
  */
+@Slf4j
 public class ConfigLoader {
 
-  @Getter
-  @Setter
-  private Vertx vertx;
-
+  /**
+   * on config data update event key
+   *
+   * @author mrys
+   */
+  private String dataUpdateKey = "config.data.update";
 
   public ConfigRepo load() {
-    EventBus eventBus = vertx.eventBus();
     return ConfigRepo.getInstance();
   }
 
+  public JsonObject getConfig() {
+    return load().getData();
+  }
 
+  public void updateConfig(JsonObject data) {
+    load().mergeInData(data).resolve();
+    Vertx owner = Vertx.currentContext().owner();
+    if (owner != null) {
+      log.info("更新配置数据:{}", data);
+      owner.eventBus().publish(dataUpdateKey, data);
+    }
+  }
+
+  public String[] getActiveProfiles() {
+    return load().getProfilesActive();
+  }
+
+
+  public <T> List<T> getArrForKey(String key, Class<T> clazz) {
+    return load().getArrForKey(key, clazz);
+  }
+
+  public void show() {
+    log.info("{}", getConfig());
+  }
+
+  public Object getByPath(String name) {
+    return load().getForPath(name, Object.class);
+  }
 }

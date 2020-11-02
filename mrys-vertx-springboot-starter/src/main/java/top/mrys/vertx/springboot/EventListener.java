@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertySource;
 
 /**
  * @author mrys
@@ -34,32 +33,19 @@ public class EventListener implements GenericApplicationListener {
       Vertx vertx = VertxRelevantObjectInstanceFactory.createVertx();
       JsonObject config = new JsonObject();
       //传入指定的配置属性
-      config.put("profiles", Arrays.asList(profiles));
+      config.put("profiles", new JsonObject().put("active", Arrays.asList(profiles)));
       AtomicBoolean isContinue = new AtomicBoolean(false);
 
-      vertx.eventBus().consumer("config.data.update", event1 -> {
-        JsonObject body = (JsonObject) event1.body();
-        JsonPropertySource vertxConfig = (JsonPropertySource) environment.getPropertySources()
-            .get("vertxConfig");
-        vertxConfig.setSource(body);
-      });
       vertx.deployVerticle(VertxRelevantObjectInstanceFactory::createConfigVerticle,
           new DeploymentOptions().setConfig(config),
           result -> {
             if (result.failed()) {
               log.error(result.result(), result.cause());
-            }else {
-              vertx.eventBus().request("config.data", null, event1 -> {
-                if (event1.succeeded()) {
-                  Object data = event1.result().body();
-                  JsonObject body = (JsonObject) data;
-                  environment.getPropertySources()
-                      .addFirst(new JsonPropertySource("vertxConfig", body));
-                  isContinue.set(true);
-                }else {
-                  log.error(event1.cause().getMessage(),event1.cause());
-                }
-              });
+            } else {
+              VertxPropertySource vertxConfig = VertxPropertySource
+                  .getInstance("vertxConfig", VertxRelevantObjectInstanceFactory.getConfigLoader());
+              environment.getPropertySources().addFirst(vertxConfig);
+              isContinue.set(true);
             }
           }
       );

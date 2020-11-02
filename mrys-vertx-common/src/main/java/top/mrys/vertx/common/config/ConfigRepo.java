@@ -1,5 +1,8 @@
 package top.mrys.vertx.common.config;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigParseOptions;
@@ -37,8 +40,8 @@ public class ConfigRepo {
   }
 
 
-  public String getProfilesActive() {
-    return MyJsonUtil.getByPath(data.toString(), "profiles.active", String.class);
+  public String[] getProfilesActive() {
+    return MyJsonUtil.getByPath(data.toString(), "profiles.active", String[].class);
   }
 
   public ConfigRepo resolve() {
@@ -74,11 +77,12 @@ public class ConfigRepo {
       return null;
     }
     T o = null;
-    if (clazz.isAssignableFrom(JsonObject.class)) {
-      Map map = JSONUtil.parseObj(data.toString()).getByPath(key, Map.class);
-      o= (T) new JsonObject(map);
+    JSONObject jsonObject = JSONUtil.parseObj(data.toString());
+    if (JsonObject.class.equals(clazz)) {
+      Map map = jsonObject.getByPath(key, Map.class);
+      o = (T) new JsonObject(map);
     } else {
-      o = JSONUtil.parseObj(data.toString()).getByPath(key, clazz);
+      o = jsonObject.getByPath(key, clazz);
     }
     if (Objects.isNull(o)) {
       return def;
@@ -96,6 +100,9 @@ public class ConfigRepo {
       return null;
     }
     JsonArray jsonArray = data.getJsonArray(key);
+    if (jsonArray == null || jsonArray.isEmpty()) {
+      return null;
+    }
     return jsonArray.stream().map(o -> (JsonObject) o).map(o -> {
       if (clazz.isAssignableFrom(JsonObject.class)) {
         return (T) o;

@@ -1,9 +1,9 @@
 package top.mrys.vertx.ws.client.boot;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.WebSocket;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,8 +19,22 @@ import top.mrys.vertx.springboot.http.server.EnableWs;
 @EnableWs
 public class WsClientBoot {
 
+  @Value("${name}")
+  private String name;
+
+  @Value("#{vertxConfig.getForPath('ws.port',T(java.lang.String))}")
+  private String port;
+
+  @Autowired
+  private Vertx vertx;
+
   public static void main(String[] args) {
     ConfigurableApplicationContext run = SpringApplication.run(WsClientBoot.class, args);
+    WsClientBoot bean = run.getBean(WsClientBoot.class);
+    bean.vertx.setPeriodic(1000,event -> {
+      System.out.println(run.getEnvironment().getProperty("ws.port"));
+    });
+
     /*Vertx vertx = Vertx.vertx();
 
     MyRefreshableApplicationContext context = new MyRefreshableApplicationContext();
@@ -32,7 +46,7 @@ public class WsClientBoot {
     vertx.deployVerticle(myAbstractVerticle);
 
     */
-    Vertx vertx = Vertx.vertx();
+/*    Vertx vertx = Vertx.vertx();
     vertx.setTimer(10_000, ig -> {
       vertx.createHttpClient().webSocket(80, "localhost", "")
           .onComplete(event -> {
@@ -49,6 +63,8 @@ public class WsClientBoot {
             }
           });
     });
+    */
+    System.out.println(run.getBean(WsClientBoot.class).name);
     run.getEnvironment().getPropertySources().forEach(propertySource -> {
       System.out.println(propertySource.getName());
       System.out.println(propertySource.getSource());
