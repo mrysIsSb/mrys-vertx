@@ -72,7 +72,7 @@ public class AutoConfiguration {
   }
 
   @ConfigurationProperties("acme")
-  public class Red extends MyRedisConfigData {
+  public static class Red extends MyRedisConfigData {
 
   }
 }
