@@ -2,11 +2,9 @@ package top.mrys.vertx.common.config;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.json.JSONUtil;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -14,7 +12,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
 
 /**
@@ -64,7 +61,6 @@ public class ConfigVerticle extends MyAbstractVerticle {
     });
     retriever.getConfig(config -> {
       if (config.succeeded()) {
-        configLoader.updateConfig(config.result());
         updateConfig(config.result(), retriever, startPromise);
       } else {
         startPromise.fail(config.cause());
@@ -84,7 +80,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
               .setOptional(true)
               .setConfig(jsonObject)
           ).toArray(ConfigStoreOptions[]::new);
-      ConfigRetriever retriever1 = getConfigRetriever(args, options);
+      ConfigRetriever retriever1 = getConfigRetriever(options);
       retriever1.getConfig()
           .onSuccess(event -> {
             configLoader.updateConfig(event);
@@ -104,7 +100,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
     }
   }
 
-  private ConfigRetriever getConfigRetriever(String[] args, ConfigStoreOptions... other) {
+  private ConfigRetriever getConfigRetriever( ConfigStoreOptions... other) {
     Vertx tempVertx = Vertx.vertx();
     ConfigRetrieverOptions op = new ConfigRetrieverOptions();
     op.addStore(getBootOptions());

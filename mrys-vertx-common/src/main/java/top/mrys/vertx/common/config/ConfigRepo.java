@@ -45,7 +45,7 @@ public class ConfigRepo {
   }
 
   public ConfigRepo resolve() {
-    String j = data.toString().replaceAll("\"(\\w*\\$\\{\\w*\\}\\w*)\"", "$1");
+    String j = data.toString().replaceAll("\"(\\w*\\$\\{[\\w.]*\\}\\w*)\"", "$1");
     Config resolve = Parseable.newString(j, ConfigParseOptions.defaults())
         .parse().toConfig().resolve();
     Map<String, Object> map = resolve.root().unwrapped();

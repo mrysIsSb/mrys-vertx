@@ -1,9 +1,13 @@
 package top.mrys.vertx.springboot;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +17,11 @@ import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEven
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.env.CommandLinePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
+import top.mrys.vertx.common.utils.MyJsonUtil;
 
 /**
  * @author mrys
@@ -22,6 +30,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @Slf4j
 public class EventListener implements GenericApplicationListener {
 
+//  @org.springframework.context.event.EventListener
   @Override
   public void onApplicationEvent(ApplicationEvent event) {
     if (event instanceof ApplicationEnvironmentPreparedEvent) {
@@ -34,6 +43,22 @@ public class EventListener implements GenericApplicationListener {
       JsonObject config = new JsonObject();
       //传入指定的配置属性
       config.put("profiles", new JsonObject().put("active", Arrays.asList(profiles)));
+      MutablePropertySources propertySources = environment.getPropertySources();
+      propertySources.forEach(propertySource -> {
+        //命令行参数
+        if (SimpleCommandLinePropertySource.class.isAssignableFrom(propertySource.getClass())) {
+          String[] propertyNames = ((SimpleCommandLinePropertySource) propertySource)
+              .getPropertyNames();
+          if (ArrayUtil.isNotEmpty(propertyNames)) {
+            JSONObject object = new JSONObject();
+            for (String name : propertyNames) {
+              object.putByPath(name,propertySource.getProperty(name));
+            }
+            JsonObject entries = JsonObject.mapFrom(object.toBean(Map.class));
+            config.mergeIn(entries, true);
+          }
+        }
+      });
       AtomicBoolean isContinue = new AtomicBoolean(false);
 
       vertx.deployVerticle(VertxRelevantObjectInstanceFactory::createConfigVerticle,
@@ -44,7 +69,7 @@ public class EventListener implements GenericApplicationListener {
             } else {
               VertxPropertySource vertxConfig = VertxPropertySource
                   .getInstance("vertxConfig", VertxRelevantObjectInstanceFactory.getConfigLoader());
-              environment.getPropertySources().addFirst(vertxConfig);
+              propertySources.addFirst(vertxConfig);
               isContinue.set(true);
             }
           }
@@ -63,7 +88,7 @@ public class EventListener implements GenericApplicationListener {
 
   @Override
   public boolean supportsEventType(ResolvableType eventType) {
-    System.out.println(eventType.getRawClass().getSimpleName());
+    log.info(eventType.getRawClass().getSimpleName());
     return eventType.isAssignableFrom(ApplicationEnvironmentPreparedEvent.class);
   }
 }

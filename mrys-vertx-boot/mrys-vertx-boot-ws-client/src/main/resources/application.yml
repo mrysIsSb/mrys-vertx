@@ -2,3 +2,9 @@ spring:
   profiles:
     active: dev
     include: dev-redis,dev-mysql
+
+acme:
+  auth: hello
+
+another:
+  auth: hello

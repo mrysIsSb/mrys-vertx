@@ -21,6 +21,7 @@ import io.vertx.redis.client.RedisConnection;
 import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.client.Request;
 import java.util.Iterator;
+import lombok.Data;
 import org.springframework.util.StringUtils;
 
 /**
@@ -88,6 +89,33 @@ public class MyRedisConfigStore implements ConfigStore {
           }
           return new JsonObject(json.toString()).toBuffer();
         })));
+  }
+
+  /**
+   * config: {
+   *       auth: "123456yj"
+   *       key: "config:"${profiles.active}
+   *       type: "SENTINEL"
+   *       masterName: "mymaster"
+   *       role: "MASTER"
+   *       maxPoolSize: 32
+   *       maxPoolWaiting: 128
+   *       endpoints: [
+   *         "redis://192.168.124.16:26381"
+   *         "redis://192.168.124.16:26382"
+   *         "redis://192.168.124.16:26383"
+   *       ]
+   *     }
+   * @author mrys
+   */
+  @Data
+  public static class MyRedisConfigData {
+    private String auth;
+    private String key;
+    private String type;
+
+
+
   }
 
 }

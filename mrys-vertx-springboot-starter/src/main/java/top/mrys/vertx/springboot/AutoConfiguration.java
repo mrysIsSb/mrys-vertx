@@ -1,27 +1,25 @@
 package top.mrys.vertx.springboot;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.config.ConfigRepo;
+import top.mrys.vertx.common.config.MyRedisConfigStore.MyRedisConfigData;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
-import top.mrys.vertx.common.factorys.SpringObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
+import top.mrys.vertx.springboot.AutoConfiguration.Red;
 
 /**
  * @author mrys
  * @date 2020/10/27
  */
 @Configuration
+@EnableConfigurationProperties(Red.class)
 public class AutoConfiguration {
 
   @Autowired
@@ -66,4 +64,15 @@ public class AutoConfiguration {
     return VertxRelevantObjectInstanceFactory.getConfigLoader().load();
   }
 
+  @ConfigurationProperties(prefix = "another")
+  //todo 刷新
+  @Bean
+  public Red anotherComponent() {
+    return new Red();
+  }
+
+  @ConfigurationProperties("acme")
+  public class Red extends MyRedisConfigData {
+
+  }
 }

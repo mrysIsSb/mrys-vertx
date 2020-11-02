@@ -33,8 +33,8 @@ public class ConfigLoader {
     load().mergeInData(data).resolve();
     Vertx owner = Vertx.currentContext().owner();
     if (owner != null) {
-      log.info("更新配置数据:{}", data);
-      owner.eventBus().publish(dataUpdateKey, data);
+      show();
+      owner.eventBus().publish(dataUpdateKey, getConfig());
     }
   }
 
