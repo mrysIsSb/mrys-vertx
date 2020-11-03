@@ -1,25 +1,16 @@
 package top.mrys.vertx.http.parser;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.concurrent.CompletableFuture;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.manager.JsonTransverter;
+import top.mrys.vertx.common.manager.JsonTransverterImpl;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -29,10 +20,8 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @author mrys
  * @date 2020/7/9
  */
-@Component
 public class FutureMethodParser extends AbstractHandlerParser {
 
-  @Autowired
   private JsonTransverter jsonTransverter;
 
   /**

@@ -19,7 +19,6 @@ public class WsAutoConfiguration {
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public WsVerticle wsVerticle() {
-    WsVerticle wsVerticle = new WsVerticle();
-    return wsVerticle;
+    return new WsVerticle();
   }
 }

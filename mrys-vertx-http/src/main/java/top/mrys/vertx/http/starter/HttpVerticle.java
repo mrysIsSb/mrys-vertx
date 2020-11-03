@@ -1,61 +1,51 @@
 package top.mrys.vertx.http.starter;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.ServerWebSocket;
-import java.util.ArrayList;
-import java.util.List;
+import io.vertx.ext.web.Router;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.consts.ConstLog;
+import top.mrys.vertx.common.launcher.MyAbstractVerticle;
+import top.mrys.vertx.http.parser.RouteFactory;
 
 /**
  * @author mrys
  * @date 2020/9/12
  */
 @Slf4j
-public class HttpVerticle extends AbstractVerticle {
+public class HttpVerticle extends MyAbstractVerticle {
 
-  private int port;
-  private Handler<HttpServerRequest> router;
-
-  public HttpVerticle(int port, Handler router) {
-    this.port = port;
-    this.router = router;
-  }
+  @Getter
+  @Setter
+  private Supplier<Integer> port;
+  @Getter
+  @Setter
+  private Supplier<Set<Class>> routeClassProvider;
 
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
+    RouteFactory routeFactory = context.getInstanceFactory().getInstance(RouteFactory.class);
+    routeFactory.addObjectInstanceFactory(context.getInstanceFactory());
+    routeFactory.addClasses(routeClassProvider.get());
+    Router router = routeFactory.get();
+
     HttpServerOptions options = new HttpServerOptions();
     options.setLogActivity(true);
     vertx.createHttpServer(options)
-        .requestHandler(this.router)
-        .listen(port)
+        .requestHandler(router)
+        .listen(port.get())
         .onSuccess(event -> startPromise.complete())
         .onFailure(startPromise::fail);
   }
-
-  private void getWebSocketHandler(ServerWebSocket webSocket) {
-//    webSocket.binaryHandlerID()
-/*    webSocket.closeHandler(event -> )
-    DefaultChannelGroup*/
-/*    Promise<Integer> promise = Promise.promise();
-    webSocket.setHandshake(promise.future());*/
-    /*authenticate(webSocket.headers(), ar -> {
-      if (ar.succeeded()) {
-        // Terminate the handshake with the status code 101 (Switching Protocol)
-        // Reject the handshake with 401 (Unauthorized)
-        promise.complete(ar.succeeded() ? 101 : 401);
-      } else {
-        // Will send a 500 error
-        promise.fail(ar.cause());
-      }
-    });*/
-  }
-
 
   @Override
   public void stop() throws Exception {

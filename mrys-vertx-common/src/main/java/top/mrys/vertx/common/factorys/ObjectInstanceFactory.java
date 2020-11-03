@@ -8,6 +8,10 @@ package top.mrys.vertx.common.factorys;
  */
 public interface ObjectInstanceFactory {
 
+  static ObjectInstanceFactory getDefault() {
+    return new DefaultObjectInstanceFactory();
+  }
+
   /**
    * 根据class 获取对应的实例方法
    *

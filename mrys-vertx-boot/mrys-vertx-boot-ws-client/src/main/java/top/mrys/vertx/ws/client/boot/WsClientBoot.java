@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import top.mrys.vertx.springboot.AutoConfiguration.Red;
+import top.mrys.vertx.springboot.http.server.EnableHttp;
 import top.mrys.vertx.springboot.http.server.EnableWs;
+import top.mrys.vertx.ws.client.boot.controller.TestController;
 
 /**
  * @author mrys
@@ -35,6 +36,7 @@ public class WsClientBoot {
     bean.vertx.setPeriodic(10000,event -> {
       System.out.println(run.getEnvironment().getProperty("ws.port"));
     });
+    System.out.println(run.getBean(TestController.class));
 
     /*Vertx vertx = Vertx.vertx();
 
@@ -65,11 +67,11 @@ public class WsClientBoot {
           });
     });
     */
-    System.out.println(run.getBean("anotherComponent"));
+   /* System.out.println(run.getBean("anotherComponent"));
     run.getEnvironment().getPropertySources().forEach(propertySource -> {
       System.out.println("-0-00-0-0-0-0-00000-------------");
       System.out.println(propertySource.getName());
       System.out.println(propertySource.getClass());
-    });
+    });*/
   }
 }

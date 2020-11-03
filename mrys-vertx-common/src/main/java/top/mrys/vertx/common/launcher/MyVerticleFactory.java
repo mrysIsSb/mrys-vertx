@@ -1,6 +1,8 @@
 package top.mrys.vertx.common.launcher;
 
 import io.vertx.core.http.HttpServerOptions;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import top.mrys.vertx.common.factorys.DefaultObjectInstanceFactory;
@@ -38,4 +40,12 @@ public class MyVerticleFactory {
     return verticle;
   }
 
+  public <T extends MyAbstractVerticle> T getMyAbstractVerticle(Class<T> verticleClass,
+      Function<T, T> process) {
+    T verticle = instanceFactory.getInstance(verticleClass);
+    if (verticle.getContext() == null) {
+      verticle.setContext(context);
+    }
+    return process.apply(verticle);
+  }
 }

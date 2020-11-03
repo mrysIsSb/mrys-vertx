@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -71,13 +72,15 @@ public class MethodParameter {
 
   @Nullable
   public <A extends Annotation> A getParameterAnnotation(Class<A> annotationType) {
-    Annotation[] anns = getParameterAnnotations();
-    for (Annotation ann : anns) {
+    if (ArrayUtil.isEmpty(parameterAnnotations)) {
+      return null;
+    }
+    for (Annotation ann : parameterAnnotations) {
       if (annotationType.isInstance(ann)) {
         return (A) ann;
       }
     }
-    return  MergedAnnotations.from(parameterAnnotations)
+    return MergedAnnotations.from(parameterAnnotations)
         .get(annotationType, null, MergedAnnotationSelectors.firstDirectlyDeclared())
         .synthesize(MergedAnnotation::isPresent).orElse(null);
   }
@@ -103,8 +106,14 @@ public class MethodParameter {
     return result;
   }
 
+  /**
+   * 获取方法参数上的注解或父接口上的
+   *
+   * @author mrys
+   */
   protected static Annotation[] getMethodParametersAnnotations(int i, Parameter parameter) {
     Annotation[] paramAnns = parameter.getAnnotations();
-    return ArrayUtil.append(paramAnns, AnnotationUtil.getInterfaceMethodParameterAnnotation(parameter, i));
+    return ArrayUtil
+        .append(paramAnns, AnnotationUtil.getInterfaceMethodParameterAnnotation(parameter, i));
   }
 }

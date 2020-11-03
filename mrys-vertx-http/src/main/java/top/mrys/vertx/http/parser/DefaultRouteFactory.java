@@ -10,20 +10,16 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.AnnotationUtils;
+import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.common.utils.Interceptor;
 import top.mrys.vertx.http.annotations.RouteHandler;
@@ -33,33 +29,45 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  * @author mrys
  * @date 2020/7/4
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
 public class DefaultRouteFactory implements RouteFactory {
 
   protected Vertx vertx;
-  protected List<Class> classes;
+  //class
+  protected Set<Class> classes = new HashSet<>();
+  //解析器
   protected final List<AbstractHandlerParser> parsers = new ArrayList<>();
+  //拦截器
   protected final ConcurrentLinkedDeque<Interceptor<RoutingContext, ?>> interceptors = new ConcurrentLinkedDeque<>();
+  //实例工厂
+  protected ObjectInstanceFactory factory = ObjectInstanceFactory.getDefault();
 
   {
+    parsers.add(new FutureMethodParser());
     parsers.add(new SimpleHandlerParser());
     parsers.add(new GeneralMethodParser());
   }
 
-  public static DefaultRouteFactory create(Vertx vertx, List<Class> classes) {
-    return create(vertx, classes, Collections.emptyList());
+  /**
+   * 添加要扫描的类
+   *
+   * @param classes
+   * @author mrys
+   */
+  @Override
+  public void addClasses(Set<Class> classes) {
+    this.classes.addAll(classes);
   }
 
-  public static DefaultRouteFactory create(Vertx vertx, List<Class> classes,
-      List<AbstractHandlerParser> parsers) {
-    DefaultRouteFactory routeFactory = new DefaultRouteFactory();
-    routeFactory.vertx = vertx;
-    routeFactory.classes = classes;
-    if (CollectionUtil.isNotEmpty(parsers)) {
-      routeFactory.parsers.addAll(parsers);
-    }
-    return routeFactory;
+  /**
+   * 添加对象工厂实例
+   *
+   * @param factory
+   * @author mrys
+   */
+  @Override
+  public void addObjectInstanceFactory(ObjectInstanceFactory factory) {
+    this.factory = factory;
   }
 
 
@@ -141,7 +149,7 @@ public class DefaultRouteFactory implements RouteFactory {
     return router;
   }
 
-  protected List<Class> getRouteHandlerClass() {
+  protected Set<Class> getRouteHandlerClass() {
     return classes;
   }
 
@@ -151,8 +159,8 @@ public class DefaultRouteFactory implements RouteFactory {
    * @author mrys
    */
   @SneakyThrows
-  protected Object getControllerInstance(Class clazz) {
-    return clazz.newInstance();
+  protected <T> T getControllerInstance(Class<T> clazz) {
+    return factory.getInstance(clazz);
   }
 
 }
