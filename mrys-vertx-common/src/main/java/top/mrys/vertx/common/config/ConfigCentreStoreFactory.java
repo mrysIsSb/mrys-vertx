@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.ServiceLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import top.mrys.vertx.common.manager.JsonTransverterImpl;
 
 /**
  * 配置仓库工厂

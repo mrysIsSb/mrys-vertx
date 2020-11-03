@@ -7,8 +7,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.mrys.vertx.common.config.ConfigCentreStoreOptions;
 import top.mrys.vertx.common.config.ConfigRepo;
-import top.mrys.vertx.common.config.MyRedisConfigStore.MyRedisConfigData;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
@@ -72,7 +72,7 @@ public class AutoConfiguration {
   }
 
   @ConfigurationProperties("acme")
-  public static class Red extends MyRedisConfigData {
+  public static class Red extends ConfigCentreStoreOptions {
 
   }
 }
