@@ -1,7 +1,7 @@
 spring:
   profiles:
     active: dev
-    include: dev-redis,dev-mysql
+#    include: dev-redis,dev-mysql
 
 acme:
   auth: hello

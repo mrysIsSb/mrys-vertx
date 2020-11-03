@@ -1,1 +1,2 @@
 MBeanServer
+将配置写成javabean 序列化有问题

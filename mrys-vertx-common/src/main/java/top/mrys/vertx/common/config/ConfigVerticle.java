@@ -10,6 +10,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
@@ -74,11 +75,15 @@ public class ConfigVerticle extends MyAbstractVerticle {
     List<JsonObject> centres = configLoader
         .getArrForKey(ConfigCentreStoreFactory.configCentre, JsonObject.class);
     if (CollectionUtil.isNotEmpty(centres)) {
+      List<String> profiles = Arrays.asList(configLoader.getActiveProfiles());
       ConfigStoreOptions[] options = centres.stream()
-          .map(jsonObject -> new ConfigStoreOptions()
-              .setType(ConfigCentreStoreFactory.configCentre)
-              .setOptional(true)
-              .setConfig(jsonObject)
+          .map(jsonObject -> {
+            jsonObject.put("profiles", profiles);
+                return new ConfigStoreOptions()
+                    .setType(ConfigCentreStoreFactory.configCentre)
+                    .setOptional(true)
+                    .setConfig(jsonObject);
+              }
           ).toArray(ConfigStoreOptions[]::new);
       ConfigRetriever retriever1 = getConfigRetriever(options);
       retriever1.getConfig()
@@ -100,8 +105,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
     }
   }
 
-  private ConfigRetriever getConfigRetriever( ConfigStoreOptions... other) {
-    Vertx tempVertx = Vertx.vertx();
+  private ConfigRetriever getConfigRetriever(ConfigStoreOptions... other) {
     ConfigRetrieverOptions op = new ConfigRetrieverOptions();
     op.addStore(getBootOptions());
     if (ArrayUtil.isNotEmpty(other)) {
@@ -110,7 +114,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
       }
     }
     op.addStore(getJsonConfig());
-    return ConfigRetriever.create(tempVertx, op);
+    return ConfigRetriever.create(vertx, op);
   }
 
   /**

@@ -20,7 +20,12 @@ import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisConnection;
 import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.client.Request;
+import io.vertx.redis.client.Response;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -32,13 +37,15 @@ public class MyRedisConfigStore implements ConfigStore {
 
   private final Context ctx;
   private final Redis redis;
-  private final String field;
+  //  private final String field;
+  private final String[] keys;
   private final String auth;
   private boolean closed;
 
   public MyRedisConfigStore(Vertx vertx, JsonObject config) {
     this.ctx = vertx.getOrCreateContext();
-    this.field = config.getString("key", "configuration");
+//    this.field = config.getString("key", "configuration");
+    this.keys = (String[]) config.getJsonArray("keys").getList().stream().toArray(String[]::new);
     this.auth = config.getString("auth");
     this.redis = Redis.createClient(vertx, new RedisOptions(config));
   }
@@ -58,6 +65,7 @@ public class MyRedisConfigStore implements ConfigStore {
 
   }
 
+  @Override
   public void get(Handler<AsyncResult<Buffer>> completionHandler) {
     if (Vertx.currentContext() == this.ctx) {
       this.redis.connect(event -> {
@@ -78,17 +86,30 @@ public class MyRedisConfigStore implements ConfigStore {
   }
 
   private void get(RedisConnection connection, Handler<AsyncResult<Buffer>> completionHandler) {
-    connection.send(Request.cmd(Command.HGETALL).arg(this.field),
-        rep -> completionHandler.handle(rep.map(response -> {
-          JSONObject json = JSONUtil.parseObj("{}");
-          Iterator it = response.iterator();
-          while (it.hasNext()) {
-            String key = it.next().toString();
-            String value = it.next().toString();
-            JSONUtil.putByPath(json, key, value);
-          }
-          return new JsonObject(json.toString()).toBuffer();
-        })));
+    List<Request> commands = Arrays.stream(keys).map(s -> Request.cmd(Command.HGETALL).arg(s))
+        .collect(Collectors.toList());
+    connection.batch(commands, rep -> {
+      completionHandler
+          .handle(rep.map(responses -> responses.stream().map(this::getResponseBufferFunction)
+              .reduce((jsonObject, jsonObject2) -> jsonObject.mergeIn(jsonObject2, true))
+              .get().toBuffer()
+          ));
+    });
+
+/*    connection.send(Request.cmd(Command.HGETALL).arg(this.field),
+        rep -> completionHandler
+            .handle(rep.map(this::getResponseBufferFunction).map(JsonObject::toBuffer)));*/
+  }
+
+  private JsonObject getResponseBufferFunction(Response response) {
+    JSONObject json = JSONUtil.parseObj("{}");
+    Iterator it = response.iterator();
+    while (it.hasNext()) {
+      String key = it.next().toString();
+      String value = it.next().toString();
+      JSONUtil.putByPath(json, key, value);
+    }
+    return new JsonObject(json.toString());
   }
 
 }

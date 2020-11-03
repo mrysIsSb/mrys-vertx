@@ -2,7 +2,11 @@ package top.mrys.vertx.common.config;
 
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -36,14 +40,23 @@ public class RedisConfigStoreTk implements MyConfigStoreTk {
     return true;
   }
 
+  /**
+   * keys = keys+:profile
+   *
+   * @author mrys
+   */
   @Override
   public ConfigStore create(Vertx vertx, JsonObject configuration) {
     JsonObject config = configuration.getJsonObject("config");
-    String active = configuration.getString("active");
-    if (StringUtils.hasText(active)) {
-      config.put("key", config.getString("key", defName) + ":" + active);
+    JsonArray profiles = configuration.getJsonArray("profiles");
+    JsonArray keys = config.getJsonArray("keys", new JsonArray("[\"" + defName + "\"]"));
+    if (profiles != null && !profiles.isEmpty()) {
+      List<String> collect = keys.stream().map(Object::toString).flatMap(ks ->
+          profiles.stream().map(Object::toString)
+              .map(s -> ks + ":" + s)
+      ).collect(Collectors.toList());
+      keys.addAll(new JsonArray(collect));
     }
-
     return new MyRedisConfigStore(vertx, config);
   }
 }
