@@ -1,7 +1,5 @@
 package top.mrys.vertx.common.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 /**
  * 序列化
  *

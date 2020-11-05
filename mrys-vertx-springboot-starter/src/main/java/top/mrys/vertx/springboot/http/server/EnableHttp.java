@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.stereotype.Component;
 import top.mrys.vertx.http.annotations.RouteHandler;
 
 /**
@@ -23,7 +23,7 @@ import top.mrys.vertx.http.annotations.RouteHandler;
 @ComponentScan(includeFilters = {
     @Filter(value = RouteHandler.class, type = FilterType.ANNOTATION)}, useDefaultFilters = false)
 @Import({HttpStarter.class, HttpAutoConfiguration.class})
-@Component
+@Configuration
 public @interface EnableHttp {
 
   //  args>configCentre>boot>this

@@ -22,4 +22,9 @@ public class HttpAutoConfiguration {
   public HttpVerticle httpVerticle() {
     return new HttpVerticle();
   }
+
+  @Bean
+  public BeanFactoryAwareBean beanFactoryAwareBean() {
+    return new BeanFactoryAwareBean();
+  }
 }

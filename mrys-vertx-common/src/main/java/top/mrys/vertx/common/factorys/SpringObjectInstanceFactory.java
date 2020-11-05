@@ -1,7 +1,11 @@
 package top.mrys.vertx.common.factorys;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * 通过spring 来获取 实例对象
@@ -9,10 +13,9 @@ import org.springframework.context.ApplicationContext;
  * @author mrys
  * @date 2020/10/27
  */
-public class SpringObjectInstanceFactory implements ObjectInstanceFactory {
+public class SpringObjectInstanceFactory implements ObjectInstanceFactory, ApplicationContextAware {
 
 
-  @Autowired
   private ApplicationContext context;
 
   /**
@@ -24,5 +27,10 @@ public class SpringObjectInstanceFactory implements ObjectInstanceFactory {
   @Override
   public <T> T getInstance(Class<T> clazz) {
     return context.getBean(clazz);
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.context = applicationContext;
   }
 }

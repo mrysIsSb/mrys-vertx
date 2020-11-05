@@ -9,8 +9,8 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
+import top.mrys.vertx.common.factorys.JsonTransverterFactory;
 import top.mrys.vertx.common.manager.JsonTransverter;
-import top.mrys.vertx.common.manager.JsonTransverterImpl;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -62,7 +62,8 @@ public class FutureMethodParser extends AbstractHandlerParser {
         response.setStatusCode(HttpStatus.HTTP_OK);
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         rep.future()
-            .onComplete(re -> response.end(jsonTransverter.serialize(re.result())));
+            .onComplete(re -> response.end(
+                JsonTransverterFactory.getJsonTransverter("httpServer").serialize(re.result())));
       } catch (Exception e) {
         e.printStackTrace();
         event.fail(e);

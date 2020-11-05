@@ -1,16 +1,12 @@
 package top.mrys.vertx.ws.client.boot;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.WebSocket;
-import io.vertx.core.net.NetSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import top.mrys.vertx.springboot.http.server.EnableHttp;
 import top.mrys.vertx.springboot.http.server.EnableWs;
 import top.mrys.vertx.ws.client.boot.controller.TestController;
 

@@ -1,9 +1,6 @@
 package top.mrys.vertx.common.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigValueFactory;
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.config.spi.ConfigStoreFactory;
 import io.vertx.core.Vertx;
@@ -11,8 +8,6 @@ import io.vertx.core.json.JsonObject;
 import java.util.HashMap;
 import java.util.ServiceLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
-import top.mrys.vertx.common.manager.JsonTransverterImpl;
 
 /**
  * 配置仓库工厂
