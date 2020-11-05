@@ -1,6 +1,9 @@
 package top.mrys.vertx.ws.client.boot;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.WebSocket;
+import io.vertx.core.net.NetSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +36,7 @@ public class WsClientBoot {
   public static void main(String[] args) {
     ConfigurableApplicationContext run = SpringApplication.run(WsClientBoot.class, args);
     WsClientBoot bean = run.getBean(WsClientBoot.class);
-    bean.vertx.setPeriodic(10000,event -> {
+    bean.vertx.setPeriodic(10000, event -> {
       System.out.println(run.getEnvironment().getProperty("ws.port"));
     });
     System.out.println(run.getBean(TestController.class));
@@ -49,8 +52,39 @@ public class WsClientBoot {
     vertx.deployVerticle(myAbstractVerticle);
 
     */
-/*    Vertx vertx = Vertx.vertx();
-    vertx.setTimer(10_000, ig -> {
+    Vertx vertx = Vertx.vertx();
+/*    String CRLF = "\r\n";
+    String auth = "*2"+CRLF
+        + "$4"+CRLF
+        + "auth"+CRLF
+        + "$8"+CRLF
+        + "123456yj"+CRLF;
+    String clientList = "*2"+CRLF
+        + "$6"+CRLF
+        + "client"+CRLF
+        + "$4"+CRLF
+        + "list"+CRLF;
+    vertx.createNetClient()
+        .connect(6380, "192.168.124.16", event -> {
+          if (event.succeeded()) {
+            NetSocket result = event.result();
+            result.handler(event1 -> {
+              log.info("redis:{}", event1.toString());
+              result.write(clientList);
+            });
+            result.write(auth, event1 -> {
+              if (event1.succeeded()) {
+                log.info("成功");
+              } else {
+                log.error(event1.cause().getMessage(), event1.cause());
+              }
+            });
+          } else {
+            log.error(event.cause().getMessage(), event.cause());
+          }
+        });*/
+
+ /*   vertx.setTimer(10_000, ig -> {
       vertx.createHttpClient().webSocket(80, "localhost", "")
           .onComplete(event -> {
             if (event.succeeded()) {
@@ -65,8 +99,7 @@ public class WsClientBoot {
               event.cause().printStackTrace();
             }
           });
-    });
-    */
+    });*/
    /* System.out.println(run.getBean("anotherComponent"));
     run.getEnvironment().getPropertySources().forEach(propertySource -> {
       System.out.println("-0-00-0-0-0-0-00000-------------");

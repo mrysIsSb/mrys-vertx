@@ -1,5 +1,6 @@
 package top.mrys.vertx.springboot.http.server;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.http.HttpStatus;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -76,7 +78,7 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
     this.enableHttp = enableHttp;
     AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder
         .genericBeanDefinition(HttpStarter.class, () -> this).getBeanDefinition();
-    registry.registerBeanDefinition(beanDefinition.getBeanClassName(),beanDefinition);
+    registry.registerBeanDefinition(beanDefinition.getBeanClassName(), beanDefinition);
   }
 
   @Override
@@ -85,7 +87,7 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
     vertx.deployVerticle(
         () -> myVerticleFactory.getMyAbstractVerticle(HttpVerticle.class, httpVerticle -> {
           httpVerticle.setPort(() -> getPort(context));
-          httpVerticle.setRouteClassProvider(this::getRouteClass);
+          httpVerticle.setRouteClassProvider(() -> getRouteClass(context));
           return httpVerticle;
         }),
         new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
@@ -102,10 +104,27 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
         .getProperty(enableHttp.configPrefix() + ".port", Integer.class, enableHttp.port());
   }
 
+  /**
+   * 获取扫描包下的class
+   *
+   * @author mrys
+   */
   @SneakyThrows
-  protected Set<Class> getRouteClass() {
-    routeClass.add(ClassLoader.getSystemClassLoader()
-        .loadClass("top.mrys.vertx.ws.client.boot.controller.TestController"));
+  protected Set<Class> getRouteClass(ConfigurableApplicationContext context) {
+    String[] packages = enableHttp.scanPackage();
+    Set<? extends Class<?>> clazzes = context.getBeansWithAnnotation(RouteHandler.class).values()
+        .stream()
+        .filter(o -> {
+          String name = o.getClass().getName();
+          boolean isIn = false;
+          for (int i = 0; i < packages.length && !isIn; i++) {
+            if (name.indexOf(packages[i]) != -1) {
+              isIn = true;
+            }
+          }
+          return isIn;
+        }).map(Object::getClass).collect(Collectors.toSet());
+    routeClass.addAll(clazzes);
     return routeClass;
   }
 /*
