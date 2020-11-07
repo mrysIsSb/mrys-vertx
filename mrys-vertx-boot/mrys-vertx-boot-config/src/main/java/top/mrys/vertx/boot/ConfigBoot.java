@@ -1,6 +1,9 @@
 package top.mrys.vertx.boot;
 
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.http.starter.EnableHttp;
 
@@ -9,10 +12,12 @@ import top.mrys.vertx.http.starter.EnableHttp;
  * @date 2020/9/22
  */
 @Slf4j
-@EnableHttp(port = 8899,scanPackage = "top.mrys.vertx.boot.controller")
+@SpringBootApplication
 public class ConfigBoot {
 
   public static void main(String[] args) {
-    MyLauncher.run(ConfigBoot.class, args).onSuccess(event -> log.info("启动成功"));
+//    SpringApplication.run(ConfigBoot.class, args);
+
+    Signaller signaller = new Signaller(true, 0L, 0L);
   }
 }

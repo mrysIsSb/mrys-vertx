@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
+import top.mrys.vertx.common.factorys.JsonTransverterFactory;
 import top.mrys.vertx.common.launcher.MyLauncher;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
 import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.ReqBody;
@@ -38,7 +40,8 @@ public class ReqBodyHandlerMethodArgumentResolver implements HandlerMethodArgume
   @Override
   public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
     ReqBody body = parameter.getParameterAnnotation(ReqBody.class);
-    JsonTransverter bean = MyLauncher.context.getBean(JsonTransverter.class);
+    JsonTransverter bean = JsonTransverterFactory.getJsonTransverter(
+        EnumJsonTransverterNameProvider.http_server);
     return getFromBody(context).compose(buffer -> {
       String st = buffer.toString();
       if (body.required() && StrUtil.isBlank(st)) {

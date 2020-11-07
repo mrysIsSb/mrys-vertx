@@ -10,7 +10,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
 import top.mrys.vertx.common.factorys.JsonTransverterFactory;
-import top.mrys.vertx.common.manager.JsonTransverter;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -21,8 +21,6 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @date 2020/7/9
  */
 public class FutureMethodParser extends AbstractHandlerParser {
-
-  private JsonTransverter jsonTransverter;
 
   /**
    * 是否执行 返回为future
@@ -63,7 +61,7 @@ public class FutureMethodParser extends AbstractHandlerParser {
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         rep.future()
             .onComplete(re -> response.end(
-                JsonTransverterFactory.getJsonTransverter("httpServer").serialize(re.result())));
+                JsonTransverterFactory.getJsonTransverter(EnumJsonTransverterNameProvider.http_server).serialize(re.result())));
       } catch (Exception e) {
         e.printStackTrace();
         event.fail(e);

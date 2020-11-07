@@ -1,10 +1,23 @@
 package top.mrys.vertx.common.manager;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.jackson.DatabindCodec;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +28,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonTransverterImpl implements JsonTransverter {
 
-  private static final ObjectMapper mapper = new ObjectMapper();
-  private static final ObjectMapper prettyMapper = new ObjectMapper();
+  private static final ObjectMapper mapper = DatabindCodec.mapper().copy();
+  private static final ObjectMapper prettyMapper = DatabindCodec.prettyMapper().copy();
 
   //  ObjectMapper objectMapper = DatabindCodec.mapper();
   {
@@ -30,8 +43,6 @@ public class JsonTransverterImpl implements JsonTransverter {
     prettyMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
     SimpleModule module = new SimpleModule();
-    // custom types
-
     mapper.registerModule(module);
     prettyMapper.registerModule(module);
   }

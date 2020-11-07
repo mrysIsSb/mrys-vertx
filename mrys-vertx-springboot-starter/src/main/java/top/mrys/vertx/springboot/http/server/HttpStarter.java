@@ -38,8 +38,6 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
 
   private EnableHttp enableHttp;
 
-  private Set<Class> routeClass = new HashSet<>();
-
 
   @Override
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
@@ -82,8 +80,8 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
    */
   @SneakyThrows
   protected Set<Class> getRouteClass(ConfigurableApplicationContext context) {
-    String[] packages = enableHttp.scanPackage();
-    Set<? extends Class<?>> clazzes = context.getBeansWithAnnotation(RouteHandler.class).values()
+    /*String[] packages = enableHttp.scanPackage();
+    Set<Class> clazzes = context.getBeansWithAnnotation(RouteHandler.class).values()
         .stream()
         .filter(o -> {
           String name = o.getClass().getName();
@@ -94,9 +92,10 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
             }
           }
           return isIn;
-        }).map(Object::getClass).collect(Collectors.toSet());
-    routeClass.addAll(clazzes);
-    return routeClass;
+        }).map(Object::getClass).collect(Collectors.toSet());*/
+    return context.getBeansWithAnnotation(RouteHandler.class).values().stream()
+        .map(Object::getClass).collect(
+            Collectors.toSet());
   }
 /*
 

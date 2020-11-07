@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.manager.JsonTransverterImpl;
+import top.mrys.vertx.common.manager.JsonTransverterNameProvider;
 
 /**
  * json转换器工厂方法
@@ -30,6 +31,10 @@ public class JsonTransverterFactory {
    */
   public static JsonTransverter getJsonTransverter(String name) {
     return jsonTransverterMap.getOrDefault(name, getDefault());
+  }
+
+  public static JsonTransverter getJsonTransverter(JsonTransverterNameProvider provider) {
+    return getJsonTransverter(provider.getJsonTransverterName());
   }
 
   public static JsonTransverter getDefault() {
