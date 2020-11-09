@@ -3,6 +3,7 @@ package top.mrys.vertx.common.config;
 import io.vertx.config.spi.ConfigStore;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import java.util.function.BiFunction;
 import org.springframework.util.StringUtils;
 
 /**
@@ -34,11 +35,17 @@ public class HttpConfigStoreTk implements MyConfigStoreTk {
 
   @Override
   public ConfigStore create(Vertx vertx, JsonObject configuration) {
-    JsonObject config = configuration.getJsonObject("config");
-    String active = configuration.getString("active");
-    if (StringUtils.hasText(active)) {
-      config.put("path", config.getString("path", "/") + ":" + active);
-    }
-    return new MyHttpConfigStore(vertx,config);
+    return new MyHttpConfigStore(vertx, getDealPostConfig(configuration));
   }
+
+  /**
+   * key 和 profile 拼接方法
+   *
+   * @author mrys
+   */
+  @Override
+  public BiFunction<String, String, String> getJointKeyAndProfile() {
+    return (s, s2) -> s + "/" + s2;
+  }
+
 }

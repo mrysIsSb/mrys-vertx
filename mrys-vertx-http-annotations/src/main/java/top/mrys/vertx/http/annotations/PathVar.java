@@ -16,4 +16,6 @@ public @interface PathVar {
   String value() default "";
 
   boolean required() default true;
+
+  String defValue() default "";
 }

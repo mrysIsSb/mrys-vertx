@@ -2,11 +2,11 @@ package top.mrys.vertx.boot.controller;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.http.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.PathVar;
-import top.mrys.vertx.http.annotations.PostRoute;
-import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;
 
@@ -16,18 +16,27 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  */
 @RouteHandler
 @RouteMapping("/config")
+@Slf4j
 public class ConfigController {
+
+  @Autowired
+  private ConfigLoader configLoader;
 
 
   @GetRoute("/getConfig/:serverName/:profile")
-  public Future<JsonObject> getConfig(@PathVar String serverName, @PathVar String profile) {
-    Object o = new ConfigLoader().getByPath("config." + serverName + "." + profile);
-    return Future.succeededFuture(JsonObject.mapFrom(o));
+  public Future<JsonObject> getConfig(@PathVar String serverName,
+      @PathVar(defValue = "def") String profile) {
+    log.debug("/getConfig/{}/{}", serverName, profile);
+    return Future.succeededFuture(
+        JsonObject.mapFrom(configLoader.getByPath("config." + serverName + "." + profile)));
   }
 
-  @PostRoute
-  public Future<JsonObject> save(@ReqBody JsonObject user) {
-    return Future.succeededFuture(user);
+  @GetRoute("/getConfig/:serverName")
+  public Future<JsonObject> getConfig1(@PathVar String serverName,
+      @PathVar(defValue = "def") String profile) {
+    log.debug("/getConfig/{}/{}", serverName, profile);
+    return Future.succeededFuture(
+        JsonObject.mapFrom(configLoader.getByPath("config." + serverName + "." + profile)));
   }
 
 }

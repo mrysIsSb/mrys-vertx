@@ -9,8 +9,14 @@ import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
 import java.util.ArrayList;
 import java.util.List;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import top.mrys.vertx.boot.api.SysUserApi;
 import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
@@ -54,6 +60,22 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
             promise.fail(event.cause());
           }
         });
+    return promise.future();
+  }
+
+  @Override
+  public Future<SysUser> getById2(Integer id) {
+    System.out.println(Thread.currentThread().getName());
+    Scheduler scheduler = Schedulers.fromExecutor(command -> Vertx.currentContext().runOnContext(v -> command.run()));
+    Flux.just("tom", "jack", "allen")
+        .log()
+        .publishOn(scheduler)
+        .publish(stringFlux -> Flux.just("23423","345345cxvdf"))
+        .filter(s -> s.length() > 3)
+        .map(s -> s.concat("@qq.com"))
+        .subscribe(System.out::println);
+    Promise<SysUser> promise = Promise.promise();
+    promise.complete();
     return promise.future();
   }
 

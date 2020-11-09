@@ -2,4 +2,4 @@ spring:
   profiles:
     active: dev
   application:
-    name: config
+    name: user-service

@@ -22,6 +22,9 @@ public interface SysUserApi {
   @RouteMapping(value = "/getById", method = EnumHttpMethod.GET)
   Future<SysUser> getById(Integer id);
 
+  @RouteMapping(value = "/getById2", method = EnumHttpMethod.GET)
+  Future<SysUser> getById2(Integer id);
+
 /*  @RouteMapping(method = EnumHttpMethod.GET,value = "/robots.txt")
   Future<String> robots();
 

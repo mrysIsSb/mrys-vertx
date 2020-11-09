@@ -8,6 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.mrys.vertx.common.config.ConfigCentreStoreOptions;
+import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.config.ConfigRepo;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
@@ -44,6 +45,11 @@ public class AutoConfiguration {
   @Bean
   public ApplicationContext context() {
     return VertxRelevantObjectInstanceFactory.context();
+  }
+
+  @Bean
+  public ConfigLoader configLoader() {
+    return VertxRelevantObjectInstanceFactory.getConfigLoader();
   }
 
   /**

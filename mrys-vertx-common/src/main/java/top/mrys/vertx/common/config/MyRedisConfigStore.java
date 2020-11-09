@@ -96,9 +96,6 @@ public class MyRedisConfigStore implements ConfigStore {
           ));
     });
 
-/*    connection.send(Request.cmd(Command.HGETALL).arg(this.field),
-        rep -> completionHandler
-            .handle(rep.map(this::getResponseBufferFunction).map(JsonObject::toBuffer)));*/
   }
 
   private JsonObject getResponseBufferFunction(Response response) {
