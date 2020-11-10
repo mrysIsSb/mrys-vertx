@@ -65,7 +65,6 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
   @Override
   public Future<SysUser> getById2(Integer id) {
-    System.out.println(Thread.currentThread().getName());
     Scheduler scheduler = Schedulers.fromExecutor(command -> Vertx.currentContext().runOnContext(v -> command.run()));
     Flux.just("tom", "jack", "allen")
         .log()
