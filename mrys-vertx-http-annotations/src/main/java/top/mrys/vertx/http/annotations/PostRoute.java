@@ -20,5 +20,5 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
 public @interface PostRoute {
 
   @AliasFor(annotation = RouteMapping.class)
-  String value() default "";
+  String[] value() default {};
 }

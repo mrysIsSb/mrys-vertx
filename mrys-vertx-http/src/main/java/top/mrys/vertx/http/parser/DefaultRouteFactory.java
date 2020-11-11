@@ -142,7 +142,7 @@ public class DefaultRouteFactory implements RouteFactory {
         if (Objects.nonNull(mapping)) {
           List<Route> routes = sonRouter.getRoutes();
           routes.forEach(route -> log.debug(mapping.value() + route.getPath()));
-          router.mountSubRouter(mapping.value(), sonRouter);
+          router.mountSubRouter(mapping.value()[0], sonRouter);
         }
       }
     }

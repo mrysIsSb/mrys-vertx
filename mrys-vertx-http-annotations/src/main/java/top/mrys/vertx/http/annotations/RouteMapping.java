@@ -18,7 +18,12 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface RouteMapping {
 
-  String value() default "";
+  /**
+   * 请求地址 放类上面用于前缀只取第一个
+   *
+   * @author mrys
+   */
+  String[] value() default {};
 
   EnumHttpMethod method() default EnumHttpMethod.NONE;
 }

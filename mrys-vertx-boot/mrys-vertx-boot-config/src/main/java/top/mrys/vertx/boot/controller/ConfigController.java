@@ -23,18 +23,10 @@ public class ConfigController {
   private ConfigLoader configLoader;
 
 
-  @GetRoute("/getConfig/:serverName/:profile")
+  @GetRoute({"/getConfig/:serverName/:profile", "/getConfig/:serverName"})
   public Future<JsonObject> getConfig(@PathVar String serverName,
       @PathVar(defValue = "def") String profile) {
-    log.debug("/getConfig/{}/{}", serverName, profile);
-    return Future.succeededFuture(
-        JsonObject.mapFrom(configLoader.getByPath("config." + serverName + "." + profile)));
-  }
-
-  @GetRoute("/getConfig/:serverName")
-  public Future<JsonObject> getConfig1(@PathVar String serverName,
-      @PathVar(defValue = "def") String profile) {
-    log.debug("/getConfig/{}/{}", serverName, profile);
+    log.info("/getConfig/{}/{}", serverName, profile);
     return Future.succeededFuture(
         JsonObject.mapFrom(configLoader.getByPath("config." + serverName + "." + profile)));
   }

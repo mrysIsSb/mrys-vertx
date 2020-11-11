@@ -48,7 +48,7 @@ public class SimpleHandlerParser extends AbstractHandlerParser {
   public void accept(ControllerMethodWrap wrap, Router router) {
     Method method = wrap.getMethod();
     RouteMapping annotation = method.getAnnotation(RouteMapping.class);
-    String value = annotation.value();
+    String value = annotation.value()[0];//todo
     EnumHttpMethod enumHttpMethod = annotation.method();
     Handler<RoutingContext> handler = (Handler<RoutingContext>) method.invoke(wrap.getObject());
     router.route(enumHttpMethod.getHttpMethod(), value).handler(handler);

@@ -37,7 +37,7 @@ public class FutureMethodParser extends AbstractHandlerParser {
   @Override
   public void accept(ControllerMethodWrap wrap, Router router) {
     Method method = wrap.getMethod();
-    String path = getPath(wrap);
+    String[] paths = getPath(wrap);
     RouteMapping annotation = getRouteMapping(method);
     EnumHttpMethod enumHttpMethod = annotation.method();
     HttpParameterFactory factory = HttpParameterFactory.getInstance(wrap);
@@ -61,13 +61,17 @@ public class FutureMethodParser extends AbstractHandlerParser {
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         rep.future()
             .onComplete(re -> response.end(
-                JsonTransverterFactory.getJsonTransverter(EnumJsonTransverterNameProvider.http_server).serialize(re.result())));
+                JsonTransverterFactory
+                    .getJsonTransverter(EnumJsonTransverterNameProvider.http_server)
+                    .serialize(re.result())));
       } catch (Exception e) {
         e.printStackTrace();
         event.fail(e);
       }
     };
-    router.route(enumHttpMethod.getHttpMethod(), path).handler(handler);
+    for (String path : paths) {
+      router.route(enumHttpMethod.getHttpMethod(), path).handler(handler);
+    }
   }
 
 }

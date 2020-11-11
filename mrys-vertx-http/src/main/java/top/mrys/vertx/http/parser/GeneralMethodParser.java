@@ -31,7 +31,8 @@ public class GeneralMethodParser extends AbstractHandlerParser {
   @Override
   public Boolean canExec(ControllerMethodWrap wrap) {
     Method method = wrap.getMethod();
-    return !Handler.class.isAssignableFrom(method.getReturnType())&&!Future.class.isAssignableFrom(method.getReturnType());
+    return !Handler.class.isAssignableFrom(method.getReturnType()) && !Future.class
+        .isAssignableFrom(method.getReturnType());
   }
 
 
@@ -51,7 +52,7 @@ public class GeneralMethodParser extends AbstractHandlerParser {
     Method method = wrap.getMethod();
     RouteMapping annotation = AnnotatedElementUtils
         .findMergedAnnotation(method, RouteMapping.class);
-    String value = annotation.value();
+    String value = annotation.value()[0];//todo
     EnumHttpMethod enumHttpMethod = annotation.method();
     Handler<RoutingContext> handler = event -> {
       ObjectMapper mapper = new ObjectMapper();
@@ -60,7 +61,7 @@ public class GeneralMethodParser extends AbstractHandlerParser {
         event.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8")
             .end(mapper.writeValueAsString(o));
       } catch (Exception e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         event.fail(e);
       }
     };
