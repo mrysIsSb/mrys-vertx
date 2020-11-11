@@ -114,7 +114,7 @@ public class JdkHttpMicroClientFactoryBean<T> extends MicroClientFactoryBean<T> 
       } else {
         //http 请求 目前先 实现future todo 完善
 
-        String requestURI = RouteUtil.getPath(method);
+        String requestURI = RouteUtil.getPath(method)[0];
         HttpMethod httpMethod = RouteUtil.getMethod(method);
         HttpRequest<Buffer> request = webClient
             .request(httpMethod, SocketAddress.inetSocketAddress(8801, "localhost"),

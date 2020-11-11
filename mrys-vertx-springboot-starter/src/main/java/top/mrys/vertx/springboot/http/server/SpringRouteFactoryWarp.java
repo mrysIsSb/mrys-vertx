@@ -2,6 +2,7 @@ package top.mrys.vertx.springboot.http.server;
 
 import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.http.parser.DefaultRouteFactory;
+import top.mrys.vertx.http.parser.RouteFactory;
 
 /**
  * @author mrys

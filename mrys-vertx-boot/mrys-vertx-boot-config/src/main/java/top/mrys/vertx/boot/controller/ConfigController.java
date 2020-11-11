@@ -26,7 +26,7 @@ public class ConfigController {
   @GetRoute({"/getConfig/:serverName/:profile", "/getConfig/:serverName"})
   public Future<JsonObject> getConfig(@PathVar String serverName,
       @PathVar(defValue = "def") String profile) {
-    log.info("/getConfig/{}/{}", serverName, profile);
+    log.debug("/getConfig/{}/{}", serverName, profile);
     return Future.succeededFuture(
         JsonObject.mapFrom(configLoader.getByPath("config." + serverName + "." + profile)));
   }

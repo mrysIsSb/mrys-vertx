@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,7 @@ import top.mrys.vertx.http.annotations.RouteMapping;
  * @date 2020/7/4
  */
 @Slf4j
-public class DefaultRouteFactory implements RouteFactory {
+public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
 
   protected Vertx vertx;
   //class
@@ -48,6 +50,8 @@ public class DefaultRouteFactory implements RouteFactory {
     parsers.add(new GeneralMethodParser());
   }
 
+  private static Map<Vertx, Router> routerCache = new ConcurrentHashMap<>();
+
   /**
    * 添加要扫描的类
    *
@@ -55,8 +59,9 @@ public class DefaultRouteFactory implements RouteFactory {
    * @author mrys
    */
   @Override
-  public void addClasses(Set<Class> classes) {
+  public DefaultRouteFactory addClasses(Set<Class> classes) {
     this.classes.addAll(classes);
+    return this;
   }
 
   /**
@@ -66,43 +71,28 @@ public class DefaultRouteFactory implements RouteFactory {
    * @author mrys
    */
   @Override
-  public void addObjectInstanceFactory(ObjectInstanceFactory factory) {
+  public DefaultRouteFactory addObjectInstanceFactory(ObjectInstanceFactory factory) {
     this.factory = factory;
+    return this;
   }
 
 
   @SneakyThrows
   @Override
-  public Router get() {
-    Router router = Router.router(vertx);
-    router.route().failureHandler(event -> {
-      Throwable failure = event.failure();
-      log.error(failure.getMessage(), failure);
-      event.response()
-          .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8")
-          .end("错误");
-    });
+  public synchronized Router get() {
+    Router router;
+    if ((router = getFromCache()) != null) {
+      return router;
+    }
+    router = Router.router(vertx);
+    //全局异常请求
+    router.route().failureHandler(this::getFailureHandler);
+    //拦截器
     if (CollectionUtil.isNotEmpty(interceptors)) {
-      router.route().handler(event -> {
-        Iterator<Interceptor<RoutingContext, ?>> iterator = interceptors.iterator();
-        for (; iterator.hasNext(); ) {
-          if (!iterator.next().preHandler(event)) {
-            if (event.response().ended()) {
-              return;
-            }
-            event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE,
-                HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8").end("拒绝访问");
-            return;
-          }
-        }
-        if (!event.response().isChunked()) {
-          event.response().setChunked(true);
-        }
-        event.next();
-      });
+      router.route().handler(this::getInterceptorHandler);
     }
     router.route().handler(event -> {
-      log.debug("if{}", event.isFresh());
+      log.debug("isFresh{}", event.isFresh());
       if (!event.response().isChunked()) {
         event.response().setChunked(true);
       }
@@ -124,7 +114,7 @@ public class DefaultRouteFactory implements RouteFactory {
         }
         Method[] methods = AnnotationUtil
             .getMethodByAnnotation(clazz, RouteMapping.class);
-        Object o = getControllerInstance(clazz);
+        Object o = factory.getInstance(clazz);
         for (Method method : methods) {
           ControllerMethodWrap wrap = ControllerMethodWrap.create(method, clazz, o);
           Parser<ControllerMethodWrap, Router> p = null;
@@ -146,21 +136,82 @@ public class DefaultRouteFactory implements RouteFactory {
         }
       }
     }
+    routerCache.put(vertx, router);
     return router;
+  }
+
+  /**
+   * 获取拦截器handler
+   *
+   * @author mrys
+   */
+  protected void getInterceptorHandler(RoutingContext event) {
+    Iterator<Interceptor<RoutingContext, ?>> iterator = interceptors.iterator();
+    for (; iterator.hasNext(); ) {
+      if (!iterator.next().preHandler(event)) {
+        if (event.response().ended()) {
+          return;
+        }
+        event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE,
+            HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8").end("拒绝访问");
+        return;
+      }
+    }
+    if (!event.response().isChunked()) {
+      event.response().setChunked(true);
+    }
+    event.next();
+  }
+
+  /**
+   * 全局异常处理
+   *
+   * @author mrys
+   */
+  protected void getFailureHandler(RoutingContext event) {
+    Throwable failure = event.failure();
+    log.error(failure.getMessage(), failure);
+    event.response()
+        .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8")
+        .end("错误");
+  }
+
+  private Router getFromCache() {
+    return routerCache.get(vertx);
   }
 
   protected Set<Class> getRouteHandlerClass() {
     return classes;
   }
 
-  /**
-   * 获取控制器实例
-   *
-   * @author mrys
-   */
-  @SneakyThrows
-  protected <T> T getControllerInstance(Class<T> clazz) {
-    return factory.getInstance(clazz);
+
+  @Override
+  public DefaultRouteFactory addVertx(Vertx vertx) {
+    this.vertx = vertx;
+    return this;
   }
 
+  /**
+   * 添加头拦截器
+   *
+   * @param interceptor
+   * @author mrys
+   */
+  @Override
+  public DefaultRouteFactory addFirst(Interceptor interceptor) {
+    interceptors.addFirst(interceptor);
+    return this;
+  }
+
+  /**
+   * 添加最后一个拦截器
+   *
+   * @param interceptor
+   * @author mrys
+   */
+  @Override
+  public DefaultRouteFactory addLast(Interceptor interceptor) {
+    interceptors.addLast(interceptor);
+    return this;
+  }
 }

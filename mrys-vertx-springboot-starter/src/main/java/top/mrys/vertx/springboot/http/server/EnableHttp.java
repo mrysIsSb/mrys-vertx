@@ -30,7 +30,7 @@ public @interface EnableHttp {
   int port() default 8080;
 
   /**
-   * http 配置前缀
+   * http 配置前缀 http.port
    *
    * @author mrys
    */

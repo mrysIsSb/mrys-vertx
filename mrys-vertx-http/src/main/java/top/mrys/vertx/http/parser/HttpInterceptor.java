@@ -1,14 +1,11 @@
 package top.mrys.vertx.http.parser;
 
-import cn.hutool.core.collection.CollectionUtil;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Arrays;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.common.utils.Interceptor;
 
@@ -17,7 +14,6 @@ import top.mrys.vertx.common.utils.Interceptor;
  * @date 2020/8/4
  */
 @Slf4j
-@Component
 public class HttpInterceptor implements Interceptor<RoutingContext, Object> {
 
   @Override

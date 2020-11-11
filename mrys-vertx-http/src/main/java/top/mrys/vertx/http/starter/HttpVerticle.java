@@ -1,13 +1,9 @@
 package top.mrys.vertx.http.starter;
 
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.ServerWebSocket;
 import io.vertx.ext.web.Router;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +32,7 @@ public class HttpVerticle extends MyAbstractVerticle {
     RouteFactory routeFactory = context.getInstanceFactory().getInstance(RouteFactory.class);
     routeFactory.addObjectInstanceFactory(context.getInstanceFactory());
     routeFactory.addClasses(routeClassProvider.get());
+    routeFactory.addVertx(vertx);
     Router router = routeFactory.get();
 
     HttpServerOptions options = new HttpServerOptions();
