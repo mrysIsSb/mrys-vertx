@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.launcher.MyLauncher;
-import top.mrys.vertx.common.utils.Interceptor;
+import top.mrys.vertx.http.interceptor.AbstractHttpInterceptor;
 
 /**
  * @author mrys
  * @date 2020/8/4
  */
 @Slf4j
-public class HttpInterceptor implements Interceptor<RoutingContext, Object> {
+public class HttpInterceptor extends AbstractHttpInterceptor {
 
   @Override
   public boolean preHandler(RoutingContext routingContext) {

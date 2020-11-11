@@ -25,8 +25,7 @@ public class RouteUtil {
     RouteMapping annotation = AnnotationUtil
         .findMergedAnnotation(m.getDeclaringClass(), RouteMapping.class);
     if (annotation != null) {
-      url = annotation.value()[0];
-      url = url.startsWith("/") ? url : "/" + url;
+      url = getPath(annotation, "")[0];
     }
     RouteMapping routeMapping = AnnotationUtil.findMergedAnnotation(m, RouteMapping.class);
     String[] url1 = new String[0];
