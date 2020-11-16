@@ -1,4 +1,4 @@
-package top.mrys.vertx.eventbus;
+package top.mrys.vertx.eventbus.resolvers;
 
 import io.vertx.ext.web.client.HttpRequest;
 import top.mrys.vertx.common.other.MethodParameter;
@@ -25,7 +25,7 @@ public interface HttpArgumentResolver extends Comparable<HttpArgumentResolver> {
    *
    * @author mrys
    */
-  <T> void resolver(MethodParameter parameter, T o, HttpRequest request);
+  void resolver(MethodParameter parameter, Object o, HttpRequest request);
 
   /**
    * 越大越优先

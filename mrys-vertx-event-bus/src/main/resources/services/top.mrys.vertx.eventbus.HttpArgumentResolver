@@ -1,2 +1,2 @@
-top.mrys.vertx.eventbus.HeaderHttpArgumentResolver
-top.mrys.vertx.eventbus.ParamHttpArgumentResolver
+top.mrys.vertx.eventbus.resolvers.HeaderHttpArgumentResolver
+top.mrys.vertx.eventbus.resolvers.ParamHttpArgumentResolver

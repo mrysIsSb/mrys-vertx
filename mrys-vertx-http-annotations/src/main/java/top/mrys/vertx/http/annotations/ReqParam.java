@@ -16,4 +16,6 @@ public @interface ReqParam {
   String value() default "";
 
   boolean required() default true;
+
+  String defValue() default "";
 }

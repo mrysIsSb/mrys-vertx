@@ -6,6 +6,7 @@ import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.ReqParam;
+import top.mrys.vertx.http.exceptions.PathVarRequiredException;
 
 /**
  * @author mrys
@@ -37,6 +38,9 @@ public class ReqParamHandlerMethodArgumentResolver implements HandlerMethodArgum
     String name = StrUtil.isBlank(param.value()) ? parameter.getName() : param.value();
     String v = getFromUrlParam(
         name, context);
+    if (StrUtil.isBlank(v) && StrUtil.isNotBlank(param.defValue())) {
+      v = param.defValue();
+    }
     if (StrUtil.isBlank(v) && param.required()) {
       return Future.failedFuture(new NullPointerException(name + "不能为空"));
     }

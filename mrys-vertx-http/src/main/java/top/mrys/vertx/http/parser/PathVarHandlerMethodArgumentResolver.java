@@ -38,13 +38,11 @@ public class PathVarHandlerMethodArgumentResolver implements HandlerMethodArgume
     PathVar pathVar = parameter.getParameterAnnotation(PathVar.class);
     String value = getFromUrlPath(
         StrUtil.isNotBlank(pathVar.value()) ? pathVar.value() : parameter.getName(), context);
+    if (StrUtil.isBlank(value) && StrUtil.isNotBlank(pathVar.defValue())) {
+      value = pathVar.defValue();
+    }
     if (pathVar.required() && StrUtil.isBlank(value)) {
-      String def = pathVar.defValue();
-      if (StrUtil.isNotBlank(def)) {
-        value = def;
-      } else {
-        return Future.failedFuture(new PathVarRequiredException());
-      }
+      return Future.failedFuture(new PathVarRequiredException());
     }
     return Future.succeededFuture(Convert.convert(parameter.getParameterClass(), value));
   }

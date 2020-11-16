@@ -5,6 +5,8 @@ import java.util.List;
 import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.eventbus.MicroClient;
+import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
+import top.mrys.vertx.eventbus.proxy.WebClientProcess;
 import top.mrys.vertx.http.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.PostRoute;
 import top.mrys.vertx.http.annotations.ReqBody;
@@ -15,7 +17,7 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @author mrys
  * @date 2020/9/8
  */
-@MicroClient()
+@MicroClient(ConfigProcess = @ConfigProcess(processClass = WebClientProcess.class))
 @RouteMapping("/sysUser")
 public interface SysUserApi {
 

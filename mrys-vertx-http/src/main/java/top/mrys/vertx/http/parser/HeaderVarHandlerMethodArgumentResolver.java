@@ -38,6 +38,9 @@ public class HeaderVarHandlerMethodArgumentResolver implements HandlerMethodArgu
     HeaderVar headerVar = parameter.getParameterAnnotation(HeaderVar.class);
     String value = getFromUrlPath(
         StrUtil.isNotBlank(headerVar.value()) ? headerVar.value() : parameter.getName(), context);
+    if (StrUtil.isBlank(value) && StrUtil.isNotBlank(headerVar.defValue())) {
+      value = headerVar.defValue();
+    }
     if (headerVar.required() && StrUtil.isBlank(value)) {
       return Future.failedFuture(new HeaderVarRequiredException());
     }

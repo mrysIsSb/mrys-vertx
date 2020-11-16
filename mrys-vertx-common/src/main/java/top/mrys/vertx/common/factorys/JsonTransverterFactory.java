@@ -2,6 +2,7 @@ package top.mrys.vertx.common.factorys;
 
 import java.util.HashMap;
 import java.util.Map;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
 import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.manager.JsonTransverterImpl;
 import top.mrys.vertx.common.manager.JsonTransverterNameProvider;
@@ -14,8 +15,7 @@ import top.mrys.vertx.common.manager.JsonTransverterNameProvider;
  */
 public class JsonTransverterFactory {
 
-  private static final JsonTransverterFactory JSON_TRANSVERTER_FACTORY = new JsonTransverterFactory();
-
+//  private static final JsonTransverterFactory JSON_TRANSVERTER_FACTORY = new JsonTransverterFactory();
 
   private static final Map<String, JsonTransverter> jsonTransverterMap = new HashMap<>();
 
@@ -33,6 +33,10 @@ public class JsonTransverterFactory {
     return jsonTransverterMap.getOrDefault(name, getDefault());
   }
 
+  /**
+   * @see EnumJsonTransverterNameProvider
+   * @author mrys
+   */
   public static JsonTransverter getJsonTransverter(JsonTransverterNameProvider provider) {
     return getJsonTransverter(provider.getJsonTransverterName());
   }

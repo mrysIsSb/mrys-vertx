@@ -1,4 +1,4 @@
-package top.mrys.vertx.eventbus;
+package top.mrys.vertx.eventbus.resolvers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
@@ -7,6 +7,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.ext.web.client.HttpRequest;
 import java.util.Map;
+import top.mrys.vertx.common.factorys.JsonTransverterFactory;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
+import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.HeaderVar;
 
@@ -15,6 +18,9 @@ import top.mrys.vertx.http.annotations.HeaderVar;
  * @date 2020/10/19
  */
 public class HeaderHttpArgumentResolver implements HttpArgumentResolver {
+
+  private JsonTransverter jsonTransverter = JsonTransverterFactory
+      .getJsonTransverter(EnumJsonTransverterNameProvider.http_server);
 
   /**
    * 判断参数是否满足这个解析器 实现类重写
@@ -36,10 +42,21 @@ public class HeaderHttpArgumentResolver implements HttpArgumentResolver {
    * @author mrys
    */
   @Override
-  public <T> void resolver(MethodParameter parameter, T o, HttpRequest request) {
+  public void resolver(MethodParameter parameter, Object o, HttpRequest request) {
     HeaderVar headerVar = parameter.getParameterAnnotation(HeaderVar.class);
     String name = StrUtil.isNotBlank(headerVar.value()) ? headerVar.value() : parameter.getName();
-    if (ClassUtil.isBasicType(o.getClass())) {
+
+    if (o == null) {
+      o = headerVar.defValue();
+    }
+
+    if (o == null) {
+      if (headerVar.required()) {
+        throw new NullPointerException("请求参数不能为空");
+      }
+    }
+
+    if (ClassUtil.isBasicType(o.getClass()) || String.class.equals(o.getClass())) {
       request.putHeader(name, Convert.toStr(o));
     } else if (o instanceof Map) {
       ((Map) o).forEach((key, value) -> {
@@ -48,7 +65,8 @@ public class HeaderHttpArgumentResolver implements HttpArgumentResolver {
         }
       });
     } else if (BeanUtil.isBean(o.getClass())) {
-      JSONUtil.parseObj(o)
+      String s1 = jsonTransverter.serialize(o);
+      JSONUtil.parseObj(s1)
           .forEach((s, o1) -> request.putHeader(Convert.toStr(s), Convert.toStr(o1)));
     }
   }

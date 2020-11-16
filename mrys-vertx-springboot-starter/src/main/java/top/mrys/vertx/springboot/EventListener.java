@@ -24,6 +24,7 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import top.mrys.vertx.common.utils.MyJsonUtil;
 
 /**
+ * 要用spring.factories 否则bean实例化前的事件监听不到（在用bean的情况）
  * @author mrys
  * @date 2020/10/27
  */

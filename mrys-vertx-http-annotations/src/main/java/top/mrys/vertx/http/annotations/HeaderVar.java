@@ -16,4 +16,6 @@ public @interface HeaderVar {
   String value() default "";
 
   boolean required() default true;
+
+  String defValue() default "";
 }
