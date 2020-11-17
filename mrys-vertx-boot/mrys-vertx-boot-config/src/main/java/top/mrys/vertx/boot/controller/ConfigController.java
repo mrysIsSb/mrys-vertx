@@ -9,6 +9,7 @@ import top.mrys.vertx.http.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;
+import top.mrys.vertx.springboot.micro.EnableMicroClient;
 
 /**
  * @author mrys
