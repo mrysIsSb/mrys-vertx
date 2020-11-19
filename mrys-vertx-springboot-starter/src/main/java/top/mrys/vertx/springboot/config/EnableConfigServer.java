@@ -15,8 +15,18 @@ import top.mrys.vertx.springboot.http.server.HttpStarter;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({HttpStarter.class, HttpAutoConfiguration.class})
+@Import({ConfigServerStarter.class, ConfigServerAutoConfiguration.class,
+    HttpAutoConfiguration.class})
 @Configuration
 public @interface EnableConfigServer {
 
+  //  args>configCentre>boot>this
+  int port() default 9099;
+
+  /**
+   * config.http 配置前缀 config.http.port
+   *
+   * @author mrys
+   */
+  String configPrefix() default "config.http";
 }

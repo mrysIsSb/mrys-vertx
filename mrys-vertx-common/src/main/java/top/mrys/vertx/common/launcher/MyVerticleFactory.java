@@ -14,6 +14,12 @@ import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
  */
 public class MyVerticleFactory {
 
+  static MyVerticleFactory def = new MyVerticleFactory();
+
+  public static MyVerticleFactory getDefault() {
+    return def;
+  }
+
   /**
    * 对象实例化工厂
    *
@@ -21,7 +27,7 @@ public class MyVerticleFactory {
    */
   @Setter
   @Getter
-  private ObjectInstanceFactory instanceFactory = new DefaultObjectInstanceFactory();
+  private ObjectInstanceFactory instanceFactory = ObjectInstanceFactory.getDefault();
 
   @Setter
   @Getter
@@ -31,21 +37,28 @@ public class MyVerticleFactory {
   @Setter
   private HttpServerOptions httpServerOptions = new HttpServerOptions();
 
-
+  /**
+   * 获取verticle
+   *
+   * @author mrys
+   */
   public <T extends MyAbstractVerticle> T getMyAbstractVerticle(Class<T> verticleClass) {
     T verticle = instanceFactory.getInstance(verticleClass);
     if (verticle.getContext() == null) {
+      context.setVerticleFactory(this);
       verticle.setContext(context);
     }
     return verticle;
   }
 
+  /**
+   * 获取verticle 后续操作
+   *
+   * @author mrys
+   */
   public <T extends MyAbstractVerticle> T getMyAbstractVerticle(Class<T> verticleClass,
       Function<T, T> process) {
-    T verticle = instanceFactory.getInstance(verticleClass);
-    if (verticle.getContext() == null) {
-      verticle.setContext(context);
-    }
+    T verticle = getMyAbstractVerticle(verticleClass);
     return process.apply(verticle);
   }
 }

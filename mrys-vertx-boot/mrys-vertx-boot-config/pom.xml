@@ -36,6 +36,10 @@
       <artifactId>mrys-vertx-http</artifactId>
     </dependency>
     <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-config</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-redis-client</artifactId>
     </dependency>

@@ -2,6 +2,7 @@ package top.mrys.vertx.config.controller;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.config.ConfigLoader;
@@ -12,16 +13,15 @@ import top.mrys.vertx.http.annotations.RouteMapping;
 
 /**
  * @author mrys
- * @date 2020/9/22
+ * @date 2020年11月19日
  */
 @RouteHandler
 @RouteMapping("/config")
 @Slf4j
 public class ConfigController {
 
-  @Autowired
+  @Setter
   private ConfigLoader configLoader;
-
 
   @GetRoute({"/getConfig/:serverName/:profile", "/getConfig/:serverName"})
   public Future<JsonObject> getConfig(@PathVar String serverName,

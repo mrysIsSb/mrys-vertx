@@ -119,6 +119,11 @@
       </dependency>
       <dependency>
         <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-config</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-http</artifactId>
         <version>${mrys-vertx.version}</version>
       </dependency>

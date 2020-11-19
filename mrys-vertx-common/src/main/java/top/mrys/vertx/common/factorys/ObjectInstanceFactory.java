@@ -6,10 +6,12 @@ package top.mrys.vertx.common.factorys;
  * @author mrys
  * @date 2020/10/27
  */
-public interface ObjectInstanceFactory {
+public interface ObjectInstanceFactory{
+
+  ObjectInstanceFactory def = new DefaultObjectInstanceFactory();
 
   static ObjectInstanceFactory getDefault() {
-    return new DefaultObjectInstanceFactory();
+    return def;
   }
 
   /**

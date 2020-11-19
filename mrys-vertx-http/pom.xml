@@ -23,7 +23,6 @@
         <dependency>
             <groupId>top.mrys</groupId>
             <artifactId>mrys-vertx-http-annotations</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 
