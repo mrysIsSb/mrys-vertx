@@ -40,6 +40,7 @@
     <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
     <mybatis.version>3.5.5</mybatis.version>
     <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
+    <mrys-vertx-springboot-starter.version>1.0</mrys-vertx-springboot-starter.version>
     <asm.version>9.0</asm.version>
   </properties>
 
@@ -140,15 +141,4 @@
       </plugins>
     </pluginManagement>
   </build>
-  <repositories>
-    <repository>
-      <id>nexus-aliyun</id>
-      <name>Nexus aliyun</name>
-      <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-    </repository>
-  </repositories>
 </project>

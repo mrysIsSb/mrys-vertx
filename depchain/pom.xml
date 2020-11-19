@@ -11,6 +11,9 @@
 
   <artifactId>depchain</artifactId>
   <packaging>pom</packaging>
+  <modules>
+    <module>depchain-jitpack</module>
+  </modules>
   <properties>
     <vertx.version>4.0.0-milestone5</vertx.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,6 +30,8 @@
     <mybatis.version>3.5.5</mybatis.version>
     <asm.version>9.0</asm.version>
 
+
+    <mrys-vertx.groupId>top.mrys</mrys-vertx.groupId>
     <mrys-vertx>1.0</mrys-vertx>
     <mrys-vertx-common.version>${mrys-vertx}</mrys-vertx-common.version>
     <mrys-vertx-event-bus.version>${mrys-vertx}</mrys-vertx-event-bus.version>
@@ -100,17 +105,17 @@
 
       <!--      mrys-vertx -->
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-http-annotations</artifactId>
         <version>${mrys-vertx-http-annotations.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-common</artifactId>
         <version>${mrys-vertx-common.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-event-bus</artifactId>
         <version>${mrys-vertx-event-bus.version}</version>
       </dependency>
@@ -120,27 +125,27 @@
         <version>${mrys-vertx-http.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-http-annotations</artifactId>
         <version>${mrys-vertx-http-annotations.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-mysql</artifactId>
         <version>${mrys-vertx-mysql.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-rabbitmq</artifactId>
         <version>${mrys-vertx-rabbitmq.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-redis</artifactId>
         <version>${mrys-vertx-redis.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-springboot-starter</artifactId>
         <version>${mrys-vertx-springboot-starter.version}</version>
       </dependency>
