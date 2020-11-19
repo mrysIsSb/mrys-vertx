@@ -27,14 +27,16 @@
     <mybatis.version>3.5.5</mybatis.version>
     <asm.version>9.0</asm.version>
 
-
-    <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
-    <mrys-vertx-event-bus.version>1.0</mrys-vertx-event-bus.version>
-    <mrys-vertx-common.version>1.0</mrys-vertx-common.version>
-    <mrys-vertx-http.version>1.0</mrys-vertx-http.version>
-    <mrys-vertx-mysql.version>1.0</mrys-vertx-mysql.version>
-    <mrys-vertx-redis.version>1.0</mrys-vertx-redis.version>
-    <mrys-vertx-springboot-starter.version>1.0</mrys-vertx-springboot-starter.version>
+    <mrys-vertx>1.0</mrys-vertx>
+    <mrys-vertx-common.version>${mrys-vertx}</mrys-vertx-common.version>
+    <mrys-vertx-event-bus.version>${mrys-vertx}</mrys-vertx-event-bus.version>
+    <mrys-vertx-http.version>${mrys-vertx}</mrys-vertx-http.version>
+    <mrys-vertx-http-annotations.version>${mrys-vertx}</mrys-vertx-http-annotations.version>
+    <mrys-vertx-mysql.version>${mrys-vertx}</mrys-vertx-mysql.version>
+    <mrys-vertx-mybatis.version>${mrys-vertx}</mrys-vertx-mybatis.version>
+    <mrys-vertx-rabbitmq.version>${mrys-vertx}</mrys-vertx-rabbitmq.version>
+    <mrys-vertx-redis.version>${mrys-vertx}</mrys-vertx-redis.version>
+    <mrys-vertx-springboot-starter.version>${mrys-vertx}</mrys-vertx-springboot-starter.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -119,19 +121,29 @@
       </dependency>
       <dependency>
         <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http-annotations</artifactId>
+        <version>${mrys-vertx-http-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-mysql</artifactId>
         <version>${mrys-vertx-mysql.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-rabbitmq</artifactId>
+        <version>${mrys-vertx-rabbitmq.version}</version>
       </dependency>
       <dependency>
         <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-redis</artifactId>
         <version>${mrys-vertx-redis.version}</version>
       </dependency>
-<!--      <dependency>
+      <dependency>
         <groupId>top.mrys</groupId>
         <artifactId>mrys-vertx-springboot-starter</artifactId>
         <version>${mrys-vertx-springboot-starter.version}</version>
-      </dependency>-->
+      </dependency>
       <!--      mrys-vertx -->
     </dependencies>
   </dependencyManagement>

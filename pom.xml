@@ -21,6 +21,7 @@
     <module>mrys-vertx-http-annotations</module>
     <module>depchain</module>
     <module>mrys-vertx-springboot-starter</module>
+    <module>mrys-vertx-config</module>
   </modules>
 
   <properties>

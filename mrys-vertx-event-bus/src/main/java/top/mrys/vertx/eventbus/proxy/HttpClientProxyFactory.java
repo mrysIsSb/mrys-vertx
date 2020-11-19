@@ -3,7 +3,6 @@ package top.mrys.vertx.eventbus.proxy;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpStatus;
-import com.sun.deploy.security.ValidationState.TYPE;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -35,9 +34,9 @@ import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.common.utils.AnnotationUtil;
 import top.mrys.vertx.common.utils.TypeUtil;
-import top.mrys.vertx.eventbus.resolvers.HttpArgumentResolver;
 import top.mrys.vertx.eventbus.MicroClient;
 import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
+import top.mrys.vertx.eventbus.resolvers.HttpArgumentResolver;
 import top.mrys.vertx.http.RouteUtil;
 import top.mrys.vertx.http.annotations.ReqBody;
 
