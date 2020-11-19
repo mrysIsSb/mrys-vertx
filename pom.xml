@@ -39,8 +39,9 @@
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
     <mybatis.version>3.5.5</mybatis.version>
-    <mrys-vertx-http-annotations.version>1.0</mrys-vertx-http-annotations.version>
-    <mrys-vertx-springboot-starter.version>1.0</mrys-vertx-springboot-starter.version>
+
+
+    <mrys-vertx.version>${version}</mrys-vertx.version>
     <asm.version>9.0</asm.version>
   </properties>
 
@@ -54,13 +55,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-common</artifactId>
-        <version>${version}</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>2.3.4.RELEASE</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
-
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
@@ -106,26 +107,56 @@
         <version>${mybatis.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-http-annotations</artifactId>
-        <version>${mrys-vertx-http-annotations.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>mrys-vertx-springboot-starter</artifactId>
-        <version>${mrys-vertx-springboot-starter.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>${asm.version}</version>
       </dependency>
-
+      <!--mrys-vertx-->
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-common</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-http-annotations</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-event-bus</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-redis</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>mrys-vertx-springboot-starter</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
+      <!--mrys-vertx-->
     </dependencies>
   </dependencyManagement>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <configuration>
+          <generateBackupPoms>false</generateBackupPoms>
+        </configuration>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

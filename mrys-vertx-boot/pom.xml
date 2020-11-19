@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<!--  <parent>
+  <parent>
     <artifactId>mrys-vertx</artifactId>
     <groupId>top.mrys</groupId>
     <version>1.0</version>
-  </parent>-->
+  </parent>
 <!--  <parent>
     <artifactId>depchain</artifactId>
     <groupId>top.mrys</groupId>
@@ -15,9 +15,7 @@
   </parent>-->
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>top.mrys</groupId>
   <artifactId>mrys-vertx-boot</artifactId>
-  <version>1.0</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -43,15 +41,6 @@
         <scope>import</scope>
       </dependency>
     </dependencies>
-    <!--<dependencies>
-      <dependency>
-        <groupId>top.mrys</groupId>
-        <artifactId>depchain</artifactId>
-        <version>1.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>-->
   </dependencyManagement>
   <build>
     <pluginManagement>

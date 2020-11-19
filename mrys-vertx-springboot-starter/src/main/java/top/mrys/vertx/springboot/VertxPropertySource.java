@@ -4,7 +4,6 @@ import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.PropertySource;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.common.utils.MyJsonUtil;
 
 /**
  * @author mrys

@@ -1,4 +1,4 @@
-package top.mrys.vertx.boot.controller;
+package top.mrys.vertx.config.controller;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;

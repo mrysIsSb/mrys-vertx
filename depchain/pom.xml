@@ -2,20 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>mrys-vertx</artifactId>
-    <groupId>top.mrys</groupId>
-    <version>1.0</version>
-  </parent>
+    <parent>
+      <artifactId>mrys-vertx</artifactId>
+      <groupId>top.mrys</groupId>
+      <version>1.0</version>
+    </parent>
   <modelVersion>4.0.0</modelVersion>
 
+<!--  <groupId>top.mrys</groupId>-->
   <artifactId>depchain</artifactId>
+<!--  <version>1.0</version>-->
+
   <packaging>pom</packaging>
   <modules>
     <module>depchain-jitpack</module>
   </modules>
   <properties>
     <vertx.version>4.0.0-milestone5</vertx.version>
+    <spring-boot-dependencies.version>2.3.0.RELEASE</spring-boot-dependencies.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -32,9 +36,11 @@
 
 
     <mrys-vertx.groupId>top.mrys</mrys-vertx.groupId>
-    <mrys-vertx>1.0</mrys-vertx>
+    <mrys-vertx>${version}</mrys-vertx>
     <mrys-vertx-common.version>${mrys-vertx}</mrys-vertx-common.version>
+    <mrys-vertx-config.version>${mrys-vertx}</mrys-vertx-config.version>
     <mrys-vertx-event-bus.version>${mrys-vertx}</mrys-vertx-event-bus.version>
+    <mrys-vertx-config.version>${mrys-vertx}</mrys-vertx-config.version>
     <mrys-vertx-http.version>${mrys-vertx}</mrys-vertx-http.version>
     <mrys-vertx-http-annotations.version>${mrys-vertx}</mrys-vertx-http-annotations.version>
     <mrys-vertx-mysql.version>${mrys-vertx}</mrys-vertx-mysql.version>
@@ -52,6 +58,15 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot-dependencies.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
@@ -118,6 +133,11 @@
         <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-event-bus</artifactId>
         <version>${mrys-vertx-event-bus.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${mrys-vertx.groupId}</groupId>
+        <artifactId>mrys-vertx-config</artifactId>
+        <version>${mrys-vertx-config.version}</version>
       </dependency>
       <dependency>
         <groupId>${mrys-vertx.groupId}</groupId>

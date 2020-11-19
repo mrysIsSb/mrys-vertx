@@ -27,7 +27,6 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-springboot-starter</artifactId>
     </dependency>
-
     <dependency>
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-boot-api</artifactId>
