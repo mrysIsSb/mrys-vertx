@@ -7,12 +7,12 @@
     <groupId>top.mrys</groupId>
     <version>1.0</version>
   </parent>-->
-  <parent>
+<!--  <parent>
     <artifactId>depchain</artifactId>
     <groupId>top.mrys</groupId>
     <version>1.0</version>
     <relativePath>../depchain</relativePath>
-  </parent>
+  </parent>-->
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>top.mrys</groupId>
@@ -34,16 +34,15 @@
   </properties>
 
   <dependencyManagement>
-<!--    <dependencies>
+    <dependencies>
       <dependency>
         <groupId>top.mrys</groupId>
         <artifactId>depchain</artifactId>
         <version>1.0</version>
         <type>pom</type>
         <scope>import</scope>
-        <systemPath>./depchain/pom.xml</systemPath>
       </dependency>
-    </dependencies>-->
+    </dependencies>
     <!--<dependencies>
       <dependency>
         <groupId>top.mrys</groupId>
@@ -71,17 +70,17 @@
     </pluginManagement>
   </build>
 
-  <repositories>
+<!--  <repositories>
     <repository>
       <id>nexus-aliyun</id>
       <name>Nexus aliyun</name>
-      <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+      <url>https://maven.aliyun.com/repository/public</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
-  </repositories>
+  </repositories>-->
 
   <!--<build>
     <finalName>${project.artifactId}</finalName>

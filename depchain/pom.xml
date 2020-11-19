@@ -120,7 +120,7 @@
         <version>${mrys-vertx-event-bus.version}</version>
       </dependency>
       <dependency>
-        <groupId>top.mrys</groupId>
+        <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-http</artifactId>
         <version>${mrys-vertx-http.version}</version>
       </dependency>

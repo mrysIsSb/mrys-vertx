@@ -13,5 +13,6 @@
 
   <properties>
     <mrys-vertx.groupId>com.github.mrysIsSb.mrys-vertx</mrys-vertx.groupId>
+    <mrys-vertx>(,v1.0]</mrys-vertx>
   </properties>
 </project>
