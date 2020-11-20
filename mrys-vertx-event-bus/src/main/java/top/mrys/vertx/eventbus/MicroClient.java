@@ -16,6 +16,7 @@ import top.mrys.vertx.eventbus.proxy.ProxyFactory;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MicroClient {
 
+  @Deprecated
   Class<? extends MicroClientFactoryBean> factoryBeanClass() default JdkHttpMicroClientFactoryBean.class;
 
   Class<? extends ProxyFactory> proxyFactory() default HttpClientProxyFactory.class;

@@ -15,7 +15,7 @@ import top.mrys.vertx.http.starter.HttpVerticle;
  * @author mrys
  * @date 2020/11/3
  */
-@ConditionalOnMissingBean
+@ConditionalOnMissingBean(HttpAutoConfiguration.class)
 public class HttpAutoConfiguration {
 
   @Autowired(required = false)

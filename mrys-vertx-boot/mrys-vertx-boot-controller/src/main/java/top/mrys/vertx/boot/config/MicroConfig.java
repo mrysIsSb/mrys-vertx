@@ -3,6 +3,7 @@ package top.mrys.vertx.boot.config;
 
 import top.mrys.vertx.springboot.micro.EnableMicroClient;
 
+
 /**
  * @author mrys
  * @date 2020/11/14

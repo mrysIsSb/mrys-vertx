@@ -1,9 +1,10 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  top.mrys.vertx.springboot.AutoConfiguration,\
-  top.mrys.vertx.springboot.micro.MicroClientPostProcessor
+  top.mrys.vertx.springboot.AutoConfiguration
+#  ,\
+#  top.mrys.vertx.springboot.micro.MicroClientPostProcessor
 
 org.springframework.context.ApplicationListener=\
   top.mrys.vertx.springboot.EventListener
 
-org.springframework.beans.factory.config.BeanFactoryPostProcessor=\
-  top.mrys.vertx.springboot.micro.MicroClientPostProcessor
+#org.springframework.beans.factory.config.BeanFactoryPostProcessor=\
+#  top.mrys.vertx.springboot.micro.MicroClientPostProcessor

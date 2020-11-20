@@ -34,11 +34,11 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
 @RouteMapping("/demo")
 public class DemoController {
 
-  @Autowired
+  @Autowired(required = false)
   private SysUserApi sysUserApi;
 
-  @Autowired
-  private VertxManager vertxManager;
+  /*@Autowired
+  private VertxManager vertxManager;*/
 
   private int i;
 
