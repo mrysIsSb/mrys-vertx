@@ -3,10 +3,6 @@ package top.mrys.vertx.boot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import top.mrys.vertx.common.launcher.MyLauncher;
-import top.mrys.vertx.eventbus.EnableMicroClient;
-import top.mrys.vertx.http.starter.EnableHttp;
 
 /**
  * @author mrys

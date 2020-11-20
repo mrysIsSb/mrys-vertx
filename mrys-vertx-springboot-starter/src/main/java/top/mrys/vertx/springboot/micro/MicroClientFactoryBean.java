@@ -1,6 +1,8 @@
 package top.mrys.vertx.springboot.micro;
 
+import java.util.List;
 import java.util.Map;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.FactoryBean;
@@ -11,30 +13,26 @@ import top.mrys.vertx.eventbus.proxy.ProxyFactory;
  * @author mrys
  * @date 2020/11/20
  */
+@Data
 public class MicroClientFactoryBean implements FactoryBean<Object> {
 
-  protected Class type;
+  private Class type;
 
-  protected Class proxyFactoryClass;
+  private Class proxyFactoryClass;
 
   @Autowired
-  protected Map<Class, ProxyFactory> proxyFactorys;
+  private List<ProxyFactory> proxyFactorys;
 
   @Override
   public Object getObject() throws Exception {
-    return proxyFactorys.get(proxyFactoryClass).getProxyInstance(type);
+    return proxyFactorys.stream()
+        .filter(proxyFactory -> proxyFactoryClass.isAssignableFrom(proxyFactory.getClass()))
+        .findFirst().get()
+        .getProxyInstance(type);
   }
 
   @Override
   public Class getObjectType() {
     return type;
-  }
-
-  public void setType(Class<?> type) {
-    this.type = type;
-  }
-
-  public void setProxyFactoryClass(Class proxyFactoryClass) {
-    this.proxyFactoryClass = proxyFactoryClass;
   }
 }

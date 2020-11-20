@@ -48,6 +48,17 @@ public class GenClientRegistrar implements ImportBeanDefinitionRegistrar, Resour
   @Override
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
       BeanDefinitionRegistry registry) {
+/*    BeanDefinitionBuilder definition = BeanDefinitionBuilder
+        .genericBeanDefinition(TTT.class);
+    definition.addPropertyValue("type", TestF.class);
+    definition.addPropertyValue("type1", TestF.class.getName());
+    definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+
+
+    AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
+    beanDefinition.setPrimary(true);
+    beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, TestF.class);
+    registry.registerBeanDefinition("Tss", beanDefinition);*/
     registerMicroClients(importingClassMetadata, registry);
   }
 
@@ -88,12 +99,9 @@ public class GenClientRegistrar implements ImportBeanDefinitionRegistrar, Resour
     Class proxyFactoryClass = (Class) attributes.get("proxyFactory");
     definition.addPropertyValue("proxyFactoryClass", proxyFactoryClass);
     definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-    definition.setScope(ConfigurableBeanFactory.SCOPE_PROTOTYPE);
-
-
+//    definition.setScope(ConfigurableBeanFactory.SCOPE_PROTOTYPE); 原型就没法实例化bean
     AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
     beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, className);
-//    beanDefinition.setScope(ConfigurableBeanFactory.SCOPE_PROTOTYPE);
     beanDefinition.setPrimary(true);
     registry.registerBeanDefinition(className, beanDefinition);
   }
