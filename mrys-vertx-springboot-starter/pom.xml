@@ -15,7 +15,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
-      <optional>true</optional>
+<!--      <optional>true</optional>-->
+      <exclusions><!-- 去掉springboot默认配置 -->
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>top.mrys</groupId>

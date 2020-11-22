@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-      <artifactId>mrys-vertx</artifactId>
-      <groupId>top.mrys</groupId>
-      <version>1.0</version>
-    </parent>
+  <parent>
+    <artifactId>mrys-vertx</artifactId>
+    <groupId>top.mrys</groupId>
+    <version>1.0</version>
+  </parent>
   <modelVersion>4.0.0</modelVersion>
 
-<!--  <groupId>top.mrys</groupId>-->
+  <!--  <groupId>top.mrys</groupId>-->
   <artifactId>depchain</artifactId>
-<!--  <version>1.0</version>-->
+  <!--  <version>1.0</version>-->
 
   <packaging>pom</packaging>
   <modules>
@@ -105,11 +105,11 @@
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
+      <!--      <dependency>
+              <groupId>org.springframework</groupId>
+              <artifactId>spring-context</artifactId>
+              <version>${spring.version}</version>
+            </dependency>-->
 
       <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
       <dependency>
@@ -173,5 +173,16 @@
     </dependencies>
   </dependencyManagement>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-dependencies</artifactId>
+          <version>${spring-boot-dependencies.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

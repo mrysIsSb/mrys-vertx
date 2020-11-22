@@ -93,11 +93,11 @@ public class MethodParameter {
     Parameter[] parameters = method.getParameters();
     MethodParameter[] result = new MethodParameter[parameters.length];
     if (ArrayUtil.isNotEmpty(parameters)) {
-      String[] paramNames = ASMUtil.getMethodParamNames(method);
+//      String[] paramNames = ASMUtil.getMethodParamNames(method);
       for (int i = 0; i < parameters.length; i++) {
         Parameter parameter = parameters[i];
         MethodParameter methodParameter = new MethodParameter();
-        methodParameter.name = StrUtil.blankToDefault(paramNames[i],parameter.getName());
+        methodParameter.name =parameter.getName();/* StrUtil.blankToDefault(paramNames[i],parameter.getName());*/
         methodParameter.parameterClass = parameter.getType();
         methodParameter.parameterAnnotations = getMethodParametersAnnotations(i, parameter);
         methodParameter.parameterIndex = i;
