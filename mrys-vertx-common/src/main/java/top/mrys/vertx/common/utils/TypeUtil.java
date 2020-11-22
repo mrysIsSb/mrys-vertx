@@ -88,7 +88,7 @@ public class TypeUtil {
 
 
   public static Class getRawType(Type type) {
-    Class result = (Class) type;
+    Class result = Void.class;
     //参数化类 有泛型的
     if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
       ParameterizedType parameterizedType = getParameterizedType(type);

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import top.mrys.vertx.springboot.http.server.EnableWs;
+import top.mrys.vertx.springboot.http.server.annotations.EnableWs;
 import top.mrys.vertx.ws.client.boot.controller.TestController;
 
 /**

@@ -4,12 +4,11 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.http.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;
+import top.mrys.vertx.http.constants.EnumHttpMethod;
 
 /**
  * @author mrys
@@ -23,7 +22,8 @@ public class ConfigController {
   @Setter
   private ConfigLoader configLoader;
 
-  @GetRoute({"/getConfig/:serverName/:profile", "/getConfig/:serverName"})
+  @RouteMapping(value = {"/getConfig/:serverName/:profile",
+      "/getConfig/:serverName"}, method = EnumHttpMethod.GET)
   public Future<JsonObject> getConfig(@PathVar String serverName,
       @PathVar(defValue = "def") String profile) {
     log.debug("getConfig:{}:{}", serverName, profile);

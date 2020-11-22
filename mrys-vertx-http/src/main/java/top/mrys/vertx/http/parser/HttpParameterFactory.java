@@ -48,11 +48,12 @@ public class HttpParameterFactory {
     for (int i = 0; i < methodParameters.length; i++) {
       MethodParameter parameter = methodParameters[i];
       FutureUtil<Object> f = new FutureUtil<>(Future.failedFuture("初始化"));
-      resolvers.forEach(resolver -> {
+      for (HandlerMethodArgumentResolver resolver : resolvers) {
         if (resolver.match(parameter)) {
           f.nullOrFailedRecover(resolver.resolve(parameter, context));
+          break;
         }
-      });
+      }
       int finalI = i;
       f.getFuture().onSuccess(event -> objects[finalI] = event);
       futures.add(f.getFuture());

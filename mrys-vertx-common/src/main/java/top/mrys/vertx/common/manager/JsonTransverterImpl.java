@@ -1,10 +1,12 @@
 package top.mrys.vertx.common.manager;
 
+import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +19,10 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.jackson.DatabindCodec;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -51,7 +55,13 @@ public class JsonTransverterImpl implements JsonTransverter {
   @SneakyThrows
   @Override
   public <R> R deSerialize(String o, Class<R> rClass) {
-    return mapper.readValue(o, rClass);
+//    if (JSONUtil.isJsonObj(o)) {
+      return mapper.readValue(o, rClass);
+  /*  } else if (JSONUtil.isJsonArray(o)) {
+      JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, rClass);
+      return mapper.readValue(o, javaType);
+    }
+    return null;*/
   }
 
   @SneakyThrows

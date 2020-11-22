@@ -3,9 +3,7 @@ package top.mrys.vertx.springboot.http.server;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +19,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.starter.HttpVerticle;
+import top.mrys.vertx.springboot.http.server.annotations.EnableHttp;
 
 /**
  * @author mrys

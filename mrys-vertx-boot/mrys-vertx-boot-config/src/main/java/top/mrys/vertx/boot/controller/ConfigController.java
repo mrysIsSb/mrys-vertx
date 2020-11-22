@@ -5,7 +5,7 @@ import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.http.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.annotations.RouteMapping;

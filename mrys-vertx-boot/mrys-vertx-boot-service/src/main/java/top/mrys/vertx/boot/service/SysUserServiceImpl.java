@@ -65,11 +65,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
   @Override
   public Future<SysUser> getById2(Integer id) {
-    Scheduler scheduler = Schedulers.fromExecutor(command -> Vertx.currentContext().runOnContext(v -> command.run()));
+    Scheduler scheduler = Schedulers
+        .fromExecutor(command -> Vertx.currentContext().runOnContext(v -> command.run()));
     Flux.just("tom", "jack", "allen")
         .log()
         .publishOn(scheduler)
-        .publish(stringFlux -> Flux.just("23423","345345cxvdf"))
+        .publish(stringFlux -> Flux.just("23423", "345345cxvdf"))
         .filter(s -> s.length() > 3)
         .map(s -> s.concat("@qq.com"))
         .subscribe(System.out::println);
@@ -93,6 +94,28 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
               sysUsers.add(sysUser);
             });
             promise.complete(Result.okData(sysUsers));
+          } else {
+            promise.fail(event.cause());
+          }
+        });
+    return promise.future();
+  }
+
+  @Override
+  public Future<List<SysUser>> getAll2() {
+    Promise<List<SysUser>> promise = Promise.promise();
+    mysqlSession.query("select * from sys_user")
+        .execute(event -> {
+          if (event.succeeded()) {
+            RowSet<Row> result = event.result();
+            ArrayList<SysUser> sysUsers = new ArrayList<>();
+            result.forEach(row -> {
+              SysUser sysUser = new SysUser();
+              sysUser.setId(row.getInteger("id"));
+              sysUser.setUsername(row.getString("username"));
+              sysUsers.add(sysUser);
+            });
+            promise.complete(sysUsers);
           } else {
             promise.fail(event.cause());
           }

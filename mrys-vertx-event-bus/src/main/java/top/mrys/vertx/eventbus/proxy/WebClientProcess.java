@@ -14,7 +14,11 @@ import java.util.HashMap;
  */
 public class WebClientProcess {
 
-
+  /**
+   * 处理webclient
+   *
+   * @author mrys
+   */
   public HttpRequest<Buffer> process(WebClient client, HttpMethod method, String path,
       String[] args) {
     HashMap<String, String> map = new HashMap<>();

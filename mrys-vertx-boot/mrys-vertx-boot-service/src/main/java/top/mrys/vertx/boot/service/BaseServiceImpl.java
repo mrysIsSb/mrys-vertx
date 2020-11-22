@@ -2,7 +2,7 @@ package top.mrys.vertx.boot.service;
 
 import io.vertx.core.Future;
 import top.mrys.vertx.boot.api.BaseApi;
-import top.mrys.vertx.http.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
 
 /**
  * @author mrys

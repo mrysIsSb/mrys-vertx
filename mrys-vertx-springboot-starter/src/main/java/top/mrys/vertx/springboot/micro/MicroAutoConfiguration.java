@@ -27,7 +27,7 @@ public class MicroAutoConfiguration {
   }
 
   @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public WebClient webClient(HttpClient httpClient) {
     return WebClient.wrap(httpClient);
   }

@@ -2,6 +2,7 @@ package top.mrys.vertx.eventbus.resolvers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -42,7 +43,7 @@ public class DefaultHttpArgumentResolver implements HttpArgumentResolver {
    */
   @Override
   public boolean match(MethodParameter parameter) {
-    return true;
+    return ArrayUtil.isEmpty(parameter.getParameterAnnotations());
   }
 
   /**

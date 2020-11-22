@@ -7,22 +7,18 @@ import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import top.mrys.vertx.boot.api.SysUserApi;
 import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
-import top.mrys.vertx.common.manager.VertxManager;
 import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.Test;
-import top.mrys.vertx.http.annotations.PostRoute;
+import top.mrys.vertx.springboot.http.server.annotations.PostRoute;
 import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.http.annotations.RouteHandler;
-import top.mrys.vertx.http.annotations.RouteHeader;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
 
@@ -92,8 +88,12 @@ public class DemoController {
 
   @PostRoute
   public Future<Result<List<SysUser>>> test7(@ReqBody SysUser sysUser) {
-    System.out.println(sysUser);
     return sysUserApi.getAll(sysUser);
+  }
+
+  @PostRoute
+  public Future<List<SysUser>> test8() {
+    return sysUserApi.getAll2();
   }
 
 }

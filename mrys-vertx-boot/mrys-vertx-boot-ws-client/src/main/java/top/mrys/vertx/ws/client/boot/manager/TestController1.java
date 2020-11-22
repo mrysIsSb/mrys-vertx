@@ -1,7 +1,7 @@
 package top.mrys.vertx.ws.client.boot.manager;
 
 import io.vertx.core.Future;
-import top.mrys.vertx.http.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
 import top.mrys.vertx.http.annotations.ReqParam;
 import top.mrys.vertx.http.annotations.RouteHandler;
 

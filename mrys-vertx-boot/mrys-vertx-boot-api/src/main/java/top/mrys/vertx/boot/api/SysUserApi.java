@@ -7,11 +7,11 @@ import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.eventbus.MicroClient;
 import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
 import top.mrys.vertx.eventbus.proxy.WebClientProcess;
-import top.mrys.vertx.http.annotations.GetRoute;
-import top.mrys.vertx.http.annotations.PostRoute;
 import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.http.annotations.RouteMapping;
 import top.mrys.vertx.http.constants.EnumHttpMethod;
+import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.PostRoute;
 
 /**
  * @author mrys
@@ -40,6 +40,9 @@ public interface SysUserApi {
 
   @GetRoute("/getAll")
   Future<Result<List<SysUser>>> getAll();
+
+  @GetRoute("/getAll2")
+  Future<List<SysUser>> getAll2();
 
   @RouteMapping(value = "/test5", method = EnumHttpMethod.GET)
   Future<Integer> test5();

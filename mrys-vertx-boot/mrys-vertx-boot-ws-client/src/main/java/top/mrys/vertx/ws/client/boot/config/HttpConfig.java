@@ -1,6 +1,6 @@
 package top.mrys.vertx.ws.client.boot.config;
 
-import top.mrys.vertx.springboot.http.server.EnableHttp;
+import top.mrys.vertx.springboot.http.server.annotations.EnableHttp;
 
 /**
  * @author mrys

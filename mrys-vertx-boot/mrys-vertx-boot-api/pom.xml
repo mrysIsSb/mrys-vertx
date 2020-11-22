@@ -20,6 +20,11 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-http-annotations</artifactId>
     </dependency>
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-springboot-starter</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -50,6 +51,7 @@ public class MethodParameter {
    *
    * @author mrys
    */
+  @Getter
   private Annotation[] parameterAnnotations = new Annotation[0];
 
   /**

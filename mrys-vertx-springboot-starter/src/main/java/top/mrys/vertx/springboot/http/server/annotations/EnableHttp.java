@@ -1,4 +1,4 @@
-package top.mrys.vertx.springboot.http.server;
+package top.mrys.vertx.springboot.http.server.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +11,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import top.mrys.vertx.http.annotations.RouteHandler;
+import top.mrys.vertx.springboot.http.server.HttpAutoConfiguration;
+import top.mrys.vertx.springboot.http.server.HttpStarter;
 
 /**
  * 扫描会与springapplication重复
