@@ -2,6 +2,7 @@ package top.mrys.vertx.common.other;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -94,7 +95,7 @@ public class MethodParameter {
       for (int i = 0; i < parameters.length; i++) {
         Parameter parameter = parameters[i];
         MethodParameter methodParameter = new MethodParameter();
-        methodParameter.name = paramNames[i];
+        methodParameter.name = StrUtil.blankToDefault(paramNames[i],parameter.getName());
         methodParameter.parameterClass = parameter.getType();
         methodParameter.parameterAnnotations = getMethodParametersAnnotations(i, parameter);
         methodParameter.parameterIndex = i;

@@ -1,6 +1,7 @@
 package top.mrys.vertx.springboot;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -31,7 +32,10 @@ public class AutoConfiguration {
     return VertxRelevantObjectInstanceFactory.createVertx();
   }
 
-
+  @Bean
+  public HttpClient httpClient(Vertx vertx){
+    return vertx.createHttpClient();
+  }
   /**
    * 对象实例化工厂
    *

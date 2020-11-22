@@ -90,7 +90,7 @@ public class EventListener implements GenericApplicationListener {
 
   @Override
   public boolean supportsEventType(ResolvableType eventType) {
-    System.out.println(eventType.getRawClass().getSimpleName());
+//    System.out.println(eventType.getRawClass().getSimpleName());
     return eventType.isAssignableFrom(ApplicationEnvironmentPreparedEvent.class);
   }
 }

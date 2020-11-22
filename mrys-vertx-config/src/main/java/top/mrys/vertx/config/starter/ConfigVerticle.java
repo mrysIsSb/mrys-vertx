@@ -72,9 +72,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
               return httpVerticle;
             })
         , new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
-          if (re.succeeded()) {
-            log.info("http server started port:{}", httpPort.get());
-          } else {
+          if (re.failed()) {
             log.error(re.cause().getMessage(), re.cause());
           }
         });

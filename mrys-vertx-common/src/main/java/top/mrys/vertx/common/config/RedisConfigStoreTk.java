@@ -7,6 +7,8 @@ import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * redis 配置仓库
+ *
  * @author mrys
  * @date 2020/9/17
  */

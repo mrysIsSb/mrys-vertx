@@ -33,7 +33,6 @@ public class ConfigLoader {
     load().mergeInData(data).resolve();
     Vertx owner = Vertx.currentContext().owner();
     if (owner != null) {
-      show();
       owner.eventBus().publish(dataUpdateKey, getConfig());
     }
   }
@@ -47,8 +46,8 @@ public class ConfigLoader {
     return load().getArrForKey(key, clazz);
   }
 
-  public void show() {
-    log.info("{}", getConfig());
+  public void show(String prefix) {
+    log.info("{}-{}", prefix, getConfig());
   }
 
   public Object getByPath(String name) {

@@ -2,7 +2,6 @@ package top.mrys.vertx.springboot.config;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -50,7 +49,7 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
     ConfigurableApplicationContext context = event.getApplicationContext();
     vertx.deployVerticle(
         () -> myVerticleFactory
-            .getMyAbstractVerticle(top.mrys.vertx.config.starter.ConfigVerticle.class,
+            .getMyAbstractVerticle(ConfigVerticle.class,
                 configVerticle -> {
                   configVerticle.setHttpPort(() -> getPort(context));
                   configVerticle.setEnableService(() -> ConfigVerticle.enableHttp);
@@ -58,7 +57,7 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
                 }),
         new DeploymentOptions().setInstances(2), re -> {
           if (re.succeeded()) {
-            log.info("配置中心启动");
+            log.info("配置中心启动:{}", getPort(context));
           } else {
             log.error(re.cause().getMessage(), re.cause());
           }

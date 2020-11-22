@@ -17,7 +17,8 @@ import top.mrys.vertx.http.constants.EnumHttpMethod;
  * @author mrys
  * @date 2020/9/8
  */
-@MicroClient(ConfigProcess = @ConfigProcess(processClass = WebClientProcess.class))
+@MicroClient(ConfigProcess = @ConfigProcess(processClass = WebClientProcess.class, args = {
+    "host=localhost", "port=8881"}))
 @RouteMapping("/sysUser")
 public interface SysUserApi {
 

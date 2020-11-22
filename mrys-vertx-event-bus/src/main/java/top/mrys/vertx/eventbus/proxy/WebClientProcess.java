@@ -23,12 +23,12 @@ public class WebClientProcess {
         String[] split = arg.split("=");
         if (split.length == 2) {
           map.put(split[0], split[1]);
-        }else {
+        } else {
           map.put(arg, null);
         }
       }
     }
-    return client.request(method, Convert.toInt(map.get("port"), 8080),
+    return client.request(method, Convert.toInt(map.get("port"), 80),
         Convert.toStr(map.get("host"), "localhost"), path);
   }
 }

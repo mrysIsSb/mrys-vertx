@@ -78,7 +78,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
       List<String> profiles = Arrays.asList(configLoader.getActiveProfiles());
       ConfigStoreOptions[] options = centres.stream()
           .map(jsonObject -> {
-            jsonObject.put("profiles", profiles);
+                jsonObject.put("profiles", profiles);
                 return new ConfigStoreOptions()
                     .setType(ConfigCentreStoreFactory.configCentre)
                     .setOptional(true)
@@ -89,7 +89,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
       retriever1.getConfig()
           .onSuccess(event -> {
             configLoader.updateConfig(event);
-            configLoader.show();
+            configLoader.show("获取配置");
           })
           .map(o -> (Void) null)
           .onComplete(promise);
@@ -97,7 +97,7 @@ public class ConfigVerticle extends MyAbstractVerticle {
       retriever1.listen(event -> {
         JsonObject newConfig = event.getNewConfiguration();
         configLoader.updateConfig(newConfig);
-        configLoader.show();
+        configLoader.show("更新配置");
       });
       old.close();
     } else {

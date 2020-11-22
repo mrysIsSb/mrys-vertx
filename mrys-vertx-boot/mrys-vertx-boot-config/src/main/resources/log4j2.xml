@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="INFO">
-    <appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss} [%style{%t}{yellow}] %style{%-5level}{bright,green} %style{%logger{36}}{blue}:%L - %msg%n"
-                disableAnsi="false" noConsoleNoAnsi="false"
-            />
-        </Console>
-<!--        <RollingFile name="RollingFile" fileName="logs/app.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-            <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
-            <SizeBasedTriggeringPolicy size="5 MB"/>
-        </RollingFile>-->
-    </appenders>
-    <loggers>
-<!--        <root level="debug">-->
-        <root level="info">
-            <appender-ref ref="Console"/>
-<!--            <appender-ref ref="RollingFile"/>-->
-        </root>
-    </loggers>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%d{HH:mm:ss} [%style{%t}{yellow}] %style{%-5level}{bright,green} %style{%logger{36}}{blue}:%L - %msg%n"
+        disableAnsi="false" noConsoleNoAnsi="false"
+      />
+    </Console>
+    <!--        <RollingFile name="RollingFile" fileName="logs/app.log"
+                         filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+            </RollingFile>-->
+  </appenders>
+  <loggers>
+    <!--        <root level="debug">-->
+    <root level="info">
+      <appender-ref ref="Console"/>
+      <!--            <appender-ref ref="RollingFile"/>-->
+    </root>
+  </loggers>
 </configuration>
