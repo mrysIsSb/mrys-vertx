@@ -45,6 +45,7 @@ public class EventListener implements GenericApplicationListener {
       JsonObject config = new JsonObject();
       //传入指定的配置属性
       config.put("profiles", new JsonObject().put("active", Arrays.asList(profiles)));
+
       MutablePropertySources propertySources = environment.getPropertySources();
       propertySources.forEach(propertySource -> {
         //命令行参数

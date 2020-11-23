@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 配置加载器
+ * 配置访问器
  *
  * @author mrys
  * @date 2020/10/28

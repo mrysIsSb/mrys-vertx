@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
+import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.starter.HttpVerticle;
@@ -36,6 +37,9 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
   private MyVerticleFactory myVerticleFactory;
 
   private EnableHttp enableHttp;
+
+  @Autowired
+  private ConfigLoader configLoader;
 
 
   @Override
@@ -58,7 +62,7 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
           httpVerticle.setRouteClassProvider(() -> getRouteClass(context));
           return httpVerticle;
         }),
-        new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
+        new DeploymentOptions().setConfig(configLoader.getConfig()).setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
           if (re.succeeded()) {
             log.info("http server started port:{}", getPort(context));
           } else {
