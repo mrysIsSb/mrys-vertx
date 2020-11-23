@@ -102,6 +102,8 @@ public class TypeUtil {
       result = getClass(Map.class);
     } else if (WildcardType.class.isAssignableFrom(type.getClass())) {
       result = getClass(Map.class);
+    } else {
+      result = (Class) type;
     }
     return result;
   }

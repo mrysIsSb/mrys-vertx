@@ -1,5 +1,6 @@
 package top.mrys.vertx.common.manager;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -55,6 +56,9 @@ public class JsonTransverterImpl implements JsonTransverter {
   @SneakyThrows
   @Override
   public <R> R deSerialize(String o, Class<R> rClass) {
+    if (StrUtil.isBlank(o)) {
+      return null;
+    }
 //    if (JSONUtil.isJsonObj(o)) {
       return mapper.readValue(o, rClass);
   /*  } else if (JSONUtil.isJsonArray(o)) {
