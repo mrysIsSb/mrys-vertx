@@ -22,6 +22,7 @@ import io.vertx.redis.client.Response;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author mrys
@@ -104,7 +105,7 @@ public class MyHttpConfigStore implements ConfigStore {
           if (event.succeeded()) {
             CompositeFuture result = event.result();
             List<Buffer> list1 = result.list();
-            Buffer buffer = list1.stream().map(Buffer::toJsonObject)
+            Buffer buffer = list1.stream().filter(Objects::nonNull).map(Buffer::toJsonObject)
                 .reduce((json1, json2) -> json1.mergeIn(json2, true)).get().toBuffer();
             completionHandler.handle(Future.succeededFuture(buffer));
           } else {
