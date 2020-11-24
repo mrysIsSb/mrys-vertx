@@ -172,8 +172,10 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
     Throwable failure = event.failure();
     log.error(failure.getMessage(), failure);
     event.response()
+        .setStatusCode(400)
         .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8")
-        .end("错误");
+//        .end("错误");
+        .end(failure.getMessage());
   }
 
   private Router getFromCache() {

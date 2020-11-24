@@ -3,8 +3,11 @@ package top.mrys.vertx.http.parser;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.impl.ContextInternal;
 import io.vertx.ext.web.RoutingContext;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,7 +50,7 @@ public class HttpParameterFactory {
     List<Future> futures = new ArrayList<>();
     for (int i = 0; i < methodParameters.length; i++) {
       MethodParameter parameter = methodParameters[i];
-      FutureUtil<Object> f = new FutureUtil<>(Future.failedFuture("初始化"));
+      FutureUtil<Object> f = FutureUtil.createInitFuture("初始化");
       for (HandlerMethodArgumentResolver resolver : resolvers) {
         if (resolver.match(parameter)) {
           f.nullOrFailedRecover(resolver.resolve(parameter, context));

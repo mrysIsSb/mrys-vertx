@@ -62,12 +62,13 @@ public class FutureMethodParser extends AbstractHandlerParser {
         response.setStatusCode(HttpStatus.HTTP_OK);
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         rep.future()
-            .onComplete(re -> response.end(
+            .onSuccess(re -> response.end(
                 JsonTransverterFactory
                     .getJsonTransverter(EnumJsonTransverterNameProvider.http_server)
-                    .serialize(re.result())));
+                    .serialize(re)))
+            .onFailure(event::fail);
       } catch (Exception e) {
-        e.printStackTrace();
+//        e.printStackTrace();
         event.fail(e);
       }
     };

@@ -10,12 +10,14 @@ import io.vertx.ext.web.client.WebClient;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.config.ConfigLoader;
 
 /**
  * @author mrys
  * @date 2020/11/11
  */
+@Slf4j
 public class WebClientProcess {
 
 
@@ -28,6 +30,7 @@ public class WebClientProcess {
       String[] args) {
     HashMap<String, Object> map = new HashMap<>();
     if (ArrayUtil.isNotEmpty(args)) {
+      log.info("{}",Thread.currentThread().getName());
       Arrays.stream(args).filter(s -> s.contains("="))
           .forEach(s -> {
             int index = s.indexOf("=");

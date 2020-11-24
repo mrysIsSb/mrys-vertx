@@ -1,8 +1,14 @@
 package top.mrys.vertx.eventbus.proxy;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -19,9 +25,12 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +47,7 @@ import top.mrys.vertx.eventbus.MicroClient;
 import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
 import top.mrys.vertx.eventbus.resolvers.HttpArgumentResolver;
 import top.mrys.vertx.http.RouteUtil;
+import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.ReqBody;
 
 /**
@@ -84,8 +94,8 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     //Object 的方法
     if (Object.class.equals(method.getDeclaringClass())) {
-      throw new RuntimeException("Object 方法不能调用");
-      //return method.invoke(this, args);
+//      throw new RuntimeException("Object 方法不能调用");
+      return method.invoke(this, args);
     }
     // default 的方法
     if (isDefaultMethod(method)) {
@@ -93,7 +103,23 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
     } else {
       //http 请求 目前先 实现future todo 完善
 
+      //请求参数
+      MethodParameter[] parameters = MethodParameter.create(method);
       String requestURI = RouteUtil.getPath(method)[0];
+      if (requestURI.contains(":")) {
+        HashMap<String, Object> map = new HashMap<>();
+        for (MethodParameter parameter : parameters) {
+          PathVar pathVar = parameter.getParameterAnnotation(PathVar.class);
+          if (pathVar != null) {
+            map.put(StrUtil.blankToDefault(pathVar.value(), parameter.getName()),
+                Convert.convert(parameter.getParameterClass(), args[parameter.getParameterIndex()],
+                    pathVar.defValue()));
+          }
+        }
+        requestURI = ReUtil.replaceAll(requestURI, ":(\\w+)",
+            parameter -> Convert.toStr(map.get(parameter.group(1)), ""));
+        requestURI =requestURI.replaceAll("//","/");
+      }
       HttpMethod httpMethod = RouteUtil.getMethod(method);
       //获取webclient
       WebClient webClient = objectInstanceFactory.getInstance(WebClient.class);
@@ -105,8 +131,7 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
           .getInstance(webClientProcess.processClass());
       HttpRequest<Buffer> request = wprocess
           .process(webClient, httpMethod, requestURI, webClientProcess.args());
-      //请求参数
-      MethodParameter[] parameters = MethodParameter.create(method);
+
       Object data = null;
       int type = 1;
       if (ArrayUtil.isNotEmpty(parameters)) {
@@ -132,6 +157,7 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
     }
   }
 
+
   /**
    * 返回类型为future
    *
@@ -149,6 +175,8 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
       request.send(asyncResultHandler);
     } else if (2 == type) {
       // request body json
+      request.putHeader(HttpHeaderNames.CONTENT_TYPE.toString(),
+          HttpHeaderValues.APPLICATION_JSON.toString() + "; charset=utf-8");
       request.sendBuffer(Buffer.buffer(jsonTransverter.serialize(sendData)), asyncResultHandler);
     }
     return promise.future();

@@ -5,7 +5,10 @@ import io.vertx.core.Future;
 import top.mrys.vertx.eventbus.MicroClient;
 import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
 import top.mrys.vertx.eventbus.proxy.WebClientProcess;
+import top.mrys.vertx.http.annotations.PathVar;
+import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.PutRoute;
 
 /**
  * @author mrys
@@ -18,4 +21,9 @@ public interface EsApi {
 
   @GetRoute("/")
   Future<JSONObject> info();
+
+  @PutRoute("/:index/:type/:id")
+  Future<JSONObject> putData(@PathVar String index, @PathVar String type,
+      @PathVar(required = false) String id,
+      @ReqBody JSONObject data);
 }

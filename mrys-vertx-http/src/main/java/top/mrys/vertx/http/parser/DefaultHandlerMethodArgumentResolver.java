@@ -42,7 +42,7 @@ public class DefaultHandlerMethodArgumentResolver implements HandlerMethodArgume
   public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
     Class parameterClass = parameter.getParameterClass();
 
-    FutureUtil<T> fu = new FutureUtil<>(Future.failedFuture("初始化"));
+    FutureUtil<T> fu = FutureUtil.createInitFuture("初始化");
     // 基本数据类型
     if (ClassUtil.isBasicType(parameterClass) || String.class.equals(parameterClass)) {
       fu.nullOrFailedRecover(Future.succeededFuture(Convert.convert(parameter.getParameterClass(),

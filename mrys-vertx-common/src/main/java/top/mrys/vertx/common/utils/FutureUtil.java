@@ -2,8 +2,10 @@ package top.mrys.vertx.common.utils;
 
 
 import cn.hutool.core.lang.func.Func;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.impl.ContextInternal;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -34,7 +36,7 @@ public class FutureUtil<T> {
       //没成功或满足条件
       if (!r.succeeded() || test.test(r.result())) {
         mapper.onComplete(ret);
-      }else {
+      } else {
         ret.complete(r.result());
       }
     });
@@ -44,6 +46,20 @@ public class FutureUtil<T> {
 
   public FutureUtil<T> nullOrFailedRecover(Future<T> mapper) {
     return predicateAndFailedRecover(Objects::isNull, mapper);
+  }
+
+  /**
+   * 创建一个初始化的future
+   *
+   * @author mrys
+   */
+  public static <T> FutureUtil<T> createInitFuture(String msg) {
+    Context context = Vertx.currentContext();
+    if (context != null && context instanceof ContextInternal) {
+      return new FutureUtil<>(((ContextInternal) context).failedFuture(msg));
+    }else {
+      return new FutureUtil<>(Future.failedFuture(msg));
+    }
   }
 
 }
