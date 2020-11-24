@@ -8,6 +8,7 @@ import top.mrys.vertx.eventbus.proxy.WebClientProcess;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
+import top.mrys.vertx.springboot.http.server.annotations.PostRoute;
 import top.mrys.vertx.springboot.http.server.annotations.PutRoute;
 
 /**
@@ -24,6 +25,14 @@ public interface EsApi {
 
   @PutRoute("/:index/:type/:id")
   Future<JSONObject> putData(@PathVar String index, @PathVar String type,
-      @PathVar(required = false) String id,
+      @PathVar String id,
       @ReqBody JSONObject data);
+
+  @PostRoute("/:index/:type/")
+  Future<JSONObject> putDataAutoId(@PathVar String index, @PathVar String type,
+      @ReqBody JSONObject data);
+
+  @GetRoute("/:index/:type/:id/_source")
+  Future<JSONObject> getDataSource(@PathVar String index, @PathVar String type,
+      @PathVar String id);
 }

@@ -34,6 +34,17 @@ public class EsController {
       @PathVar(required = false) String id,
       @ReqBody JSONObject data) {
     log.info("{}", data);
+    if (id == null) {
+      return esApi.putDataAutoId(index, type, data);
+    }
     return esApi.putData(index, type, id, data);
   }
+
+  @GetRoute("/:index/:type/:id")
+  public Future<JSONObject> getDataSource(@PathVar String index, @PathVar String type,
+      @PathVar String id) {
+    return esApi.getDataSource(index, type, id);
+  }
+
+
 }
