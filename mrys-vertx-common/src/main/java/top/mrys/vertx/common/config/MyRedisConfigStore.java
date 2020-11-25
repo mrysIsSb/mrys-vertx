@@ -22,12 +22,16 @@ import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.client.Request;
 import io.vertx.redis.client.Response;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Data;
 import org.springframework.util.StringUtils;
+import top.mrys.vertx.common.factorys.JsonTransverterFactory;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
+import top.mrys.vertx.common.manager.JsonTransverterNameProvider;
 
 /**
  * @author mrys
@@ -104,7 +108,12 @@ public class MyRedisConfigStore implements ConfigStore {
     while (it.hasNext()) {
       String key = it.next().toString();
       String value = it.next().toString();
-      JSONUtil.putByPath(json, key, value);
+      if (JSONUtil.isJson(value)) {
+        JSONUtil.putByPath(json, key, JsonTransverterFactory.getJsonTransverter(
+            EnumJsonTransverterNameProvider.config_redis).deSerialize(value, HashMap.class));
+      } else {
+        JSONUtil.putByPath(json, key, value);
+      }
     }
     return new JsonObject(json.toString());
   }
