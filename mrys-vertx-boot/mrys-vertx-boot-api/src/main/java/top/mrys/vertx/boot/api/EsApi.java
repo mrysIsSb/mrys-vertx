@@ -20,7 +20,7 @@ import top.mrys.vertx.springboot.http.server.annotations.PutRoute;
 })
 public interface EsApi {
 
-  @GetRoute("/")
+  @GetRoute("/_xpack")
   Future<JSONObject> info();
 
   @PutRoute("/:index/:type/:id")
