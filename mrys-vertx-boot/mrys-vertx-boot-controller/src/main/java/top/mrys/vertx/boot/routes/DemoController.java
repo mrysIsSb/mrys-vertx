@@ -4,8 +4,12 @@ import cn.hutool.core.convert.Convert;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.redis.client.RedisClientType;
+import io.vertx.redis.client.RedisOptions;
+import io.vertx.redis.client.impl.RedisClient;
 import java.lang.reflect.Method;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -16,6 +20,9 @@ import top.mrys.vertx.boot.entity.Result;
 import top.mrys.vertx.boot.entity.SysUser;
 import top.mrys.vertx.common.utils.ASMUtil;
 import top.mrys.vertx.common.utils.Test;
+import top.mrys.vertx.http.annotations.ReqParam;
+import top.mrys.vertx.redis.RedisTemplate;
+import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
 import top.mrys.vertx.springboot.http.server.annotations.PostRoute;
 import top.mrys.vertx.http.annotations.ReqBody;
 import top.mrys.vertx.http.annotations.RouteHandler;
@@ -32,6 +39,9 @@ public class DemoController {
 
   @Autowired
   private SysUserApi sysUserApi;
+
+  @Autowired
+  private Vertx vertx;
 
   /*@Autowired
   private VertxManager vertxManager;*/
@@ -96,4 +106,12 @@ public class DemoController {
     return sysUserApi.getAll2();
   }
 
+  @GetRoute
+  public Future<Integer> redisDel(@ReqParam String key) {
+    RedisClient redisClient = new RedisClient(vertx,
+        new RedisOptions().setEndpoint("redis://192.168.124.44:6379").setType(
+            RedisClientType.STANDALONE));
+    RedisTemplate redisTemplate = new RedisTemplate(redisClient, "123456");
+    return redisTemplate.del(key);
+  }
 }

@@ -13,6 +13,7 @@
 
   <properties>
     <mrys-vertx.groupId>com.github.mrysIsSb.mrys-vertx</mrys-vertx.groupId>
-    <mrys-vertx>(,v1.0]</mrys-vertx>
+<!--    <mrys-vertx>(,v1.0]</mrys-vertx>-->
+    <mrys-vertx>${version}</mrys-vertx>
   </properties>
 </project>

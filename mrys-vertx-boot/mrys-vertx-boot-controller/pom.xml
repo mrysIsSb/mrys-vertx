@@ -36,6 +36,11 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-http</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-redis</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

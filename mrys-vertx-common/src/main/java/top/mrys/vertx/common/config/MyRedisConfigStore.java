@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import top.mrys.vertx.common.factorys.JsonTransverterFactory;
 import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
@@ -37,6 +38,7 @@ import top.mrys.vertx.common.manager.JsonTransverterNameProvider;
  * @author mrys
  * @date 2020/8/8
  */
+@Slf4j
 public class MyRedisConfigStore implements ConfigStore {
 
   private final Context ctx;
@@ -93,24 +95,29 @@ public class MyRedisConfigStore implements ConfigStore {
     List<Request> commands = Arrays.stream(keys).map(s -> Request.cmd(Command.HGETALL).arg(s))
         .collect(Collectors.toList());
     connection.batch(commands, rep -> {
-      completionHandler
-          .handle(rep.map(responses -> responses.stream().map(this::getResponseBufferFunction)
-              .reduce((jsonObject, jsonObject2) -> jsonObject.mergeIn(jsonObject2, true))
-              .get().toBuffer()
-          ));
+      try {
+        completionHandler
+            .handle(rep.map(responses -> responses.stream().map(this::getResponseBufferFunction)
+                .reduce((jsonObject, jsonObject2) -> jsonObject.mergeIn(jsonObject2, true))
+                .get().toBuffer()
+            ));
+      }finally {
+        connection.close();
+      }
     });
 
   }
 
   private JsonObject getResponseBufferFunction(Response response) {
     JSONObject json = JSONUtil.parseObj("{}");
+//    log.debug("redis:{}",response.toString());
     Iterator it = response.iterator();
     while (it.hasNext()) {
       String key = it.next().toString();
       String value = it.next().toString();
       if (JSONUtil.isJson(value)) {
         JSONUtil.putByPath(json, key, JsonTransverterFactory.getJsonTransverter(
-            EnumJsonTransverterNameProvider.config_redis).deSerialize(value, HashMap.class));
+            EnumJsonTransverterNameProvider.config_redis).deSerialize(value, HashMap.class));//支持value为json
       } else {
         JSONUtil.putByPath(json, key, value);
       }
