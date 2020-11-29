@@ -11,9 +11,9 @@ import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisConnection;
 import io.vertx.redis.client.Request;
 import io.vertx.redis.client.Response;
-import io.vertx.redis.client.ResponseType;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -514,6 +514,219 @@ public class RedisTemplate {
   //  <----------------------------hash end---------------------------->
 
   //  <----------------------------List begin---------------------------->
+
+  /**
+   * BLPOP key1[ key2 ]timeout 移出并获取列表的第一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止。
+   *
+   * @return 如果列表为空，返回一个 nil 。 否则，返回一个含有两个元素的列表，第一个元素是被弹出元素所属的 key ，第二个元素是被弹出元素的值。
+   * @author mrys
+   */
+  public Future<Map<String, String>> bLPoP(Integer timeout, String... keys) {
+    Request cmd = Request.cmd(Command.BLPOP);
+    for (String key : keys) {
+      cmd.arg(key);
+    }
+    cmd.arg(timeout);
+    return exec(cmd, response -> {
+      HashMap<String, String> map = new HashMap<>();
+      Set<String> responseKeys = response.getKeys();
+      for (String key : responseKeys) {
+        map.put(key, response.get(key).toString());
+      }
+      return map;
+    });
+  }
+
+  /**
+   * 2 BRPOP key1[ key2 ]timeout 移出并获取列表的最后一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止。
+   *
+   * @return 如果列表为空，返回一个 nil 。 否则，返回一个含有两个元素的列表，第一个元素是被弹出元素所属的 key ，第二个元素是被弹出元素的值。
+   * @author mrys
+   */
+  public Future<Map<String, String>> bRPoP(Integer timeout, String... keys) {
+    Request cmd = Request.cmd(Command.BRPOP);
+    for (String key : keys) {
+      cmd.arg(key);
+    }
+    cmd.arg(timeout);
+    return exec(cmd, response -> {
+      HashMap<String, String> map = new HashMap<>();
+      Set<String> responseKeys = response.getKeys();
+      for (String key : responseKeys) {
+        map.put(key, response.get(key).toString());
+      }
+      return map;
+    });
+  }
+
+  /**
+   * 3 BRPOPLPUSH source destination timeout 从列表中弹出一个值，将弹出的元素插入到另外一个列表中并返回它；如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止。
+   * <p>
+   * 假如在指定时间内没有任何元素被弹出，则返回一个 nil 和等待时长。 反之，返回一个含有两个元素的列表，第一个元素是被弹出元素的值，第二个元素是等待时长。
+   *
+   * @author mrys
+   */
+  public Future<String> bRPoPLPush(String outKey, String inKey, Integer timeout) {
+    return exec(Request.cmd(Command.BRPOPLPUSH).arg(outKey).arg(inKey).arg(timeout),
+        Response::toString);
+  }
+
+
+  /**
+   * 4 LINDEX key index 通过索引获取列表中的元素
+   *
+   * @return 列表中下标为指定索引值的元素。 如果指定索引值不在列表的区间范围内，返回 nil 。
+   * @author mrys
+   */
+  public Future<String> lIndex(String key, Integer index) {
+    return exec(Request.cmd(Command.LINDEX).arg(key).arg(index), Response::toString);
+  }
+
+  /**
+   * 5 LINSERT key BEFORE| AFTER pivot value 在列表的元素前或者后插入元素
+   *
+   * @author mrys
+   */
+  public Future<String> lInsert(String key, boolean before, String pivot, String value) {
+    Request cmd = Request.cmd(Command.LINSERT).arg(key);
+    if (before) {
+      cmd.arg("BEFORE");
+    } else {
+      cmd.arg("AFTER ");
+    }
+    return exec(cmd.arg(pivot).arg(value), Response::toString);
+  }
+
+  /**
+   * 6 LLEN key 获取列表长度
+   *
+   * @author mrys
+   */
+  public Future<Integer> lLen(String key) {
+    return exec(Request.cmd(Command.LLEN).arg(key), Response::toInteger);
+  }
+
+  /**
+   * 7 LPOP key 移出并获取列表的第一个元素
+   *
+   * @author mrys
+   */
+  public Future<String> lPop(String key) {
+    return exec(Request.cmd(Command.LPOP).arg(key), Response::toString);
+  }
+
+  /**
+   * 8 LPUSH key value1 [value2] 将一个或多个值插入到列表头部
+   *
+   * @author mrys
+   */
+  public Future<Integer> lPush(String key, String... values) {
+    Request cmd = Request.cmd(Command.LPUSH).arg(key);
+    for (String value : values) {
+      cmd.arg(value);
+    }
+    return exec(cmd, Response::toInteger);
+  }
+
+  /**
+   * 9 LPUSHX key value 将一个值插入到已存在的列表头部
+   *
+   * @author mrys
+   */
+  public Future<Integer> lPushX(String key, String value) {
+    return exec(Request.cmd(Command.LPUSHX).arg(key).arg(value), Response::toInteger);
+  }
+
+  /**
+   * 10 LRANGE key start stop 获取列表指定范围内的元素
+   *
+   * @author mrys
+   */
+  public Future<List<String>> lRange(String key, Integer start, Integer end) {
+    return exec(Request.cmd(Command.LRANGE).arg(key).arg(start).arg(end),
+        response -> response.stream().map(Response::toString).collect(Collectors.toList()));
+  }
+
+  /**
+   * 11 LREM key count value 移除列表元素
+   * <p>
+   * count > 0 : 从表头开始向表尾搜索，移除与 VALUE 相等的元素，数量为 COUNT 。
+   * <p>
+   * count < 0 : 从表尾开始向表头搜索，移除与 VALUE 相等的元素，数量为 COUNT 的绝对值。
+   * <p>
+   * count = 0 : 移除表中所有与 VALUE 相等的值。
+   *
+   * @author mrys
+   */
+  public Future<Integer> lRem(String key, Integer count, String value) {
+    return exec(Request.cmd(Command.LREM).arg(key).arg(count).arg(value), Response::toInteger);
+  }
+
+  /**
+   * 12 LSET key index value 通过索引设置列表元素的值
+   *
+   * @return 操作成功返回 ok ，否则返回错误信息。
+   * @author mrys
+   */
+  public Future<String> lSet(String key, Integer index, String value) {
+    return exec(Request.cmd(Command.LSET).arg(key).arg(index).arg(value), Response::toString);
+  }
+
+  /**
+   * 13 LTRIM key start stop
+   * <p>
+   * 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除。
+   * <p>
+   * 下标 0 表示列表的第一个元素，以 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推
+   *
+   * @return ok
+   * @author mrys
+   */
+  public Future<String> lTrim(String key, Integer start, Integer stop) {
+    return exec(Request.cmd(Command.LTRIM).arg(key).arg(start).arg(stop), Response::toString);
+  }
+
+  /**
+   * 14 RPOP key 移除列表的最后一个元素，返回值为移除的元素。
+   *
+   * @author mrys
+   */
+  public Future<String> rPop(String key) {
+    return exec(Request.cmd(Command.RPOP).arg(key), Response::toString);
+  }
+
+  /**
+   * 15 RPOPLPUSH source destination 移除列表的最后一个元素，并将该元素添加到另一个列表并返回
+   *
+   * @author mrys
+   */
+  public Future<String> rPoPLPush(String outKey, String inKey, Integer timeout) {
+    return exec(Request.cmd(Command.RPOPLPUSH).arg(outKey).arg(inKey).arg(timeout),
+        Response::toString);
+  }
+
+  /**
+   * 16 RPUSH key value1 [value2] 在列表中添加一个或多个值
+   *
+   * @author mrys
+   */
+  public Future<Integer> rPush(String key, String... values) {
+    Request cmd = Request.cmd(Command.RPUSH).arg(key);
+    for (String value : values) {
+      cmd.arg(value);
+    }
+    return exec(cmd, Response::toInteger);
+  }
+
+  /**
+   * 17 RPUSHX key value 为已存在的列表添加值
+   *
+   * @author mrys
+   */
+  public Future<Integer> rPushX(String key, String value) {
+    return exec(Request.cmd(Command.RPUSHX).arg(key).arg(value), Response::toInteger);
+  }
+
   //  <----------------------------List end---------------------------->
 
   //  <----------------------------SET begin---------------------------->
@@ -593,7 +806,7 @@ public class RedisTemplate {
   //  <----------------------------pub/sub end---------------------------->
 
   //  <----------------------------stream begin---------------------------->
-public void xAdd() {
-}
+  public void xAdd() {
+  }
   //  <----------------------------stream end---------------------------->
 }
