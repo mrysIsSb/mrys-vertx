@@ -4,11 +4,14 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.sun.istack.internal.Nullable;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.redis.client.Command;
 import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisConnection;
 import io.vertx.redis.client.Request;
 import io.vertx.redis.client.Response;
+import io.vertx.redis.client.ResponseType;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -294,9 +297,6 @@ public class RedisTemplate {
   }
 //  <----------------------------key end---------------------------->
 
-
-
-
   //  <----------------------------string begin---------------------------->
 
   /**
@@ -518,4 +518,82 @@ public class RedisTemplate {
 
   //  <----------------------------SET begin---------------------------->
   //  <----------------------------set end---------------------------->
+
+  //  <----------------------------pub/sub begin 记得关闭 connection---------------------------->
+  public Future<RedisConnection> subscribe(Handler<String> megHandler, String... channels) {
+    Promise<RedisConnection> promise = Promise.promise();
+    getAccessRedisClient().onSuccess(connection -> {
+      Request cmd = Request.cmd(Command.SUBSCRIBE);
+      for (String s : channels) {
+        cmd.arg(s);
+      }
+      connection.send(cmd).onSuccess(event1 -> {
+        promise.complete(connection);
+        connection.handler(event2 -> {
+          if (event2.size() == 3) {
+            log.info(event2.toString());
+          } else {
+            megHandler.handle(event2.get(3).toString());
+          }
+        });
+      }).onFailure(promise::fail);
+    }).onFailure(promise::fail);
+    return promise.future();
+  }
+
+  public Future<RedisConnection> pSubscribe(Handler<String> megHandler, String... patterns) {
+    Promise<RedisConnection> promise = Promise.promise();
+    getAccessRedisClient().onSuccess(connection -> {
+      Request cmd = Request.cmd(Command.PSUBSCRIBE);
+      for (String s : patterns) {
+        cmd.arg(s);
+      }
+      connection.send(cmd).onSuccess(event1 -> {
+        promise.complete(connection);
+        connection.handler(event2 -> {
+          if (event2.size() == 3) {
+            log.info(event2.toString());
+          } else {
+            megHandler.handle(event2.get(3).toString());
+          }
+        });
+      }).onFailure(promise::fail);
+    }).onFailure(promise::fail);
+    return promise.future();
+  }
+
+  public Future<Response> unSubscribe(String... channels) {
+    Request cmd = Request.cmd(Command.UNSUBSCRIBE);
+    for (String s : channels) {
+      cmd.arg(s);
+    }
+    return exec(cmd, Function.identity());
+  }
+
+  public Future<Response> pUnSubscribe(String... patterns) {
+    Request cmd = Request.cmd(Command.PUNSUBSCRIBE);
+    for (String s : patterns) {
+      cmd.arg(s);
+    }
+    return exec(cmd, Function.identity());
+  }
+
+  public Future<Integer> publish(String channel, String msg) {
+    return exec(Request.cmd(Command.PUBLISH).arg(channel).arg(msg), Response::toInteger);
+  }
+
+  public Future<Response> pubsub(String... args) {
+    Request cmd = Request.cmd(Command.PUBSUB);
+    for (String s : args) {
+      cmd.arg(s);
+    }
+    return exec(cmd, Function.identity());
+  }
+
+  //  <----------------------------pub/sub end---------------------------->
+
+  //  <----------------------------stream begin---------------------------->
+public void xAdd() {
+}
+  //  <----------------------------stream end---------------------------->
 }
