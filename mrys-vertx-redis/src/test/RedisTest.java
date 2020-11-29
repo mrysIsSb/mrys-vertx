@@ -1,17 +1,10 @@
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.TestSuite;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.redis.client.Redis;
-import io.vertx.redis.client.RedisOptions;
-import io.vertx.redis.client.impl.RedisClient;
-import java.lang.annotation.Target;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,6 +17,7 @@ import top.mrys.vertx.redis.RedisTemplate;
  * @author mrys
  * @date 2020/11/26
  */
+@Slf4j
 @RunWith(VertxUnitRunner.class)
 public class RedisTest {
 //  TestSuite suite = TestSuite.create("the_test_suite");
