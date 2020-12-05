@@ -2,7 +2,6 @@ package top.mrys.vertx.redis;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
-import com.sun.istack.internal.Nullable;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -265,11 +264,13 @@ public class RedisTemplate {
   /**
    * 迭代数据库中的数据库键。
    *
+   * @param @Nullable pattern
+   * @param @Nullable count
    * @return 数组列表
    * @author mrys
    */
-  public Future<Map<Integer, String[]>> scan(Integer cursor, @Nullable String pattern,
-      @Nullable Integer count) {
+  public Future<Map<Integer, String[]>> scan(Integer cursor, String pattern,
+       Integer count) {
     Request cmd = Request.cmd(Command.SCAN).arg(cursor);
     if (StrUtil.isNotBlank(pattern)) {
       cmd.arg("MATCH").arg(pattern);
