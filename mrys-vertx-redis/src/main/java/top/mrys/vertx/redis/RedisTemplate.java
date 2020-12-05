@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -32,9 +33,33 @@ public class RedisTemplate {
   private Redis redisClient;
   private String auth;
 
+  private Integer db = -1;
+  /**
+   * 是否切换过db
+   *
+   * @author mrys
+   */
+  private boolean selectDb = true;
+
+  private RedisConnection connection;
+  private boolean connectionClosed = true;
+
+  //自动关闭
+  @Setter
+  private boolean autoClose = true;
+
   public RedisTemplate(Redis redisClient, String auth) {
     this.redisClient = redisClient;
     this.auth = auth;
+  }
+
+  public RedisTemplate(Redis redisClient, String auth, Integer db) {
+    this.redisClient = redisClient;
+    this.auth = auth;
+    if (db != null && db > -1) {
+      this.selectDb = false;
+      this.db = db;
+    }
   }
 
   public RedisTemplate(Redis redis) {
@@ -42,27 +67,57 @@ public class RedisTemplate {
   }
 
   public Future<RedisConnection> getAccessRedisClient() {
-    return redisClient.connect()
-        .compose(connection -> {
-          if (StrUtil.isNotBlank(auth)) {
-            return connection.send(Request.cmd(Command.AUTH).arg(auth))
-                .compose(response -> Future.succeededFuture(connection), throwable -> Future
-                    .failedFuture("redis 认证失败"));
-          } else {
-            return Future.succeededFuture(connection);
-          }
-        }, throwable -> Future.failedFuture("redis 连接失败"));
+    Future<RedisConnection> redisConnectionFuture;
+    if (!connectionClosed && connection != null) {
+      redisConnectionFuture = Future.succeededFuture(connection);
+    } else {
+      redisConnectionFuture = redisClient.connect()
+          .compose(connection -> {
+            if (StrUtil.isNotBlank(auth)) {
+              return connection.send(Request.cmd(Command.AUTH).arg(auth))
+                  .compose(response -> {
+                    setConnection(connection);
+                    return Future.succeededFuture(connection);
+                  }, throwable -> Future
+                      .failedFuture("redis 认证失败"));
+            } else {
+              setConnection(connection);
+              return Future.succeededFuture(connection);
+            }
+          }, throwable -> Future.failedFuture("redis 连接失败"));
+    }
+    return redisConnectionFuture.compose(connection1 -> {
+      if (!selectDb && db > -1) {
+        return connection1.send(Request.cmd(Command.SELECT).arg(db)).compose(response -> {
+          this.selectDb = true;
+          return Future
+              .succeededFuture(connection1);
+        });
+      }
+      return Future.succeededFuture(connection1);
+    });
+  }
+
+  public void setConnection(RedisConnection connection) {
+    if (!connectionClosed) {
+      this.connection.close();
+    }
+    this.connectionClosed = false;
+    this.connection = connection;
   }
 
   private <T> Future<T> exec(Request request, Function<Response, T> successMapper) {
     log.debug(">redis:{}", request.toString());
     return getAccessRedisClient().compose(connection -> {
       try {
+        System.out.println(connection.toString());
         return connection.send(request)
-            .onSuccess(event -> log.info("redis:{}", event.toString()))
+            .onSuccess(event -> log.info(">redis:{}", StrUtil.nullToDefault(event.toString(), "")))
             .compose(response -> Future.succeededFuture(successMapper.apply(response)));
       } finally {
-        connection.close();
+        if (autoClose && !connectionClosed) {
+          connection.close();
+        }
       }
     });
   }
@@ -270,7 +325,7 @@ public class RedisTemplate {
    * @author mrys
    */
   public Future<Map<Integer, String[]>> scan(Integer cursor, String pattern,
-       Integer count) {
+      Integer count) {
     Request cmd = Request.cmd(Command.SCAN).arg(cursor);
     if (StrUtil.isNotBlank(pattern)) {
       cmd.arg("MATCH").arg(pattern);

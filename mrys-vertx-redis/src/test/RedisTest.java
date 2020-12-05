@@ -38,15 +38,30 @@ public class RedisTest {
   public void before() {
     System.out.println("连接redis");
     vertx = rule.vertx();
-    client = Redis.createClient(rule.vertx(), "redis://123456@192.168.124.44:6379/1");
-//    client = Redis.createClient(rule.vertx(),"redis://192.168.124.44:6379");
-    template = new RedisTemplate(client);
+//    client = Redis.createClient(rule.vertx(), "redis://123456@192.168.1.2:6379/1");
+    client = Redis.createClient(rule.vertx(),"redis://192.168.1.2:6379");
+    template = new RedisTemplate(client,"123456",1);
+    template.setAutoClose(false);
   }
 
   @After
   public void tearDown(TestContext ctx) {
     vertx = rule.vertx();
     vertx.close(ctx.asyncAssertSuccess());
+  }
+
+  @Test
+  public void testP(TestContext context) {
+    template.set("incr1", "1")
+        .compose(s -> {
+          System.out.println(s);
+          return template.get("incr1");
+        })
+        .compose(s -> {
+          System.out.println(s);
+          return template.keys("*");
+        })
+        .onComplete(context.asyncAssertSuccess());
   }
 
   @Test
