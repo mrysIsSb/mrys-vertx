@@ -7,6 +7,9 @@ import top.mrys.vertx.eventbus.MicroClient.ConfigProcess;
 import top.mrys.vertx.eventbus.proxy.WebClientProcess;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.ReqBody;
+import top.mrys.vertx.http.annotations.SetHeader;
+import top.mrys.vertx.http.annotations.SetHeader.Header;
+import top.mrys.vertx.http.interfaces.impls.EsAuthorizationHeaderProcess;
 import top.mrys.vertx.springboot.http.server.annotations.GetRoute;
 import top.mrys.vertx.springboot.http.server.annotations.PostRoute;
 import top.mrys.vertx.springboot.http.server.annotations.PutRoute;
@@ -18,6 +21,7 @@ import top.mrys.vertx.springboot.http.server.annotations.PutRoute;
 @MicroClient(ConfigProcess = {
     @ConfigProcess(processClass = WebClientProcess.class, args = {"=es"})
 })
+@SetHeader(headers = @Header(key = "Authorization", processClass = EsAuthorizationHeaderProcess.class, args = "=es"))
 public interface EsApi {
 
   @GetRoute("/_xpack")

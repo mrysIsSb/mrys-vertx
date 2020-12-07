@@ -1,5 +1,6 @@
 package top.mrys.vertx.eventbus.proxy;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.func.Func1;
@@ -18,6 +19,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -25,9 +27,11 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +53,9 @@ import top.mrys.vertx.eventbus.resolvers.HttpArgumentResolver;
 import top.mrys.vertx.http.RouteUtil;
 import top.mrys.vertx.http.annotations.PathVar;
 import top.mrys.vertx.http.annotations.ReqBody;
+import top.mrys.vertx.http.annotations.SetHeader;
+import top.mrys.vertx.http.annotations.SetHeader.Header;
+import top.mrys.vertx.http.interfaces.HeaderValueProcess;
 
 /**
  * http client proxy
@@ -118,7 +125,7 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
         }
         requestURI = ReUtil.replaceAll(requestURI, ":(\\w+)",
             parameter -> Convert.toStr(map.get(parameter.group(1)), ""));
-        requestURI =requestURI.replaceAll("//","/");
+        requestURI = requestURI.replaceAll("//", "/");
       }
       HttpMethod httpMethod = RouteUtil.getMethod(method);
       //获取webclient
@@ -131,6 +138,14 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
           .getInstance(webClientProcess.processClass());
       HttpRequest<Buffer> request = wprocess
           .process(webClient, httpMethod, requestURI, webClientProcess.args());
+
+      //header
+      HashMap<String, String> headerMap = new HashMap<>();
+      getHeaders(method.getDeclaringClass(), headerMap);
+      getHeaders(method, headerMap);
+      if (CollectionUtil.isNotEmpty(headerMap)) {
+        headerMap.forEach(request::putHeader);
+      }
 
       Object data = null;
       int type = 1;
@@ -154,6 +169,20 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
         type = 0;
       }
       return send(request, method, type, data);
+    }
+  }
+
+  protected void getHeaders(AnnotatedElement annotatedElement, HashMap<String, String> headerMap) {
+    SetHeader setHeader = AnnotationUtil
+        .findMergedAnnotation(annotatedElement, SetHeader.class);
+    if (setHeader != null) {
+      Header[] headers = setHeader.headers();
+      for (Header header : headers) {
+        Class<? extends HeaderValueProcess> aClass = header.processClass();
+        HeaderValueProcess instance = objectInstanceFactory.getInstance(aClass);
+        Map<String, String> process = instance.process(header.key(), header.args());
+        headerMap.putAll(process);
+      }
     }
   }
 

@@ -24,12 +24,10 @@ public class MicroClientPostProcessor implements BeanDefinitionRegistryPostProce
     for (String name : names) {
       BeanDefinition beanDefinition = registry.getBeanDefinition(name);
     }
-    System.out.println("------------------2-----------------");
   }
 
   @Override
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
       throws BeansException {
-    System.out.println("------------------1-----------------");
   }
 }

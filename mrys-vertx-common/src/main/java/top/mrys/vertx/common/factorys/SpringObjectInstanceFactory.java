@@ -3,6 +3,7 @@ package top.mrys.vertx.common.factorys;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +27,13 @@ public class SpringObjectInstanceFactory implements ObjectInstanceFactory, Appli
    */
   @Override
   public <T> T getInstance(Class<T> clazz) {
-    return context.getBean(clazz);
+    T t;
+    try {
+      t = context.getBean(clazz);
+    } catch (NoSuchBeanDefinitionException e) {
+      t = ObjectInstanceFactory.getDefault().getInstance(clazz);
+    }
+    return t;
   }
 
   @Override
