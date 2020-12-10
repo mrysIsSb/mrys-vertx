@@ -110,7 +110,6 @@ public class RedisTemplate {
     log.debug(">redis:{}", request.toString());
     return getAccessRedisClient().compose(connection -> {
       try {
-        System.out.println(connection.toString());
         return connection.send(request)
             .onSuccess(event -> log.info(">redis:{}", StrUtil.nullToDefault(event.toString(), "")))
             .compose(response -> Future.succeededFuture(successMapper.apply(response)));
