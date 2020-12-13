@@ -1,6 +1,7 @@
 package top.mrys.vertx.redis;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -106,12 +107,20 @@ public class RedisTemplate {
     this.connection = connection;
   }
 
+  public void closeConnection() {
+    if (!connectionClosed) {
+      this.connection.close();
+      this.connectionClosed = true;
+    }
+  }
+
   private <T> Future<T> exec(Request request, Function<Response, T> successMapper) {
     log.debug(">redis:{}", request.toString());
     return getAccessRedisClient().compose(connection -> {
       try {
         return connection.send(request)
-            .onSuccess(event -> log.info(">redis:{}", StrUtil.nullToDefault(event.toString(), "")))
+            .onSuccess(event -> log.info(">redis:{}",
+                StrUtil.nullToDefault(ObjectUtil.defaultIfNull(event, "").toString(), "")))
             .compose(response -> Future.succeededFuture(successMapper.apply(response)));
       } finally {
         if (autoClose && !connectionClosed) {
