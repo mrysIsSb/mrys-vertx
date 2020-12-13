@@ -10,6 +10,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -216,7 +217,8 @@ public class HttpClientProxyFactory implements ProxyFactory, InvocationHandler {
     return event -> {
       if (event.succeeded()) {
         HttpResponse<Buffer> result = event.result();
-        if (result.statusCode() == HttpStatus.HTTP_OK) {
+        if (Arrays.asList(HttpStatus.HTTP_OK, HttpStatus.HTTP_CREATED, HttpStatus.HTTP_ACCEPTED)
+            .contains(result.statusCode())) {
           Type returnType = method.getReturnType();
           if (returnType.equals(Future.class)) {
             Type[] actualTypeArguments = ((ParameterizedType) method
