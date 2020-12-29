@@ -130,7 +130,7 @@ public class RedisTest {
       @Override
       public void start() throws Exception {
         template
-            .subscribe(event -> System.out.println("msg:" + event), "__keyevent@5__:del")
+            .subscribe(event -> System.out.println("msg:" + event), "__keyevent@5__:del","c1")
             .onSuccess(event -> connection = event);
       }
 
@@ -153,9 +153,13 @@ public class RedisTest {
     Vertx vertx = Vertx.vertx();
     RedisTemplate template = new RedisTemplate(
         Redis.createClient(vertx, "redis://123456@192.168.1.6:6379/5"));
+    template.setAutoClose(false);
 //    testPSubscribe(vertx, template);
     testSubscribe(vertx, template);
-//    vertx.setPeriodic(2000, event -> template.publish("c1", "你好").onSuccess(System.out::println));
+   /* template.keys("*")
+        .onSuccess(System.out::println);
+    template.publish("c1", "你好").onSuccess(System.out::println);
+    vertx.setPeriodic(2000, event -> template.publish("c1", "你好").onSuccess(System.out::println));*/
   }
 
 

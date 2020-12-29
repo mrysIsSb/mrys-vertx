@@ -118,14 +118,21 @@ public class RedisTemplate {
     log.debug(">redis:{}", request.toString());
     return getAccessRedisClient().compose(connection -> {
       try {
+        successMapper.andThen(t -> {
+          if (autoClose && !connectionClosed) {
+            connection.close();
+          }
+          return t;
+        });
         return connection.send(request)
             .onSuccess(event -> log.info(">redis:{}",
                 StrUtil.nullToDefault(ObjectUtil.defaultIfNull(event, "").toString(), "")))
             .compose(response -> Future.succeededFuture(successMapper.apply(response)));
-      } finally {
+      } catch (Exception e) {
         if (autoClose && !connectionClosed) {
           connection.close();
         }
+        return Future.failedFuture(e);
       }
     });
   }
@@ -807,10 +814,11 @@ public class RedisTemplate {
       connection.send(cmd).onSuccess(event1 -> {
         promise.complete(connection);
         connection.handler(event2 -> {
-          if (event2.size() == 3) {
+          if (event2.size() == 3 && event2.get(0).toString().toUpperCase()
+              .equals("subscribe".toUpperCase())) {
             log.info(event2.toString());
           } else {
-            megHandler.handle(event2.get(3).toString());
+            megHandler.handle(event2.get(2).toString());
           }
         });
       }).onFailure(promise::fail);
@@ -828,10 +836,11 @@ public class RedisTemplate {
       connection.send(cmd).onSuccess(event1 -> {
         promise.complete(connection);
         connection.handler(event2 -> {
-          if (event2.size() == 3) {
+          if (event2.size() == 3 && event2.get(0).toString().toUpperCase()
+              .equals("psubscribe".toUpperCase())) {
             log.info(event2.toString());
           } else {
-            megHandler.handle(event2.get(3).toString());
+            megHandler.handle(event2.get(2).toString());
           }
         });
       }).onFailure(promise::fail);
