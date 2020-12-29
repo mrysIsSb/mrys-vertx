@@ -3,12 +3,9 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.redis.client.Command;
 import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisConnection;
-import io.vertx.redis.client.Request;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Assert;
@@ -39,8 +36,8 @@ public class RedisTest {
     System.out.println("连接redis");
     vertx = rule.vertx();
 //    client = Redis.createClient(rule.vertx(), "redis://123456@192.168.1.2:6379/1");
-    client = Redis.createClient(rule.vertx(),"redis://192.168.1.2:6379");
-    template = new RedisTemplate(client,"123456",1);
+    client = Redis.createClient(rule.vertx(), "redis://192.168.1.6:6379");
+    template = new RedisTemplate(client, "123456", 5);
     template.setAutoClose(false);
   }
 
@@ -133,7 +130,7 @@ public class RedisTest {
       @Override
       public void start() throws Exception {
         template
-            .pSubscribe(event -> System.out.println("msg:" + event), "c1", "c2")
+            .subscribe(event -> System.out.println("msg:" + event), "__keyevent@5__:del")
             .onSuccess(event -> connection = event);
       }
 
@@ -155,10 +152,10 @@ public class RedisTest {
   public static void main(String[] args) {
     Vertx vertx = Vertx.vertx();
     RedisTemplate template = new RedisTemplate(
-        Redis.createClient(vertx, "redis://123456@192.168.124.44:6379/1"));
-    testPSubscribe(vertx, template);
+        Redis.createClient(vertx, "redis://123456@192.168.1.6:6379/5"));
+//    testPSubscribe(vertx, template);
     testSubscribe(vertx, template);
-    vertx.setPeriodic(2000, event -> template.publish("c1", "你好").onSuccess(System.out::println));
+//    vertx.setPeriodic(2000, event -> template.publish("c1", "你好").onSuccess(System.out::println));
   }
 
 
