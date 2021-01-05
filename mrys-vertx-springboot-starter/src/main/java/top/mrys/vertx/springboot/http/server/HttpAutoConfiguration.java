@@ -1,10 +1,12 @@
 package top.mrys.vertx.springboot.http.server;
 
 import cn.hutool.core.collection.CollectionUtil;
+import io.vertx.core.http.HttpServerOptions;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import top.mrys.vertx.http.interceptor.AbstractHttpInterceptor;
@@ -44,5 +46,11 @@ public class HttpAutoConfiguration {
   @Bean
   public BeanFactoryAwareBean beanFactoryAwareBean() {
     return new BeanFactoryAwareBean();
+  }
+
+  @ConfigurationProperties(prefix = "http")
+  @Bean
+  public HttpServerOptions httpServerOptions() {
+    return new HttpServerOptions();
   }
 }

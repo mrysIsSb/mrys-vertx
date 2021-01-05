@@ -2,6 +2,7 @@ package top.mrys.vertx.springboot;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpServerOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -85,4 +86,5 @@ public class AutoConfiguration {
   public static class Red extends ConfigCentreStoreOptions {
 
   }
+
 }

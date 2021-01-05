@@ -10,6 +10,7 @@ import io.vertx.core.http.impl.HttpServerConnection;
 import io.vertx.core.impl.VertxInternal;
 import io.vertx.ext.web.Router;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,8 +47,11 @@ public class HttpVerticle extends MyAbstractVerticle {
     Router router = routeFactory.get();
     router.get("/client/list").handler(event -> event.end(StrUtil.toString(HttpVerticle.cg.size())));
 
-    HttpServerOptions options = new HttpServerOptions();
-    options.setLogActivity(true);
+    HttpServerOptions options = new HttpServerOptions()
+        .setLogActivity(true)
+        .setIdleTimeout(10)
+        .setPort(port.get())
+        .setIdleTimeoutUnit(TimeUnit.SECONDS);
     vertx.createHttpServer(options)
         .connectionHandler(event -> {
           if (event instanceof HttpServerConnection) {
@@ -56,7 +60,7 @@ public class HttpVerticle extends MyAbstractVerticle {
           }
         })
         .requestHandler(router)
-        .listen(port.get())
+        .listen()
         .onSuccess(event -> startPromise.complete())
         .onFailure(startPromise::fail);
   }
