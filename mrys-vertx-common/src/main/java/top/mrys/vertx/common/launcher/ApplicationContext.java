@@ -37,4 +37,8 @@ public class ApplicationContext implements Cloneable<ApplicationContext> {
   public ApplicationContext clone() {
     return new ApplicationContext(instanceFactory, configLoader, verticleFactory);
   }
+
+  public <T> T getInstance(Class<T> clazz) {
+    return instanceFactory.getInstance(clazz);
+  }
 }
