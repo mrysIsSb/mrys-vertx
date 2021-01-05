@@ -1,9 +1,12 @@
 package top.mrys.vertx.common.utils;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import io.vertx.core.json.JsonObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +30,7 @@ public class MyJsonUtil {
 
   public static <T> T mapTo(String jsonStr, Type type) {
     if (!JSONUtil.isJson(jsonStr)) {
-     return Convert.convert((Class<T>) type, jsonStr);
+      return Convert.convert((Class<T>) type, jsonStr);
     }
     if (JSONUtil.isJsonObj(jsonStr)) {
       return JSONUtil.toBean(jsonStr, (Class<T>) type);
@@ -47,5 +50,9 @@ public class MyJsonUtil {
       return (T) JSONUtil.toList(JSONUtil.parseArray(jsonStr), clazz);
     }
     return null;
+  }
+
+  public static JsonObject huTool2Vert(JSONObject json) {
+    return JsonObject.mapFrom(json.toBean(HashMap.class));
   }
 }

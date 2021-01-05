@@ -1,8 +1,12 @@
 package top.mrys.vertx.springboot.http.server;
 
+import cn.hutool.core.util.ObjectUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
@@ -17,7 +21,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.http.annotations.RouteHandler;
 import top.mrys.vertx.http.starter.HttpVerticle;
 import top.mrys.vertx.springboot.http.server.annotations.EnableHttp;
@@ -33,8 +36,6 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
 
   @Autowired
   private Vertx vertx;
-  @Autowired
-  private MyVerticleFactory myVerticleFactory;
 
   private EnableHttp enableHttp;
 
@@ -56,7 +57,25 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
   @Override
   public void onApplicationEvent(ApplicationStartedEvent event) {
     ConfigurableApplicationContext context = event.getApplicationContext();
-    vertx.deployVerticle(
+    Object hc = context.getEnvironment()
+        .getProperty(enableHttp.configPrefix(), Object.class);
+    HttpServerOptions serverOptions = new HttpServerOptions(
+        JsonObject.mapFrom(ObjectUtil.defaultIfNull(hc, new HashMap<>())));
+    vertx.deployVerticle(() -> {
+          HttpVerticle bean = context.getBean(HttpVerticle.class);
+          bean.setServerOptions(serverOptions);
+          bean.setRouteClass(getRouteClass(context));
+          return bean;
+        }, new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
+        re -> {
+          if (re.succeeded()) {
+            log.info("http server started port:{}", serverOptions.getPort());
+          } else {
+            log.error(re.cause().getMessage(), re.cause());
+          }
+        });
+  }
+/*vertx.deployVerticle(
         () -> myVerticleFactory.getMyAbstractVerticle(HttpVerticle.class, httpVerticle -> {
           httpVerticle.setPort(() -> getPort(context));
           httpVerticle.setRouteClassProvider(() -> getRouteClass(context));
@@ -68,8 +87,8 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
           } else {
             log.error(re.cause().getMessage(), re.cause());
           }
-        });
-  }
+        });*/
+
 
   protected Integer getPort(ConfigurableApplicationContext context) {
     return context.getEnvironment()

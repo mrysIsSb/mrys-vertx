@@ -8,6 +8,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import top.mrys.vertx.http.interceptor.AbstractHttpInterceptor;
 import top.mrys.vertx.http.parser.RouteFactory;
@@ -18,6 +19,7 @@ import top.mrys.vertx.http.starter.HttpVerticle;
  * @date 2020/11/3
  */
 @ConditionalOnMissingBean(HttpAutoConfiguration.class)
+@Import(HttpVerticleFactory.class)
 public class HttpAutoConfiguration {
 
   @Autowired(required = false)
@@ -37,17 +39,23 @@ public class HttpAutoConfiguration {
     return routeFactory;
   }
 
-  @Bean
+/*  @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public HttpVerticle httpVerticle() {
     return new HttpVerticle();
-  }
+  }*/
+
 
   @Bean
   public BeanFactoryAwareBean beanFactoryAwareBean() {
     return new BeanFactoryAwareBean();
   }
 
+  /**
+   * http 配置
+   *
+   * @author mrys
+   */
   @ConfigurationProperties(prefix = "http")
   @Bean
   public HttpServerOptions httpServerOptions() {
