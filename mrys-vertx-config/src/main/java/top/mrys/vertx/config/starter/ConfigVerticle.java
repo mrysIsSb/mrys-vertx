@@ -65,10 +65,9 @@ public class ConfigVerticle extends MyAbstractVerticle {
                     }
                   });
               httpVerticle.setContext(clone);
-              httpVerticle.setPort(httpPort);
+//              httpVerticle.setPort(httpPort);
               httpVerticle
-                  .setRouteClassProvider(
-                      () -> CollectionUtil.set(Boolean.FALSE, ConfigController.class));
+                  .setRouteClass(CollectionUtil.set(Boolean.FALSE, ConfigController.class));
               return httpVerticle;
             })
         , new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {

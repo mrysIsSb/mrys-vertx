@@ -75,19 +75,6 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
           }
         });
   }
-/*vertx.deployVerticle(
-        () -> myVerticleFactory.getMyAbstractVerticle(HttpVerticle.class, httpVerticle -> {
-          httpVerticle.setPort(() -> getPort(context));
-          httpVerticle.setRouteClassProvider(() -> getRouteClass(context));
-          return httpVerticle;
-        }),
-        new DeploymentOptions().setConfig(configLoader.getConfig()).setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE), re -> {
-          if (re.succeeded()) {
-            log.info("http server started port:{}", getPort(context));
-          } else {
-            log.error(re.cause().getMessage(), re.cause());
-          }
-        });*/
 
 
   protected Integer getPort(ConfigurableApplicationContext context) {
@@ -101,93 +88,10 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
    * @author mrys
    */
   @SneakyThrows
-  protected Set<Class> getRouteClass(ConfigurableApplicationContext context) {
-    /*String[] packages = enableHttp.scanPackage();
-    Set<Class> clazzes = context.getBeansWithAnnotation(RouteHandler.class).values()
-        .stream()
-        .filter(o -> {
-          String name = o.getClass().getName();
-          boolean isIn = false;
-          for (int i = 0; i < packages.length && !isIn; i++) {
-            if (name.indexOf(packages[i]) != -1) {
-              isIn = true;
-            }
-          }
-          return isIn;
-        }).map(Object::getClass).collect(Collectors.toSet());*/
+  private Set<Class> getRouteClass(ConfigurableApplicationContext context) {
     return context.getBeansWithAnnotation(RouteHandler.class).values().stream()
         .map(Object::getClass).collect(
             Collectors.toSet());
   }
-/*
-
-  protected void registerRoute(BeanDefinitionRegistry registry) {
-    ClassPathScanningCandidateComponentProvider scanner = getScanner(environment);
-    scanner.setResourceLoader(resourceLoader);
-    AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(RouteHandler.class);
-    Set<String> basePackages = getBasePackages();
-
-    scanner.addIncludeFilter(annotationTypeFilter);
-
-    for (String basePackage : basePackages) {
-      Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
-      for (BeanDefinition candidateComponent : candidateComponents) {
-        if (candidateComponent instanceof AnnotatedBeanDefinition) {
-          AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
-          AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-          if (!annotationMetadata.isConcrete()) {
-            log.warn("@RouteHandler 只能用在具体类上:{}", annotationMetadata.getClassName());
-          } else {
-            //注册到容器
-            register(registry, annotationMetadata);
-          }
-        }
-      }
-    }
-  }
-
-  private void register(BeanDefinitionRegistry registry,
-      AnnotationMetadata annotationMetadata) {
-    String className = annotationMetadata.getClassName();
-    BeanDefinitionBuilder definition = BeanDefinitionBuilder
-        .genericBeanDefinition(className);
-    definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-
-    AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
-    beanDefinition.setPrimary(true);
-    registry.registerBeanDefinition(className, beanDefinition);
-  }
-
-
-  private Set<String> getBasePackages() {
-    HashSet<String> packages = new HashSet<>();
-    packages.addAll(Arrays.asList(enableHttp.scanPackage()));
-    return packages;
-  }
-
-  */
-/**
- * 获取扫描工具
- *
- * @author mrys
- *//*
-
-  protected ClassPathScanningCandidateComponentProvider getScanner(Environment environment) {
-    return new ClassPathScanningCandidateComponentProvider(false, environment) {
-      @Override
-      protected boolean isCandidateComponent(
-          AnnotatedBeanDefinition beanDefinition) {
-        boolean isCandidate = false;
-        if (beanDefinition.getMetadata().isIndependent()) {
-          if (!beanDefinition.getMetadata().isAnnotation()) {
-            isCandidate = true;
-          }
-        }
-        return isCandidate;
-      }
-    };
-  }
-*/
-
 }
 

@@ -24,6 +24,7 @@ public class ApplicationContext implements Cloneable<ApplicationContext> {
 
   private ObjectInstanceFactory instanceFactory = ObjectInstanceFactory.getDefault();
 
+  @Deprecated
   private ConfigLoader configLoader = new ConfigLoader();
 
   private MyVerticleFactory verticleFactory = MyVerticleFactory.getDefault();

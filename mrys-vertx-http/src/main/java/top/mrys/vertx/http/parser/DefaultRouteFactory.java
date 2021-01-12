@@ -87,21 +87,22 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
     router = Router.router(vertx);
     //全局异常请求
     router.route().failureHandler(this::getFailureHandler);
-    //拦截器
+    //前置拦截器 todo 后置
     if (CollectionUtil.isNotEmpty(interceptors)) {
       router.route().handler(this::getInterceptorHandler);
     }
+
     router.route().handler(event -> {
       log.debug("isFresh{}", event.isFresh());
       if (!event.response().isChunked()) {
         event.response().setChunked(true);
       }
       event.response()
-          .setStatusCode(HttpStatus.HTTP_INTERNAL_ERROR)
-          .putHeader(HttpHeaders.CONTENT_TYPE,
-              HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
+          .setStatusCode(HttpStatus.HTTP_INTERNAL_ERROR);
       event.next();
     });
+
+
     for (Class clazz : getRouteHandlerClass()) {
       if (AnnotationUtil.isHaveAnyAnnotations(clazz, RouteHandler.class)) {
         RouteMapping mapping = AnnotatedElementUtils
@@ -152,8 +153,7 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
         if (event.response().ended()) {
           return;
         }
-        event.response().setStatusCode(400).putHeader(HttpHeaders.CONTENT_TYPE,
-            HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8").end("拒绝访问");
+        event.fail(HttpStatus.HTTP_BAD_REQUEST);
         return;
       }
     }

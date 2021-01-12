@@ -1,11 +1,9 @@
 package top.mrys.vertx.http.starter;
 
-import io.netty.channel.group.DefaultChannelGroup;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.impl.HttpServerConnection;
-import io.vertx.core.impl.VertxInternal;
 import io.vertx.ext.web.Router;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -25,16 +23,17 @@ public class HttpVerticle extends MyAbstractVerticle {
 
   @Getter
   @Setter
-  private Supplier<Integer> port;
-
-  @Getter
-  @Setter
   private Set<Class> routeClass;
 
   @Getter
   @Setter
   private HttpServerOptions serverOptions = new HttpServerOptions();
 
+  /**
+   * 处理建立连接
+   *
+   * @author mrys
+   */
   @Getter
   @Setter
   private Handler<HttpServerConnection> connectionHandler;
@@ -43,6 +42,8 @@ public class HttpVerticle extends MyAbstractVerticle {
   public void start(Promise<Void> startPromise) throws Exception {
 /*    cg = new DefaultChannelGroup(
         ((VertxInternal) vertx).getAcceptorEventLoopGroup().next());*/
+
+    //扫描route
     RouteFactory routeFactory = context.getInstance(RouteFactory.class);
     routeFactory.addObjectInstanceFactory(context.getInstanceFactory());
     routeFactory.addClasses(routeClass);
