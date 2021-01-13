@@ -1,13 +1,18 @@
 package top.mrys.vertx.config.starter;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Promise;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ConfigurableApplicationContext;
 import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyAbstractVerticle;
@@ -26,27 +31,36 @@ public class ConfigVerticle extends MyAbstractVerticle {
 
   @Getter
   @Setter
-  private Supplier<Integer> enableService = () -> 0;
-  /**
-   * 获取http 端口
-   *
-   * @author mrys
-   */
+  private HttpServerOptions serverOptions = new HttpServerOptions();
+
   @Getter
   @Setter
-  private Supplier<Integer> httpPort;
+  private Integer enableService = 0;
 
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    if ((enableService.get() & enableHttp) != 0) {
+    if ((enableService & enableHttp) != 0) {
       startHttp();
     }
     startPromise.complete();
   }
 
   protected void startHttp() {
-    vertx.deployVerticle(() -> context.getVerticleFactory()
+    vertx.deployVerticle(() -> {
+          HttpVerticle bean = context.getInstance(HttpVerticle.class);
+          bean.setServerOptions(serverOptions);
+          bean.setRouteClass(CollectionUtil.set(Boolean.FALSE, ConfigController.class));
+          return bean;
+        }, new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
+        re -> {
+          if (re.succeeded()) {
+            log.info("http server started port:{}", serverOptions.getPort());
+          } else {
+            log.error(re.cause().getMessage(), re.cause());
+          }
+        });
+    /*vertx.deployVerticle(() -> context.getVerticleFactory()
             .getMyAbstractVerticle(HttpVerticle.class, httpVerticle -> {
               ObjectInstanceFactory instanceFactory = httpVerticle.getContext()
                   .getInstanceFactory();
@@ -74,6 +88,6 @@ public class ConfigVerticle extends MyAbstractVerticle {
           if (re.failed()) {
             log.error(re.cause().getMessage(), re.cause());
           }
-        });
+        });*/
   }
 }

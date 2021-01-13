@@ -12,16 +12,16 @@
                 <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
                 <SizeBasedTriggeringPolicy size="5 MB"/>
             </RollingFile>-->
-    <redis name="redis">
+<!--    <redis name="redis">
       <Filter></Filter>
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%-5p] {%F:%L} - %m%n" />
-    </redis>
+    </redis>-->
   </appenders>
   <loggers>
     <!--        <root level="debug">-->
     <root level="info">
       <appender-ref ref="Console"/>
-      <appender-ref ref="redis"/>
+<!--      <appender-ref ref="redis"/>-->
       <!--            <appender-ref ref="RollingFile"/>-->
     </root>
   </loggers>

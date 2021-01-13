@@ -1,7 +1,12 @@
 package top.mrys.vertx.springboot.config;
 
+import cn.hutool.core.util.ObjectUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -14,6 +19,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.config.starter.ConfigVerticle;
+import top.mrys.vertx.http.starter.HttpVerticle;
 
 /**
  * @author mrys
@@ -47,21 +53,24 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
   @Override
   public void onApplicationEvent(ApplicationStartedEvent event) {
     ConfigurableApplicationContext context = event.getApplicationContext();
-    vertx.deployVerticle(
-        () -> myVerticleFactory
-            .getMyAbstractVerticle(ConfigVerticle.class,
-                configVerticle -> {
-                  configVerticle.setHttpPort(() -> getPort(context));
-                  configVerticle.setEnableService(() -> ConfigVerticle.enableHttp);
-                  return configVerticle;
-                }),
-        new DeploymentOptions().setInstances(2), re -> {
+    Object hc = context.getEnvironment()
+        .getProperty(enableConfigServer.configPrefix(), Object.class);
+    HttpServerOptions serverOptions = new HttpServerOptions(
+        JsonObject.mapFrom(ObjectUtil.defaultIfNull(hc, new HashMap<>())));
+    vertx.deployVerticle(() -> {
+          ConfigVerticle bean = context.getBean(ConfigVerticle.class);
+          bean.setServerOptions(serverOptions);
+          bean.setEnableService(ConfigVerticle.enableHttp);
+          return bean;
+        }, new DeploymentOptions().setInstances(1),
+        re -> {
           if (re.succeeded()) {
-            log.info("配置中心启动:{}", getPort(context));
+            log.info("配置中心启动:{}", serverOptions.getPort());
           } else {
             log.error(re.cause().getMessage(), re.cause());
           }
         });
+
   }
 
   protected Integer getPort(ConfigurableApplicationContext context) {

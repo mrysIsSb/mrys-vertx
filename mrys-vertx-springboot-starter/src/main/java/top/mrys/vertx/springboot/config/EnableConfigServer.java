@@ -28,5 +28,5 @@ public @interface EnableConfigServer {
    *
    * @author mrys
    */
-  String configPrefix() default "config.http";
+  String configPrefix() default "http";
 }

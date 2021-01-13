@@ -51,14 +51,14 @@ public class HttpAutoConfiguration {
     return new BeanFactoryAwareBean();
   }
 
-  /**
+/*  *//**
    * http 配置
    *
    * @author mrys
-   */
+   *//*
   @ConfigurationProperties(prefix = "http")
   @Bean
   public HttpServerOptions httpServerOptions() {
     return new HttpServerOptions();
-  }
+  }*/
 }
