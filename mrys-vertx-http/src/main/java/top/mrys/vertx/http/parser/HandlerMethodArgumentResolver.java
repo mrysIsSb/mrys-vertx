@@ -25,10 +25,11 @@ public interface HandlerMethodArgumentResolver extends Comparable<HandlerMethodA
   /**
    * 解析获取参数 实现类重写
    *
+   * @return
    * @author mrys
    */
-  default <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
-    return Future.failedFuture("解析参数错误");
+  default <T> T resolve(MethodParameter parameter, RoutingContext context) {
+    return null;
   }
 
   /**
@@ -63,13 +64,13 @@ public interface HandlerMethodArgumentResolver extends Comparable<HandlerMethodA
    *
    * @author mrys
    */
-  default Future<Buffer> getFromBody(RoutingContext context) {
-    return context.request().body();
+  default Buffer getFromBody(RoutingContext context) {
+    return context.getBody();
   }
 
 
   /**
-   * 越大越优先
+   * 越大越优先 权重吧
    *
    * @author mrys
    */

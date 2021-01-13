@@ -21,6 +21,6 @@ public class ErrInterceptor extends AbstractHttpInterceptor {
 
   @Override
   public int getOrder() {
-    return 1;
+    return -1;
   }
 }

@@ -9,6 +9,9 @@ import io.vertx.core.Future;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Map;
+import top.mrys.vertx.common.factorys.JsonTransverterFactory;
+import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
+import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.common.utils.FutureUtil;
 
@@ -36,13 +39,29 @@ public class DefaultHandlerMethodArgumentResolver implements HandlerMethodArgume
    *
    * @param parameter
    * @param context
+   * @return
    * @author mrys
    */
   @Override
-  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
-    Class parameterClass = parameter.getParameterClass();
+  public <T> T resolve(MethodParameter parameter, RoutingContext context) {
+    Class<T> parameterClass = parameter.getParameterClass();
 
-    FutureUtil<T> fu = FutureUtil.createInitFuture("初始化");
+    // 基本数据类型 或 string
+    if (ClassUtil.isBasicType(parameterClass) || String.class.equals(parameterClass)) {
+      return Convert.convert(parameterClass, getFromUrlParam(parameter.getName(), context));
+    } else {
+      String st = getFromBody(context).toString();
+      //todo 判断数据类型
+      T o = null;
+      JsonTransverter bean = JsonTransverterFactory.getJsonTransverter(
+          EnumJsonTransverterNameProvider.http_server);
+      if (JSONUtil.isJson(st)) {
+        o = bean.deSerialize(st, parameter.getParameterClass());
+      }
+      return o;
+    }
+
+  /*  FutureUtil<T> fu = FutureUtil.createInitFuture("初始化");
     // 基本数据类型
     if (ClassUtil.isBasicType(parameterClass) || String.class.equals(parameterClass)) {
       fu.nullOrFailedRecover(Future.succeededFuture(Convert.convert(parameter.getParameterClass(),
@@ -69,7 +88,7 @@ public class DefaultHandlerMethodArgumentResolver implements HandlerMethodArgume
     } else {
       fu.nullOrFailedRecover(Future.succeededFuture());
     }
-    return fu.getFuture();
+    return fu.getFuture();*/
   }
 
 

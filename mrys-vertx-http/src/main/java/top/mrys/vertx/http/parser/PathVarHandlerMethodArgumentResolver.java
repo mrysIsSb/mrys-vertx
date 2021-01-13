@@ -31,10 +31,11 @@ public class PathVarHandlerMethodArgumentResolver implements HandlerMethodArgume
    *
    * @param parameter
    * @param context
+   * @return
    * @author mrys
    */
   @Override
-  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
+  public <T> T resolve(MethodParameter parameter, RoutingContext context) {
     PathVar pathVar = parameter.getParameterAnnotation(PathVar.class);
     String value = getFromUrlPath(
         StrUtil.isNotBlank(pathVar.value()) ? pathVar.value() : parameter.getName(), context);
@@ -42,9 +43,9 @@ public class PathVarHandlerMethodArgumentResolver implements HandlerMethodArgume
       value = pathVar.defValue();
     }
     if (pathVar.required() && StrUtil.isBlank(value)) {
-      return Future.failedFuture(new PathVarRequiredException());
+      throw new PathVarRequiredException();
     }
-    return Future.succeededFuture(Convert.convert(parameter.getParameterClass(), value));
+    return Convert.convert(parameter.getParameterClass(), value);
   }
 /* @Override
   public boolean match0(HttpParamType type) {

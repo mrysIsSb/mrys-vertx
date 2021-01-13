@@ -6,7 +6,6 @@ import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.other.MethodParameter;
 import top.mrys.vertx.http.annotations.ReqParam;
-import top.mrys.vertx.http.exceptions.PathVarRequiredException;
 
 /**
  * @author mrys
@@ -30,10 +29,11 @@ public class ReqParamHandlerMethodArgumentResolver implements HandlerMethodArgum
    *
    * @param parameter
    * @param context
+   * @return
    * @author mrys
    */
   @Override
-  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
+  public <T> T resolve(MethodParameter parameter, RoutingContext context) {
     ReqParam param = parameter.getParameterAnnotation(ReqParam.class);
     String name = StrUtil.isBlank(param.value()) ? parameter.getName() : param.value();
     String v = getFromUrlParam(
@@ -42,8 +42,8 @@ public class ReqParamHandlerMethodArgumentResolver implements HandlerMethodArgum
       v = param.defValue();
     }
     if (StrUtil.isBlank(v) && param.required()) {
-      return Future.failedFuture(new NullPointerException(name + "不能为空"));
+      throw new NullPointerException(name + "不能为空");
     }
-    return Future.succeededFuture(Convert.convert(parameter.getParameterClass(), v));
+    return Convert.convert(parameter.getParameterClass(), v);
   }
 }

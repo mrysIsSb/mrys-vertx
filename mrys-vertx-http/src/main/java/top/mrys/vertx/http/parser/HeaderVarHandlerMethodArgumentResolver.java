@@ -31,10 +31,11 @@ public class HeaderVarHandlerMethodArgumentResolver implements HandlerMethodArgu
    *
    * @param parameter
    * @param context
+   * @return
    * @author mrys
    */
   @Override
-  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
+  public <T> T resolve(MethodParameter parameter, RoutingContext context) {
     HeaderVar headerVar = parameter.getParameterAnnotation(HeaderVar.class);
     String value = getFromUrlPath(
         StrUtil.isNotBlank(headerVar.value()) ? headerVar.value() : parameter.getName(), context);
@@ -42,8 +43,8 @@ public class HeaderVarHandlerMethodArgumentResolver implements HandlerMethodArgu
       value = headerVar.defValue();
     }
     if (headerVar.required() && StrUtil.isBlank(value)) {
-      return Future.failedFuture(new HeaderVarRequiredException());
+      throw new HeaderVarRequiredException();
     }
-    return Future.succeededFuture(Convert.convert(parameter.getParameterClass(), value));
+    return Convert.convert(parameter.getParameterClass(), value);
   }
 }

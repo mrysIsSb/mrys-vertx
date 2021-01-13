@@ -1,12 +1,10 @@
 package top.mrys.vertx.http.parser;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import top.mrys.vertx.common.factorys.JsonTransverterFactory;
-import top.mrys.vertx.common.launcher.MyLauncher;
 import top.mrys.vertx.common.manager.EnumJsonTransverterNameProvider;
 import top.mrys.vertx.common.manager.JsonTransverter;
 import top.mrys.vertx.common.other.MethodParameter;
@@ -35,24 +33,25 @@ public class ReqBodyHandlerMethodArgumentResolver implements HandlerMethodArgume
    *
    * @param parameter
    * @param context
+   * @return
    * @author mrys
    */
   @Override
-  public <T> Future<T> resolve(MethodParameter parameter, RoutingContext context) {
+  public <T> T resolve(MethodParameter parameter, RoutingContext context) {
     ReqBody body = parameter.getParameterAnnotation(ReqBody.class);
     JsonTransverter bean = JsonTransverterFactory.getJsonTransverter(
         EnumJsonTransverterNameProvider.http_server);
-    return getFromBody(context).compose(buffer -> {
-      String st = buffer.toString();
-      if (body.required() && StrUtil.isBlank(st)) {
-        return Future.failedFuture(new NullPointerException());
-      }
-      T o = null;
-      if (JSONUtil.isJson(st)) {
-        o = bean.deSerialize(st, parameter.getParameterClass());
-      }
-      return Future.succeededFuture(o);
-    });
+    String st = getFromBody(context).toString();
+    //todo 判断数据类型
+    if (body.required() && StrUtil.isBlank(st)) {
+      throw new NullPointerException();
+    }
+    T o = null;
+    if (JSONUtil.isJson(st)) {
+      o = bean.deSerialize(st, parameter.getParameterClass());
+    }
+    return o;
+
   }
 
 }
