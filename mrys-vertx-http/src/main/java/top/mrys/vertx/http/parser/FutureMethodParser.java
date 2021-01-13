@@ -46,30 +46,21 @@ public class FutureMethodParser extends AbstractHandlerParser {
     HttpParameterFactory factory = HttpParameterFactory.getInstance(wrap);
     Handler<RoutingContext> handler = event -> {
       try {
-        Promise<Object[]> p = Promise.promise();
-        factory.getHttpParameter(event, p);
-        Promise<Object> rep = Promise.promise();
-        p.future().onSuccess(oarr -> {
-          try {
-            Object o = method.invoke(wrap.getObject(), oarr);
-            Future future = o instanceof Future ? ((Future) o) : null;
-            future.onComplete(rep);
-          } catch (Exception e) {
-            e.printStackTrace();
-            event.fail(e);
-          }
-        });
+        Object o = method.invoke(wrap.getObject(), factory.getHttpParameter(event));
+        Future<Object> future = o instanceof Future ? ((Future) o) : null;
         HttpServerResponse response = event.response();
         response.setStatusCode(HttpStatus.HTTP_OK);
         response.putHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
-        rep.future()
-            .onSuccess(re -> response.end(
-                JsonTransverterFactory
-                    .getJsonTransverter(EnumJsonTransverterNameProvider.http_server)
-                    .serialize(re)))
-            .onFailure(event::fail);
+        if (future != null) {
+          future.onSuccess(re -> response.end(
+              JsonTransverterFactory
+                  .getJsonTransverter(EnumJsonTransverterNameProvider.http_server)
+                  .serialize(re)))
+              .onFailure(event::fail);
+        } else {
+          event.fail(500);
+        }
       } catch (Exception e) {
-//        e.printStackTrace();
         event.fail(e);
       }
     };

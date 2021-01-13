@@ -57,11 +57,14 @@ public class JsonTransverterImpl implements JsonTransverter {
   @SneakyThrows
   @Override
   public <R> R deSerialize(String o, Class<R> rClass) {
+    if (rClass.equals(String.class)) {
+      return (R) o;
+    }
     if (StrUtil.isBlank(o)) {
       return null;
     }
 //    if (JSONUtil.isJsonObj(o)) {
-      return mapper.readValue(o, rClass);
+    return mapper.readValue(o, rClass);
   /*  } else if (JSONUtil.isJsonArray(o)) {
       JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, rClass);
       return mapper.readValue(o, javaType);

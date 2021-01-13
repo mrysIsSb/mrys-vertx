@@ -12,6 +12,7 @@ import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.client.impl.RedisClient;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -113,5 +114,10 @@ public class DemoController implements BaseController{
             RedisClientType.STANDALONE));
     RedisTemplate redisTemplate = new RedisTemplate(redisClient, "123456");
     return redisTemplate.del(key);
+  }
+
+  @PostRoute
+  public Future<SysUser> testBody(@ReqBody SysUser body) {
+    return Future.succeededFuture(body);
   }
 }

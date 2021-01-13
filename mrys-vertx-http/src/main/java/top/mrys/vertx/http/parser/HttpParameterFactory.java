@@ -39,35 +39,26 @@ public class HttpParameterFactory {
     return factory;
   }
 
-  public void getHttpParameter(RoutingContext context, Promise<Object[]> promise) {
+  public Object[] getHttpParameter(RoutingContext context) {
     List<HandlerMethodArgumentResolver> resolvers = getParamResolvers();
     MethodParameter[] methodParameters = wrap.getMethodParameters();
     if (ArrayUtil.isEmpty(methodParameters)) {
-      promise.complete();
-      return;
+      return null;
     }
     Object[] objects = new Object[methodParameters.length];
-    List<Future> futures = new ArrayList<>();
     for (int i = 0; i < methodParameters.length; i++) {
       MethodParameter parameter = methodParameters[i];
-      FutureUtil<Object> f = FutureUtil.createInitFuture("初始化");
       for (HandlerMethodArgumentResolver resolver : resolvers) {
         if (resolver.match(parameter)) {
-          f.nullOrFailedRecover(resolver.resolve(parameter, context));
-          break;
+          Object o;
+          if ((o = resolver.resolve(parameter, context)) != null) {
+            objects[i] = o;
+            break;
+          }
         }
       }
-      int finalI = i;
-      f.getFuture().onSuccess(event -> objects[finalI] = event);
-      futures.add(f.getFuture());
     }
-    CompositeFuture.all(futures).onComplete(event -> {
-      if (event.succeeded()) {
-        promise.complete(objects);
-      } else {
-        promise.fail(event.cause());
-      }
-    });
+    return objects;
   }
 
   protected List<HandlerMethodArgumentResolver> getParamResolvers() {
