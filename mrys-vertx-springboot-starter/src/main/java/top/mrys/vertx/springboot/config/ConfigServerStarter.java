@@ -32,8 +32,6 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
   @Autowired
   private Vertx vertx;
 
-  @Autowired
-  private MyVerticleFactory myVerticleFactory;
 
   private EnableConfigServer enableConfigServer;
 
