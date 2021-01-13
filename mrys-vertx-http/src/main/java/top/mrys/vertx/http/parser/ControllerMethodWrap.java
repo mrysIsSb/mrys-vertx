@@ -49,8 +49,7 @@ public class ControllerMethodWrap {
   }
 
   public static ControllerMethodWrap create(Method method, Class clazz, Object object) {
-    ControllerMethodWrap wrap = new ControllerMethodWrap(method, clazz, object);
-    return wrap;
+    return new ControllerMethodWrap(method, clazz, object);
   }
 
 }

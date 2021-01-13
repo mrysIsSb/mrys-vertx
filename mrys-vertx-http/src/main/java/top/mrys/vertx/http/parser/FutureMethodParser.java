@@ -8,6 +8,7 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.impl.BodyHandlerImpl;
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import top.mrys.vertx.common.factorys.JsonTransverterFactory;

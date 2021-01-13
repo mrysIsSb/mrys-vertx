@@ -1,6 +1,7 @@
 package top.mrys.vertx.http.parser;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpStatus;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
@@ -8,8 +9,10 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.impl.BodyHandlerImpl;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -87,6 +90,9 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
     router = Router.router(vertx);
     //全局异常请求
     router.route().failureHandler(this::getFailureHandler);
+
+    router.route().handler(new BodyHandlerImpl());
+
     //前置拦截器 todo 后置
     if (CollectionUtil.isNotEmpty(interceptors)) {
       router.route().handler(this::getInterceptorHandler);
@@ -102,9 +108,10 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
       event.next();
     });
 
-
     for (Class clazz : getRouteHandlerClass()) {
-      if (AnnotationUtil.isHaveAnyAnnotations(clazz, RouteHandler.class)) {
+      RouteHandler routeHandler = AnnotationUtil
+          .findMergedAnnotation(clazz, RouteHandler.class);
+      if (routeHandler != null) {
         RouteMapping mapping = AnnotatedElementUtils
             .findMergedAnnotation(clazz, RouteMapping.class);
         Router sonRouter;
@@ -115,6 +122,9 @@ public class DefaultRouteFactory implements RouteFactory<DefaultRouteFactory> {
         }
         Method[] methods = AnnotationUtil
             .getMethodByAnnotation(clazz, RouteMapping.class);
+        if (ArrayUtil.isEmpty(methods)) {
+          continue;
+        }
         Object o = factory.getInstance(clazz);
         for (Method method : methods) {
           ControllerMethodWrap wrap = ControllerMethodWrap.create(method, clazz, o);
