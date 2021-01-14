@@ -66,7 +66,7 @@ public class HttpStarter implements ApplicationListener<ApplicationStartedEvent>
           bean.setServerOptions(serverOptions);
           bean.setRouteClass(getRouteClass(context));
           return bean;
-        }, new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
+        }, new DeploymentOptions().setConfig(configLoader.getConfig()).setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
         re -> {
           if (re.succeeded()) {
             log.info("http server started port:{}", serverOptions.getPort());

@@ -52,7 +52,8 @@ public class ConfigVerticle extends MyAbstractVerticle {
           bean.setServerOptions(serverOptions);
           bean.setRouteClass(CollectionUtil.set(Boolean.FALSE, ConfigController.class));
           return bean;
-        }, new DeploymentOptions().setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
+        }, new DeploymentOptions().setConfig(config())
+            .setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE)/*todo 自定义*/,
         re -> {
           if (re.succeeded()) {
             log.info("http server started port:{}", serverOptions.getPort());

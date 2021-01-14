@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
+import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.config.starter.ConfigVerticle;
 import top.mrys.vertx.http.starter.HttpVerticle;
@@ -34,6 +35,9 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
 
 
   private EnableConfigServer enableConfigServer;
+
+  @Autowired
+  private ConfigLoader configLoader;
 
 
   @Override
@@ -60,7 +64,7 @@ public class ConfigServerStarter implements ApplicationListener<ApplicationStart
           bean.setServerOptions(serverOptions);
           bean.setEnableService(ConfigVerticle.enableHttp);
           return bean;
-        }, new DeploymentOptions().setInstances(1),
+        }, new DeploymentOptions().setConfig(configLoader.getConfig()).setInstances(1),
         re -> {
           if (re.succeeded()) {
             log.info("配置中心启动:{}", serverOptions.getPort());
