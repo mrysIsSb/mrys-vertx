@@ -9,23 +9,16 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>mrys-vertx-word2vec</artifactId>
+  <artifactId>mrys-storage</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>mrys-storage-api</module>
+    <module>mrys-storage-map</module>
+  </modules>
 
   <properties>
     <maven.compiler.source>16</maven.compiler.source>
     <maven.compiler.target>16</maven.compiler.target>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-core</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-storage-map</artifactId>
-      <version>1.0</version>
-    </dependency>
-  </dependencies>
 </project>

@@ -23,6 +23,8 @@
     <module>mrys-vertx-springboot-starter</module>
     <module>mrys-vertx-config</module>
     <module>mrys-vertx-word2vec</module>
+    <module>mrys-core</module>
+    <module>mrys-storage</module>
   </modules>
 
   <properties>

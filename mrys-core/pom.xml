@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>mrys-vertx-word2vec</artifactId>
+  <artifactId>mrys-core</artifactId>
 
   <properties>
     <maven.compiler.source>16</maven.compiler.source>
@@ -18,14 +18,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-core</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-storage-map</artifactId>
-      <version>1.0</version>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
     </dependency>
   </dependencies>
+
 </project>
