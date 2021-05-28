@@ -22,6 +22,7 @@
     <module>depchain</module>
     <module>mrys-vertx-springboot-starter</module>
     <module>mrys-vertx-config</module>
+    <module>mrys-vertx-word2vec</module>
   </modules>
 
   <properties>
