@@ -34,17 +34,19 @@
     </dependency>
 
     <dependency>
-      <groupId>ai.djl.pytorch</groupId>
-      <artifactId>pytorch-engine</artifactId>
+      <groupId>ai.djl.mxnet</groupId>
+      <artifactId>mxnet-engine</artifactId>
       <version>0.11.0</version>
-      <scope>runtime</scope>
     </dependency>
 
 
     <dependency>
-      <groupId>ai.djl.pytorch</groupId>
-      <artifactId>pytorch-native-auto</artifactId>
-      <version>1.8.1</version>
+      <!--
+          See https://github.com/deepjavalibrary/djl/blob/master/mxnet/mxnet-engine/README.md for more MXNet library selection options
+      -->
+      <groupId>ai.djl.mxnet</groupId>
+      <artifactId>mxnet-native-auto</artifactId>
+      <version>1.8.0</version>
       <scope>runtime</scope>
     </dependency>
 

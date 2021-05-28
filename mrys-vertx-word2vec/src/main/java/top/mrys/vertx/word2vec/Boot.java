@@ -18,7 +18,8 @@ public class Boot {
     StorageApi<JsonObject, String> api = (StorageApi<JsonObject, String>) factory.getStorageApi();
     NDManager manager = NDManager.newBaseManager();
     NDArray ones = manager.ones(new Shape(2, 3));
-    System.out.println(ones.max());
+    NDArray ones1 = manager.ones(new Shape(2, 3));
+    System.out.println(ones.add(ones1).add(1).mul(2));
     System.out.println("----------");
   }
 }
