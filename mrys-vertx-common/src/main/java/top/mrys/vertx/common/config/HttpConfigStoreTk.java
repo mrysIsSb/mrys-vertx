@@ -35,8 +35,14 @@ public class HttpConfigStoreTk implements MyConfigStoreTk {
 
   @Override
   public ConfigStore create(Vertx vertx, JsonObject configuration) {
-    return new MyHttpConfigStore(vertx, getDealPostConfig(configuration));
+    return null;
   }
+
+
+  //  @Override
+//  public ConfigStore create(Vertx vertx, JsonObject configuration) {
+//    return new MyHttpConfigStore(vertx, getDealPostConfig(configuration));
+//  }
 
   /**
    * key 和 profile 拼接方法

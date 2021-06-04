@@ -1,14 +1,17 @@
 package top.mrys.vertx.common.utils;
 
 
-import cn.hutool.core.lang.func.Func;
+import java.util.Objects;
+import java.util.function.Predicate;
+
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.impl.ContextInternal;
-import java.util.Objects;
-import java.util.function.Predicate;
+import io.vertx.core.impl.future.FailedFuture;
+import io.vertx.core.impl.future.FutureInternal;
+import io.vertx.core.impl.future.PromiseInternal;
 import lombok.Getter;
 
 /**
@@ -18,19 +21,19 @@ import lombok.Getter;
 public class FutureUtil<T> {
 
   @Getter
-  private Future<T> future;
+  private FutureInternal<T> future;
 
-  public FutureUtil(Future<T> future) {
+  public FutureUtil(FutureInternal<T> future) {
     this.future = future;
   }
 
   public FutureUtil<T> predicateAndFailedRecover(Predicate<T> test, Future<T> mapper) {
-    ContextInternal ctx = (ContextInternal) future.context();
-    Promise<T> ret;
+    ContextInternal ctx = future.context();
+    PromiseInternal<T> ret;
     if (ctx != null) {
       ret = ctx.promise();
     } else {
-      ret = Promise.promise();
+      ret = (PromiseInternal<T>) Promise.promise();
     }
     future.onComplete(r -> {
       //没成功或满足条件
@@ -40,7 +43,7 @@ public class FutureUtil<T> {
         ret.complete(r.result());
       }
     });
-    future = ret.future();
+    future = (FutureInternal<T>) ret.future();
     return this;
   }
 
@@ -54,12 +57,8 @@ public class FutureUtil<T> {
    * @author mrys
    */
   public static <T> FutureUtil<T> createInitFuture(String msg) {
-    Context context = Vertx.currentContext();
-    if (context != null && context instanceof ContextInternal) {
-      return new FutureUtil<>(((ContextInternal) context).failedFuture(msg));
-    }else {
-      return new FutureUtil<>(Future.failedFuture(msg));
-    }
+    ContextInternal context = (ContextInternal) Vertx.currentContext();
+    return new FutureUtil<>(new FailedFuture<>(context, msg));
   }
 
 }
