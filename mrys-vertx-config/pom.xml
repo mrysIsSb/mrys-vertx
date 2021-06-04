@@ -15,6 +15,8 @@
     <module>config-centre</module>
     <module>config-common</module>
     <module>config-centre-verticle</module>
+    <module>config-eventbus</module>
+    <module>config-nacos</module>
   </modules>
 
 <!--  <dependencyManagement>-->
