@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>mrys-vertx</artifactId>
     <groupId>top.mrys</groupId>
@@ -10,12 +10,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>mrys-vertx-config</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>config-centre</module>
+    <module>config-common</module>
+    <module>config-centre-verticle</module>
+  </modules>
 
-  <dependencies>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-http</artifactId>
-    </dependency>
-  </dependencies>
-
+<!--  <dependencyManagement>-->
+<!--    <dependencies>-->
+<!--      <dependency>-->
+<!--        <groupId>top.mrys</groupId>-->
+<!--        <artifactId>depchain</artifactId>-->
+<!--        <version>1.0</version>-->
+<!--        <type>pom</type>-->
+<!--        <scope>import</scope>-->
+<!--      </dependency>-->
+<!--    </dependencies>-->
+<!--  </dependencyManagement>-->
 </project>

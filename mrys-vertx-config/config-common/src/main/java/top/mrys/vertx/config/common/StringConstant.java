@@ -1,4 +1,4 @@
-package top.mrys.vertx.config;
+package top.mrys.vertx.config.common;
 
 /**
  * @author mrys

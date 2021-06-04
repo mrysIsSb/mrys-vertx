@@ -1,4 +1,4 @@
-package top.mrys.vertx.config.starter;
+package top.mrys.vertx.config;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;

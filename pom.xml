@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +28,7 @@
   </modules>
 
   <properties>
-    <vertx.version>4.0.0-milestone5</vertx.version>
+    <vertx.version>4.0.3</vertx.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -44,7 +44,7 @@
     <mybatis.version>3.5.5</mybatis.version>
 
 
-    <mrys-vertx.version>${version}</mrys-vertx.version>
+    <mrys-vertx.version>${project.version}</mrys-vertx.version>
     <asm.version>9.0</asm.version>
   </properties>
 
@@ -150,7 +150,16 @@
         <artifactId>mrys-vertx-springboot-starter</artifactId>
         <version>${mrys-vertx.version}</version>
       </dependency>
+
       <!--mrys-vertx-->
+
+
+      <!--      config-->
+      <dependency>
+        <groupId>top.mrys</groupId>
+        <artifactId>config-common</artifactId>
+        <version>${mrys-vertx.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

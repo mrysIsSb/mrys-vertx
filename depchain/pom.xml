@@ -36,7 +36,7 @@
 
 
     <mrys-vertx.groupId>top.mrys</mrys-vertx.groupId>
-    <mrys-vertx>${version}</mrys-vertx>
+    <mrys-vertx>${project.version}</mrys-vertx>
     <mrys-vertx-common.version>${mrys-vertx}</mrys-vertx-common.version>
     <mrys-vertx-config.version>${mrys-vertx}</mrys-vertx-config.version>
     <mrys-vertx-event-bus.version>${mrys-vertx}</mrys-vertx-event-bus.version>
@@ -143,11 +143,6 @@
         <groupId>${mrys-vertx.groupId}</groupId>
         <artifactId>mrys-vertx-http</artifactId>
         <version>${mrys-vertx-http.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${mrys-vertx.groupId}</groupId>
-        <artifactId>mrys-vertx-http-annotations</artifactId>
-        <version>${mrys-vertx-http-annotations.version}</version>
       </dependency>
       <dependency>
         <groupId>${mrys-vertx.groupId}</groupId>

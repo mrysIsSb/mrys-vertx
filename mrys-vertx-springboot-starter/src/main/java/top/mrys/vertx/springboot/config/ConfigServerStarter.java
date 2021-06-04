@@ -3,7 +3,6 @@ package top.mrys.vertx.springboot.config;
 import cn.hutool.core.util.ObjectUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import java.util.HashMap;
@@ -18,9 +17,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.config.starter.ConfigVerticle;
-import top.mrys.vertx.http.starter.HttpVerticle;
 
 /**
  * @author mrys

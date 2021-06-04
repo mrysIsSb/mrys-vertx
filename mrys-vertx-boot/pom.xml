@@ -27,7 +27,7 @@
   </modules>
 
   <properties>
-    <jar-outputFile>${build.directory}/${project.artifactId}-fat.jar</jar-outputFile>
+    <jar-outputFile>${project.build.directory}/${project.artifactId}-fat.jar</jar-outputFile>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
   </properties>
 

@@ -3,13 +3,11 @@ package top.mrys.vertx.springboot.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.config.controller.ConfigController;
 import top.mrys.vertx.config.starter.ConfigVerticle;
-import top.mrys.vertx.springboot.http.server.HttpAutoConfiguration;
 
 /**
  * @author mrys

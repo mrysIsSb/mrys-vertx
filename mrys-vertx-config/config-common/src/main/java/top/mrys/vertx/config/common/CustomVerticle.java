@@ -1,4 +1,4 @@
-package top.mrys.vertx.config;
+package top.mrys.vertx.config.common;
 
 
 import cn.hutool.core.util.StrUtil;
@@ -12,7 +12,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import top.mrys.vertx.common.utils.ContextUtil;
 
 /**
  * @author mrys
