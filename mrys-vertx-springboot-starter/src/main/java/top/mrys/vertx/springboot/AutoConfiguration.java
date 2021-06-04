@@ -1,14 +1,15 @@
 package top.mrys.vertx.springboot;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpServerOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
 import top.mrys.vertx.common.config.ConfigCentreStoreOptions;
 import top.mrys.vertx.common.config.ConfigLoader;
 import top.mrys.vertx.common.config.ConfigRepo;
@@ -16,12 +17,14 @@ import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.springboot.AutoConfiguration.Red;
+import top.mrys.vertx.springboot.config.CustomVerticleFactory;
 
 /**
  * @author mrys
  * @date 2020/10/27
  */
 @Configuration
+@Import({CustomVerticleFactory.class})
 @EnableConfigurationProperties(Red.class)
 public class AutoConfiguration {
 
@@ -34,9 +37,10 @@ public class AutoConfiguration {
   }
 
   @Bean
-  public HttpClient httpClient(Vertx vertx){
+  public HttpClient httpClient(Vertx vertx) {
     return vertx.createHttpClient();
   }
+
   /**
    * 对象实例化工厂
    *
