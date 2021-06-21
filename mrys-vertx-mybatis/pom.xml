@@ -25,6 +25,19 @@
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-sql-client-templates</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-mysql-client</artifactId>
+    </dependency>
+
   </dependencies>
+
+
 
 </project>
