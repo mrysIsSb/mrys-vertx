@@ -25,6 +25,7 @@
     <module>mrys-vertx-word2vec</module>
     <module>mrys-core</module>
     <module>mrys-storage</module>
+    <module>mrys-vertx-mysql-core</module>
   </modules>
 
   <properties>
