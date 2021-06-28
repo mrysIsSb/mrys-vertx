@@ -17,7 +17,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import top.mrys.vertx.common.config.ConfigLoader;
-import top.mrys.vertx.config.starter.ConfigVerticle;
+import top.mrys.vertx.common.config.ConfigVerticle;
 
 /**
  * @author mrys

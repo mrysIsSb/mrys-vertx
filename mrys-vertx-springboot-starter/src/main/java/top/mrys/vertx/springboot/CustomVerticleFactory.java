@@ -1,4 +1,4 @@
-package top.mrys.vertx.springboot.config;
+package top.mrys.vertx.springboot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,23 +9,31 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.util.ArrayUtil;
 import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.spi.VerticleFactory;
 
 /**
+ * 自定义 spring verticle factory
  * @author mrys
  * 2021/6/4
  */
 @Component
 public class CustomVerticleFactory implements VerticleFactory {
 
+  private final String prefixName = "spring";
   @Autowired
   private ApplicationContext context;
 
+  /**
+   * 前缀
+   *
+   * @author mrys
+   */
   @Override
   public String prefix() {
-    return "spring";
+    return prefixName;
   }
 
   @Override
@@ -45,6 +53,11 @@ public class CustomVerticleFactory implements VerticleFactory {
 
   public Set<String> getAllNames() {
     String[] vs = context.getBeanNamesForType(Verticle.class);
-    return Arrays.stream(vs).map(s -> "spring" + ":" + s).collect(Collectors.toSet());
+    if (ArrayUtil.isEmpty(vs)) {
+      return null;
+    }
+    return Arrays
+            .stream(vs).map(name -> prefixName + ":" + name)
+            .collect(Collectors.toSet());
   }
 }

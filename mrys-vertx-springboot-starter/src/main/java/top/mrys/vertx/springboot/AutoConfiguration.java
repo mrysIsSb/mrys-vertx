@@ -17,7 +17,6 @@ import top.mrys.vertx.common.factorys.ObjectInstanceFactory;
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.common.launcher.MyVerticleFactory;
 import top.mrys.vertx.springboot.AutoConfiguration.Red;
-import top.mrys.vertx.springboot.config.CustomVerticleFactory;
 
 /**
  * @author mrys

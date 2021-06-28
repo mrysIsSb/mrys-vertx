@@ -24,6 +24,7 @@
     <module>mrys-vertx-boot-api</module>
     <module>mrys-vertx-boot-config</module>
     <module>mrys-vertx-boot-ws-client</module>
+      <module>mrys-vertx-boot-demo</module>
   </modules>
 
   <properties>
