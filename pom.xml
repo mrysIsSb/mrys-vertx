@@ -26,6 +26,8 @@
     <module>mrys-core</module>
     <module>mrys-storage</module>
     <module>mrys-vertx-mysql-core</module>
+      <module>mrys-zookeeper</module>
+    <module>mrys-vertx-cluster</module>
   </modules>
 
   <properties>
