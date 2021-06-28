@@ -1,9 +1,8 @@
 package top.mrys.vertx.springboot.http.server;
 
-import io.vertx.core.http.HttpServerOptions;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
 import top.mrys.vertx.common.launcher.ApplicationContext;
 import top.mrys.vertx.http.starter.HttpVerticle;
 
