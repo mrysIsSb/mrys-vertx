@@ -21,16 +21,21 @@ public class Boot extends Launcher {
   public void afterStartingVertx(Vertx vertx) {
     ShellService service = ShellService.create(vertx,
             new ShellServiceOptions().setTelnetOptions(
-                    new TelnetTermOptions().
-                            setHost("localhost").
-                            setPort(4000)
+                    new TelnetTermOptions()
+                            .setHost("localhost")
+                            .setPort(4000)
             )
     );
     service.start();
     System.out.println("-----------------");
   }
 
+  @Override
+  protected String getMainVerticle() {
+    return "top.mrys.vertx.demo.MainVerticle";
+  }
+
   public static void main(String[] args) {
-    new Boot().dispatch(new String[]{"run","top.mrys.vertx.demo.MainVerticle"});
+    new Boot().dispatch(args);
   }
 }
