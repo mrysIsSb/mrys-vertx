@@ -1,5 +1,6 @@
 package top.mrys.vertx.boot;
 
+import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.slf4j.Marker;
