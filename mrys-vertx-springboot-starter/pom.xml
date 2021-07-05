@@ -28,22 +28,22 @@
       <artifactId>mrys-vertx-common</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-http</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-event-bus</artifactId>
-      <optional>true</optional>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>top.mrys</groupId>-->
+<!--      <artifactId>mrys-vertx-http</artifactId>-->
+<!--      <optional>true</optional>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>top.mrys</groupId>-->
+<!--      <artifactId>mrys-vertx-event-bus</artifactId>-->
+<!--      <optional>true</optional>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>top.mrys</groupId>
-      <artifactId>mrys-vertx-config</artifactId>
-      <optional>true</optional>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>top.mrys</groupId>-->
+<!--      <artifactId>mrys-vertx-config</artifactId>-->
+<!--      <optional>true</optional>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

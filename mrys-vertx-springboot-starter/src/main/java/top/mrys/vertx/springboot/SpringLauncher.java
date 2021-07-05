@@ -1,22 +1,41 @@
 package top.mrys.vertx.springboot;
 
-import org.springframework.context.support.GenericApplicationContext;
-
 import io.vertx.core.Launcher;
+import io.vertx.core.Vertx;
 
 /**
- * @author mrys
- * 2021/6/28
+ * @author mrys 2021/6/28
  */
 public class SpringLauncher extends Launcher {
 
-  @Override
-  protected String getMainVerticle() {
-    return MainVerticle.class.getName();
+  private final CustomVerticleFactory customVerticleFactory;
+
+  public SpringLauncher(CustomVerticleFactory customVerticleFactory) {
+    this.customVerticleFactory = customVerticleFactory;
   }
 
-  public static void main(String[] args) {
-    GenericApplicationContext context = new GenericApplicationContext();
-    context.refresh();
+  @Override
+  public void afterStartingVertx(Vertx vertx) {
+//    ShellService service = ShellService.create(vertx,
+//        new ShellServiceOptions().setTelnetOptions(
+//            new TelnetTermOptions()
+//                .setHost("localhost")
+//                .setPort(4000)
+//        )
+//    );
+//    service.start();
+    vertx.registerVerticleFactory(customVerticleFactory);
+    System.out.println("-----------------");
   }
+
+  /**
+   * main Verticle
+   *
+   * @author mrys
+   */
+  @Override
+  protected String getMainVerticle() {
+    return CustomVerticleFactory.prefixName + ":mainVerticle";
+  }
+
 }

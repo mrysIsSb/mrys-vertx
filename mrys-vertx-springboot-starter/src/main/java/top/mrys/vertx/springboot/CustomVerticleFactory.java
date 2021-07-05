@@ -19,10 +19,9 @@ import io.vertx.core.spi.VerticleFactory;
  * @author mrys
  * 2021/6/4
  */
-@Component
 public class CustomVerticleFactory implements VerticleFactory {
 
-  private final String prefixName = "spring";
+  public static final String prefixName = "spring";
   @Autowired
   private ApplicationContext context;
 

@@ -2,3 +2,7 @@
 **/target
 **/test
 .idea
+**/.project
+**/.settings
+**/.classpath
+**/.factorypath
