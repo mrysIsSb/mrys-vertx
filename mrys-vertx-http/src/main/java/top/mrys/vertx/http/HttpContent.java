@@ -81,13 +81,13 @@ public class HttpContent implements BaseContent<HttpContent> {
 
   @Override
   public Future<Void> write(Buffer data) {
-    return null;
+    return routingContext.response().end(data);
   }
 
 
   @Override
   public void write(Buffer data, Handler<AsyncResult<Void>> handler) {
-
+    write(data).onComplete(handler);
   }
 
 

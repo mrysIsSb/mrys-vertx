@@ -1,6 +1,8 @@
 package top.mrys.vertx.common;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Closeable;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
@@ -21,6 +23,13 @@ public interface BaseContent<C extends BaseContent> extends ContextWrapper, Clos
 
   @Override
   C handler(Handler<Buffer> handler);
+
+
+  @Override
+  Future<Void> write(Buffer data);
+
+  @Override
+  void write(Buffer data, Handler<AsyncResult<Void>> handler);
 
   @Override
   default void close(Promise<Void> completion) {

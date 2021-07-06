@@ -34,7 +34,10 @@
       <groupId>top.mrys</groupId>
       <artifactId>mrys-vertx-common</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>top.mrys</groupId>
+      <artifactId>mrys-vertx-http</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
