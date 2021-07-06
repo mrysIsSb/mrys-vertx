@@ -25,7 +25,6 @@ public class SpringLauncher extends Launcher {
 //    );
 //    service.start();
     vertx.registerVerticleFactory(customVerticleFactory);
-    System.out.println("-----------------");
   }
 
   /**

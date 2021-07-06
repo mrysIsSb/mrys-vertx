@@ -5,13 +5,18 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import top.mrys.vertx.springboot.utils.SpringUtils;
 
 /**
  * @author mrys
  * @date 2020/10/27
  */
 @Configuration
-@Import({MainVerticle.class,CustomVerticleFactory.class})
+@Import({
+    MainVerticle.class,
+    CustomVerticleFactory.class,
+    SpringUtils.class
+})
 //@EnableConfigurationProperties(Red.class)
 public class AutoConfiguration {
 

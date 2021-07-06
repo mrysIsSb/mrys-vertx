@@ -1,6 +1,8 @@
 package top.mrys.vertx.springboot.utils;
 
 
-public class SpringUtils{
+import cn.hutool.extra.spring.SpringUtil;
+
+public class SpringUtils extends SpringUtil {
 
 }
