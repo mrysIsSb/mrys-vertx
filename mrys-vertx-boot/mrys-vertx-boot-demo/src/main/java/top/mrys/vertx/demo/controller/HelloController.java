@@ -1,7 +1,7 @@
 package top.mrys.vertx.demo.controller;
 
 import io.vertx.core.buffer.Buffer;
-import top.mrys.vertx.common.BaseContent;
+import top.mrys.vertx.http.HttpContext;
 import top.mrys.vertx.http.Path;
 
 /**
@@ -12,8 +12,8 @@ import top.mrys.vertx.http.Path;
 public class HelloController {
 
   @Path("/index")
-  public void index(BaseContent content) {
-    content.write(Buffer.buffer("hello"));
+  public void index(HttpContext context) {
+    context.write(Buffer.buffer("hello"));
   }
 
 }

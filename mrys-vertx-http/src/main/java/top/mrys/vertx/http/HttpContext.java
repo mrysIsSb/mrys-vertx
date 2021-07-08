@@ -10,24 +10,26 @@ import io.vertx.core.streams.ReadStream;
 import io.vertx.core.streams.WriteStream;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Optional;
-import top.mrys.vertx.common.BaseContent;
+import top.mrys.vertx.common.BaseContext;
 
 /**
  * @author mrys
  * @date 2021/7/6
  */
-public class HttpContent implements BaseContent<HttpContent> {
+public class HttpContext implements BaseContext<HttpContext> {
 
   private ContextInternal contextInternal;
 
   private RoutingContext routingContext;
 
-  private HttpContent() {
+  private Handler<Throwable> exceptionHandler;
+
+  private HttpContext() {
   }
 
-  public HttpContent create(ContextInternal contextInternal,
+  public HttpContext create(ContextInternal contextInternal,
       RoutingContext routingContext) {
-    HttpContent content = new HttpContent();
+    HttpContext content = new HttpContext();
     content.contextInternal = contextInternal;
     content.routingContext = routingContext;
     return content;
@@ -38,44 +40,10 @@ public class HttpContent implements BaseContent<HttpContent> {
     return contextInternal;
   }
 
-
   @Override
-  public HttpContent exceptionHandler(Handler<Throwable> handler) {
-// TODO: 2021/7/6
-    return null;
-  }
-
-
-  @Override
-  public HttpContent handler(Handler<Buffer> handler) {
-    // TODO: 2021/7/6  
+  public HttpContext exceptionHandler(Handler<Throwable> handler) {
+    this.exceptionHandler = handler;
     return this;
-  }
-
-
-  @Override
-  public ReadStream<Buffer> pause() {
-    // TODO: 2021/7/6  
-    return null;
-  }
-
-
-  @Override
-  public ReadStream<Buffer> resume() {
-    // TODO: 2021/7/6  
-    return null;
-  }
-
-
-  @Override
-  public ReadStream<Buffer> fetch(long amount) {
-    return null;
-  }
-
-
-  @Override
-  public ReadStream<Buffer> endHandler(Handler<Void> endHandler) {
-    return null;
   }
 
 

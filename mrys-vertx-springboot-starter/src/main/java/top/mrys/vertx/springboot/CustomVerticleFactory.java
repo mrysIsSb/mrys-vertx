@@ -16,8 +16,8 @@ import io.vertx.core.spi.VerticleFactory;
 
 /**
  * 自定义 spring verticle factory
- * @author mrys
- * 2021/6/4
+ *
+ * @author mrys 2021/6/4
  */
 public class CustomVerticleFactory implements VerticleFactory {
 
@@ -36,7 +36,8 @@ public class CustomVerticleFactory implements VerticleFactory {
   }
 
   @Override
-  public void createVerticle(String verticleName, ClassLoader classLoader, Promise<Callable<Verticle>> promise) {
+  public void createVerticle(String verticleName, ClassLoader classLoader,
+      Promise<Callable<Verticle>> promise) {
     String name = VerticleFactory.removePrefix(verticleName);
     try {
       Object bean = context.getBean(name);
@@ -50,13 +51,18 @@ public class CustomVerticleFactory implements VerticleFactory {
     }
   }
 
+  /**
+   * 获取所有名字
+   *
+   * @author mrys
+   */
   public Set<String> getAllNames() {
     String[] vs = context.getBeanNamesForType(Verticle.class);
     if (ArrayUtil.isEmpty(vs)) {
       return null;
     }
     return Arrays
-            .stream(vs).map(name -> prefixName + ":" + name)
-            .collect(Collectors.toSet());
+        .stream(vs).map(name -> prefixName + ":" + name)
+        .collect(Collectors.toSet());
   }
 }
