@@ -7,6 +7,11 @@ package top.mrys.vertx.common;
 public interface ContextHandler {
 
   void handlerAdded(BaseContext ctx);
+
   void handlerRemoved(BaseContext ctx);
+
+  void handle(BaseContext context);
+
+  void exceptionCaught(BaseContext ctx, Throwable cause);
 
 }

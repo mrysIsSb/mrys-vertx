@@ -6,17 +6,17 @@ import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.impl.ContextInternal;
-import io.vertx.core.streams.ReadStream;
 import io.vertx.core.streams.WriteStream;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Optional;
-import top.mrys.vertx.common.BaseContext;
+import top.mrys.vertx.common.AbstractBaseContext;
+import top.mrys.vertx.common.ContextHandler;
 
 /**
  * @author mrys
  * @date 2021/7/6
  */
-public class HttpContext implements BaseContext<HttpContext> {
+public class HttpContext extends AbstractBaseContext<HttpContext, ContextHandler> {
 
   private ContextInternal contextInternal;
 
@@ -38,6 +38,12 @@ public class HttpContext implements BaseContext<HttpContext> {
   @Override
   public ContextInternal getContext() {
     return contextInternal;
+  }
+
+
+  @Override
+  public ContextHandler handler() {
+    return null;
   }
 
   @Override
