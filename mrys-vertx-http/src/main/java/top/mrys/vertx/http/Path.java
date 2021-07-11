@@ -24,5 +24,5 @@ public @interface Path {
    *
    * @author mrys
    */
-  String method() default "";
+  String method() default "GET";
 }

@@ -1,17 +1,16 @@
 package top.mrys.vertx.common;
 
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-
 /**
  * @author mrys
  * @date 2021/7/9
  */
-public interface DataPipeline {
+public interface DataPipeline extends HandleInvoker{
 
-  DataPipeline addFirst(BaseContext context);
+  DataPipeline addFirst(ContextHandler handler);
 
-  DataPipeline addLast(BaseContext context);
+  DataPipeline addLast(ContextHandler handler);
 
-  <H1 extends ContextHandler> BaseContext<?, H1> context(Class<H1> handlerType);
+  DataPipeline remove(ContextHandler handler);
+
+  <H1 extends ContextHandler> ProcessContext<?, H1, ?> context(Class<H1> handlerType);
 }

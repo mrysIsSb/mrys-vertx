@@ -6,7 +6,7 @@ package top.mrys.vertx.common;
  */
 public interface HandleInvoker {
 
-  void fireHandle();
+  void fireHandle(Object data);
 
   void fireExceptionCaught(Throwable cause);
 }

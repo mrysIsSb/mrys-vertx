@@ -6,12 +6,12 @@ package top.mrys.vertx.common;
  */
 public interface ContextHandler {
 
-  void handlerAdded(BaseContext ctx);
+  void handlerAdded(ProcessContext context);
 
-  void handlerRemoved(BaseContext ctx);
+  void handlerRemoved(ProcessContext context);
 
-  void handle(BaseContext context);
+  void handle(ProcessContext context, Object data);
 
-  void exceptionCaught(BaseContext ctx, Throwable cause);
+  void exceptionCaught(ProcessContext context, Throwable cause);
 
 }
