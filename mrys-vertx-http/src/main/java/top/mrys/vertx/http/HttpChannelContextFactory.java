@@ -1,5 +1,6 @@
 package top.mrys.vertx.http;
 
+import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpConnection;
@@ -10,7 +11,9 @@ import io.vertx.core.impl.ContextInternal;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.impl.ConnectionBase;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,6 +56,7 @@ public class HttpChannelContextFactory implements ChannelContextFactory<HttpCont
         router
             .route(HttpMethod.valueOf(path.method()), path.value())
             .handler(event -> {
+              BodyHandler.create();
 //              ConnectionBase connection = (ConnectionBase) event.request().connection(); 可以获取channel
               HttpContext httpContext = get((ContextInternal) vertx.getOrCreateContext());
               httpContext.setRoutingContext(event);

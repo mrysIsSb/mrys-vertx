@@ -28,6 +28,7 @@
     <module>mrys-vertx-mysql-core</module>
     <module>mrys-zookeeper</module>
     <module>mrys-vertx-cluster</module>
+    <module>mrys-auth</module>
   </modules>
 
   <properties>
@@ -37,7 +38,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.>-parameters</maven.compiler.>
     <lombok.version>1.18.12</lombok.version>
-    <hutool.version>5.3.9</hutool.version>
+    <hutool.version>5.7.4</hutool.version>
     <vavr.version>0.10.3</vavr.version>
     <spring.version>5.2.6.RELEASE</spring.version>
     <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
